@@ -1,0 +1,46 @@
+package com.diego.futty.design.presentation.component.button
+
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.diego.futty.core.presentation.Grey200
+import com.diego.futty.core.presentation.Info
+import com.diego.futty.core.presentation.InfoDark
+
+@Composable
+fun SecondaryButton(
+    modifier: Modifier = Modifier,
+    title: String,
+    isEnabled: Boolean = true,
+    onClick: () -> Unit,
+) {
+    Text(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .border(
+                width = 1.dp,
+                color = Grey200,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .clickable { onClick() }
+            .padding(vertical = 16.dp),
+        text = title,
+        style = typography.bodyLarge,
+        fontWeight = FontWeight.SemiBold,
+        color = if (isEnabled) {
+            Info
+        } else {
+            InfoDark
+        },
+        textAlign = TextAlign.Center
+    )
+}

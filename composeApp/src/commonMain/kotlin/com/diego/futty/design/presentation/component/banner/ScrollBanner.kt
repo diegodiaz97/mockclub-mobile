@@ -1,0 +1,244 @@
+package com.diego.futty.design.presentation.component.banner
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
+import com.diego.futty.core.presentation.AlertLight
+import com.diego.futty.core.presentation.ErrorLight
+import com.diego.futty.core.presentation.Grey0
+import com.diego.futty.core.presentation.Grey100
+import com.diego.futty.core.presentation.Grey200
+import com.diego.futty.core.presentation.Grey900
+import com.diego.futty.core.presentation.SuccessLight
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ArrowRight
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import kotlin.math.absoluteValue
+
+@Composable
+fun ScrollBanner(
+    modifier: Modifier = Modifier,
+    items: List<BannerUIData>,
+    onClick: (Int) -> Unit = {}
+) {
+    val itemsToShow = items.take(7)
+    val state: PagerState = rememberPagerState { itemsToShow.size }
+    PageControls(state)
+    Column(modifier = modifier.fillMaxWidth()) {
+        HorizontalPager(
+            modifier = Modifier.fillMaxWidth(),
+            state = state,
+            pageSpacing = 12.dp,
+            pageContent = { page: Int ->
+                CreateBanner(items[page], page, state, onClick)
+            },
+        )
+        if (itemsToShow.size > 1) {
+            DotIndicators(
+                pageCount = itemsToShow.size,
+                pagerState = state,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 12.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun DotIndicators(
+    pageCount: Int,
+    pagerState: PagerState,
+    modifier: Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        repeat(pageCount) { iteration ->
+            val color =
+                if (pagerState.currentPage == iteration) Grey900 else Grey200
+            Box(
+                modifier =
+                Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(color),
+            )
+        }
+    }
+}
+
+@Composable
+private fun CreateBanner(
+    bannerUIData: BannerUIData,
+    page: Int,
+    state: PagerState,
+    onBannerClicked: (Int) -> Unit,
+) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(140.dp)
+        .clip(RoundedCornerShape(12.dp))
+        .background(bannerUIData.style.color)
+        .carouselTransition(page, state)
+        .clickable { onBannerClicked(page) }
+    ) {
+        val textColor =
+            if (bannerUIData.illustration != null) {
+                Grey0
+            } else {
+                Grey900
+            }
+
+        if (bannerUIData.illustration != null) {
+            Image(
+                modifier = Modifier.clipToBounds().fillMaxSize(),
+                painter = painterResource(bannerUIData.illustration),
+                contentScale = ContentScale.Crop,
+                colorFilter = ColorFilter.tint(
+                    color = Grey900.copy(alpha = 0.4f),
+                    blendMode = BlendMode.Darken
+                ),
+                contentDescription = null
+            )
+        }
+
+        Column(
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Text(
+                text = bannerUIData.title,
+                style = typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = textColor,
+                maxLines = 1,
+            )
+            Text(
+                modifier = Modifier.padding(top = 4.dp).weight(1f),
+                text = bannerUIData.description,
+                style = typography.titleSmall,
+                fontWeight = FontWeight.Normal,
+                color = textColor,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = bannerUIData.labelAction,
+                    style = typography.bodySmall,
+                    fontWeight = FontWeight.Medium,
+                    color = textColor,
+                    maxLines = 1,
+                )
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    imageVector = TablerIcons.ArrowRight,
+                    tint = textColor,
+                    contentDescription = null
+                )
+            }
+        }
+    }
+}
+
+data class BannerUIData(
+    val title: String,
+    val description: String,
+    val labelAction: String,
+    val illustration: DrawableResource? = null,
+    val style: BannerStyle = BannerStyle.Light,
+) {
+    sealed class BannerStyle(
+        val color: Color,
+    ) {
+        object Light : BannerStyle(color = Grey100)
+
+        object Dark : BannerStyle(color = Grey200)
+
+        object Yellow : BannerStyle(color = AlertLight)
+
+        object Pink : BannerStyle(color = ErrorLight)
+
+        object Green : BannerStyle(color = SuccessLight)
+
+        object Primary : BannerStyle(color = Grey900)
+    }
+}
+
+@Composable
+private fun PageControls(state: PagerState) {
+    val autoScrollDuration = 3000L
+    val isDragged by state.interactionSource.collectIsDraggedAsState()
+    if (isDragged.not()) {
+        with(state) {
+            var currentPageKey by remember { mutableIntStateOf(0) }
+            LaunchedEffect(key1 = currentPageKey) {
+                launch {
+                    delay(timeMillis = autoScrollDuration)
+                    val nextPage = (currentPage + 1).mod(pageCount)
+                    animateScrollToPage(page = nextPage)
+                    currentPageKey = nextPage
+                }
+            }
+        }
+    }
+}
+
+fun Modifier.carouselTransition(page: Int, pagerState: PagerState) =
+    graphicsLayer {
+        val pageOffset =
+            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+
+        val transformation =
+            lerp(
+                start = 0.7f,
+                stop = 1f,
+                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+            )
+        alpha = transformation
+        scaleY = transformation
+    }

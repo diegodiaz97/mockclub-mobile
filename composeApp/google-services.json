@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "890310423891",
+    "project_id": "futty-87d3c",
+    "storage_bucket": "futty-87d3c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890310423891:android:650a9a257f6ad997305da6",
+        "android_client_info": {
+          "package_name": "com.diego.futty"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvkUbPFr17LQZl9TPnT_Gls42-ByUlwUE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
