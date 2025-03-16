@@ -20,7 +20,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -31,7 +31,7 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     jvm("desktop")
 
     room {
@@ -39,53 +39,67 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting
-        
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(libs.koin.android)
-            implementation(libs.koin.androidx.compose)
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.xicon.pack.z)
-        }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtime.compose)
+                implementation(libs.jetbrains.compose.navigation)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.androidx.room.runtime)
+                implementation(libs.sqlite.bundled)
+                implementation(libs.koin.compose)
+                implementation(libs.koin.compose.viewmodel)
+                api(libs.koin.core)
 
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.jetbrains.compose.navigation)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.androidx.room.runtime)
-            implementation(libs.sqlite.bundled)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            api(libs.koin.core)
+                implementation(libs.bundles.ktor)
+                implementation(libs.bundles.coil)
+                implementation(libs.xicon.pack.z)
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.firebase.firestore)
+                implementation(libs.firebase.auth)
+                implementation(libs.firebase.storage)
+            }
+        }
 
-            implementation(libs.bundles.ktor)
-            implementation(libs.bundles.coil)
-            implementation(libs.xicon.pack.z)
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.firebase.firestore)
-            implementation(libs.firebase.auth)
-            implementation(libs.firebase.storage)
+        val androidMain by getting {
+            dependencies {
+                implementation(compose.preview)
+                implementation(libs.androidx.activity.compose)
+
+                implementation(libs.koin.android)
+                implementation(libs.koin.androidx.compose)
+                implementation(libs.ktor.client.okhttp)
+                implementation(libs.xicon.pack.z)
+
+                implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+                implementation(libs.com.google.firebase.firebase.auth)
+                implementation(libs.com.google.firebase.firebase.firestore)
+                implementation(libs.com.google.firebase.firebase.storage)
+            }
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.xicon.pack.z)
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.kotlinx.coroutines.swing)
+                implementation(libs.ktor.client.okhttp)
+                implementation(libs.xicon.pack.z)
+            }
         }
-        nativeMain.dependencies {
-            implementation(libs.ktor.client.darwin)
+
+        val iosMain by creating {
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
         }
 
         dependencies {
