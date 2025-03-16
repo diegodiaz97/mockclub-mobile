@@ -1,17 +1,6 @@
 package com.diego.futty.core.presentation.theme
 
 import androidx.compose.ui.graphics.Color
-
-// BookDeprecated
-val DarkBlue = Color(0xFF0B405E)
-val DesertWhite = Color(0xFFF7F7F7)
-val SandYellow = Color(0xFFFFBD64)
-val LightBlue = Color(0xFF9AD9FF)
-
-
-
-// Futty
-
 // Light theme
 
 val Success = Color(0xFF28A745)
