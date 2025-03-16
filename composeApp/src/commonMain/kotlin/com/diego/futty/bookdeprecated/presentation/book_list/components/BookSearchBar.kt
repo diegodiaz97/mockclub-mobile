@@ -25,9 +25,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import futty.composeapp.generated.resources.Res
 import futty.composeapp.generated.resources.close_hint
 import futty.composeapp.generated.resources.search_hint
-import com.diego.futty.core.presentation.DarkBlue
-import com.diego.futty.core.presentation.DesertWhite
-import com.diego.futty.core.presentation.SandYellow
+import com.diego.futty.core.presentation.theme.DarkBlue
+import com.diego.futty.core.presentation.theme.DesertWhite
+import com.diego.futty.core.presentation.theme.SandYellow
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

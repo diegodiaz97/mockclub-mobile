@@ -29,6 +29,12 @@ room = "2.7.0-alpha11"
 xicon_pack_z = "1.1.1"
 
 [libraries]
+com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-auth" }
+com-google-firebase-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+com-google-firebase-firebase-storage = { module = "com.google.firebase:firebase-storage" }
+firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase" }
+firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase" }
+firebase-storage = { module = "dev.gitlive:firebase-storage", version.ref = "firebase" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -71,10 +77,6 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 xicon_pack_z = { module = "br.com.devsrsouza.compose.icons:tabler-icons", version.ref = "xicon_pack_z" }
-
-firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase" }
-firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase" }
-firebase-storage = { module = "dev.gitlive:firebase-storage", version.ref = "firebase" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

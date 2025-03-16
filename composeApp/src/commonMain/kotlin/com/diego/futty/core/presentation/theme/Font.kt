@@ -1,4 +1,4 @@
-package com.diego.futty.core.presentation
+package com.diego.futty.core.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable

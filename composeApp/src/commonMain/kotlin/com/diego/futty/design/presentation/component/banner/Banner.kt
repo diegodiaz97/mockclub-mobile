@@ -21,15 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.AlertLight
-import com.diego.futty.core.presentation.ErrorLight
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.Grey100
-import com.diego.futty.core.presentation.Grey200
-import com.diego.futty.core.presentation.Grey800
-import com.diego.futty.core.presentation.Grey900
-import com.diego.futty.core.presentation.InfoLight
-import com.diego.futty.core.presentation.SuccessLight
+import com.diego.futty.core.presentation.theme.colorAlertLight
+import com.diego.futty.core.presentation.theme.colorErrorLight
+import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey200
+import com.diego.futty.core.presentation.theme.colorGrey800
+import com.diego.futty.core.presentation.theme.colorGrey900
+import com.diego.futty.core.presentation.theme.colorInfoLight
+import com.diego.futty.core.presentation.theme.colorSuccessLight
 import com.diego.futty.design.presentation.component.avatar.Avatar
 import com.diego.futty.design.presentation.component.avatar.AvatarSize
 import compose.icons.TablerIcons
@@ -51,7 +51,7 @@ sealed interface Banner {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
                 .clickable { onClick.invoke() }
-                .background(Grey100)
+                .background(colorGrey100())
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -71,18 +71,18 @@ sealed interface Banner {
                     text = title,
                     style = typography.bodySmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = Grey900,
+                    color = colorGrey900(),
                 )
                 Text(
                     text = subtitle,
                     style = typography.bodySmall,
-                    color = Grey800,
+                    color = colorGrey800(),
                 )
             }
             Icon(
                 modifier = Modifier.width(24.dp),
                 imageVector = TablerIcons.ChevronRight,
-                tint = Grey900,
+                tint = colorGrey900(),
                 contentDescription = null
             )
         }
@@ -97,7 +97,7 @@ sealed interface Banner {
             DrawInformation(
                 title,
                 subtitle,
-                ErrorLight
+                colorErrorLight()
             )
         }
     }
@@ -111,7 +111,7 @@ sealed interface Banner {
             DrawInformation(
                 title,
                 subtitle,
-                SuccessLight
+                colorSuccessLight()
             )
         }
     }
@@ -125,7 +125,7 @@ sealed interface Banner {
             DrawInformation(
                 title,
                 subtitle,
-                AlertLight
+                colorAlertLight()
             )
         }
     }
@@ -139,7 +139,7 @@ sealed interface Banner {
             DrawInformation(
                 title,
                 subtitle,
-                InfoLight
+                colorInfoLight()
             )
         }
     }
@@ -153,7 +153,7 @@ sealed interface Banner {
             DrawInformation(
                 title,
                 subtitle,
-                Grey0,
+                colorGrey0(),
                 true,
             )
         }
@@ -172,7 +172,7 @@ private fun DrawInformation(
         .clip(RoundedCornerShape(12.dp))
         .border(
             width = 1.dp,
-            color = if (border) Grey200 else Color.Transparent,
+            color = if (border) colorGrey200() else Color.Transparent,
             shape = RoundedCornerShape(12.dp)
         )
         .background(color)
@@ -183,11 +183,11 @@ private fun DrawInformation(
         text = title,
         style = typography.bodySmall,
         fontWeight = FontWeight.SemiBold,
-        color = Grey900,
+        color = colorGrey900(),
     )
     Text(
         text = subtitle,
         style = typography.bodySmall,
-        color = Grey800,
+        color = colorGrey800(),
     )
 }

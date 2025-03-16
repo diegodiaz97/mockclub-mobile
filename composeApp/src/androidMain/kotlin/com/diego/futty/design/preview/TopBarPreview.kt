@@ -2,8 +2,7 @@ package com.diego.futty.design.preview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.diego.futty.R
-import com.diego.futty.core.presentation.FuttyTheme
+import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.design.presentation.component.topbar.TopBar
 import com.diego.futty.design.presentation.component.topbar.TopBarActionType
 import compose.icons.TablerIcons

@@ -3,68 +3,97 @@ package com.diego.futty.design.preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.diego.futty.core.presentation.Alert
-import com.diego.futty.core.presentation.AlertDark
-import com.diego.futty.core.presentation.AlertLight
-import com.diego.futty.core.presentation.Error
-import com.diego.futty.core.presentation.ErrorDark
-import com.diego.futty.core.presentation.ErrorLight
-import com.diego.futty.core.presentation.FuttyTheme
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.Grey100
-import com.diego.futty.core.presentation.Grey200
-import com.diego.futty.core.presentation.Grey300
-import com.diego.futty.core.presentation.Grey400
-import com.diego.futty.core.presentation.Grey500
-import com.diego.futty.core.presentation.Grey600
-import com.diego.futty.core.presentation.Grey700
-import com.diego.futty.core.presentation.Grey800
-import com.diego.futty.core.presentation.Grey900
-import com.diego.futty.core.presentation.Info
-import com.diego.futty.core.presentation.InfoDark
-import com.diego.futty.core.presentation.InfoLight
-import com.diego.futty.core.presentation.Success
-import com.diego.futty.core.presentation.SuccessDark
-import com.diego.futty.core.presentation.SuccessLight
+import com.diego.futty.core.presentation.theme.FuttyTheme
+import com.diego.futty.core.presentation.theme.NightColorScheme
+import com.diego.futty.core.presentation.theme.colorAlert
+import com.diego.futty.core.presentation.theme.colorAlertDark
+import com.diego.futty.core.presentation.theme.colorAlertLight
+import com.diego.futty.core.presentation.theme.colorError
+import com.diego.futty.core.presentation.theme.colorErrorDark
+import com.diego.futty.core.presentation.theme.colorErrorLight
+import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey200
+import com.diego.futty.core.presentation.theme.colorGrey300
+import com.diego.futty.core.presentation.theme.colorGrey400
+import com.diego.futty.core.presentation.theme.colorGrey500
+import com.diego.futty.core.presentation.theme.colorGrey600
+import com.diego.futty.core.presentation.theme.colorGrey700
+import com.diego.futty.core.presentation.theme.colorGrey800
+import com.diego.futty.core.presentation.theme.colorGrey900
+import com.diego.futty.core.presentation.theme.colorInfo
+import com.diego.futty.core.presentation.theme.colorInfoDark
+import com.diego.futty.core.presentation.theme.colorInfoLight
+import com.diego.futty.core.presentation.theme.colorSuccess
+import com.diego.futty.core.presentation.theme.colorSuccessDark
+import com.diego.futty.core.presentation.theme.colorSuccessLight
 import com.diego.futty.design.presentation.component.ColorPalette
 
 @Preview
 @Composable
-private fun TopBarStates() {
-    Column {
-        ColorPalette(title = "SuccessLight", background = SuccessLight)
-        ColorPalette(title = "Success", background = Success)
-        ColorPalette(title = "SuccessDark", background = SuccessDark)
-
-        ColorPalette(title = "ErrorLight", background = ErrorLight)
-        ColorPalette(title = "Error", background = Error)
-        ColorPalette(title = "ErrorDark", background = ErrorDark)
-
-        ColorPalette(title = "AlertLight", background = AlertLight)
-        ColorPalette(title = "Alert", background = Alert)
-        ColorPalette(title = "AlertDark", background = AlertDark)
-
-        ColorPalette(title = "InfoLight", background = InfoLight)
-        ColorPalette(title = "Info", background = Info)
-        ColorPalette(title = "InfoDark", background = InfoDark)
+private fun StatesDay() {
+    FuttyTheme {
+        StateColors()
     }
 }
 
 @Preview
 @Composable
-private fun TopBarGreyScale() {
+private fun GreyScaleDay() {
     FuttyTheme {
-        Column {
-            ColorPalette(title = "Grey0", background = Grey0)
-            ColorPalette(title = "Grey100", background = Grey100)
-            ColorPalette(title = "Grey200", background = Grey200)
-            ColorPalette(title = "Grey300", background = Grey300)
-            ColorPalette(title = "Grey400", background = Grey400)
-            ColorPalette(title = "Grey500", background = Grey500)
-            ColorPalette(title = "Grey600", background = Grey600)
-            ColorPalette(title = "Grey700", background = Grey700)
-            ColorPalette(title = "Grey800", background = Grey800)
-            ColorPalette(title = "Grey900", background = Grey900)
-        }
+        GreyScaleColors()
+    }
+}
+
+@Preview
+@Composable
+private fun StatesNight() {
+    FuttyTheme(NightColorScheme) {
+        StateColors()
+    }
+}
+
+@Preview
+@Composable
+private fun GreyScaleNight() {
+    FuttyTheme(NightColorScheme) {
+        GreyScaleColors()
+    }
+}
+
+@Composable
+private fun StateColors() {
+    Column {
+        ColorPalette(title = "SuccessLight", background = colorSuccessLight())
+        ColorPalette(title = "Success", background = colorSuccess())
+        ColorPalette(title = "SuccessDark", background = colorSuccessDark())
+
+        ColorPalette(title = "ErrorLight", background = colorErrorLight())
+        ColorPalette(title = "Error", background = colorError())
+        ColorPalette(title = "ErrorDark", background = colorErrorDark())
+
+        ColorPalette(title = "AlertLight", background = colorAlertLight())
+        ColorPalette(title = "Alert", background = colorAlert())
+        ColorPalette(title = "AlertDark", background = colorAlertDark())
+
+        ColorPalette(title = "InfoLight", background = colorInfoLight())
+        ColorPalette(title = "Info", background = colorInfo())
+        ColorPalette(title = "InfoDark", background = colorInfoDark())
+    }
+}
+
+@Composable
+private fun GreyScaleColors() {
+    Column {
+        ColorPalette(title = "Grey0", background = colorGrey0())
+        ColorPalette(title = "Grey100", background = colorGrey100())
+        ColorPalette(title = "Grey200", background = colorGrey200())
+        ColorPalette(title = "Grey300", background = colorGrey300())
+        ColorPalette(title = "Grey400", background = colorGrey400())
+        ColorPalette(title = "Grey500", background = colorGrey500())
+        ColorPalette(title = "Grey600", background = colorGrey600())
+        ColorPalette(title = "Grey700", background = colorGrey700())
+        ColorPalette(title = "Grey800", background = colorGrey800())
+        ColorPalette(title = "Grey900", background = colorGrey900())
     }
 }

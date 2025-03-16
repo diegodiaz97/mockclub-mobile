@@ -41,9 +41,9 @@ import futty.composeapp.generated.resources.book_error_2
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.diego.futty.bookdeprecated.domain.Book
-import com.diego.futty.core.presentation.LightBlue
+import com.diego.futty.core.presentation.theme.LightBlue
 import com.diego.futty.core.presentation.PulseAnimation
-import com.diego.futty.core.presentation.SandYellow
+import com.diego.futty.core.presentation.theme.SandYellow
 import org.jetbrains.compose.resources.painterResource
 import kotlin.math.round
 

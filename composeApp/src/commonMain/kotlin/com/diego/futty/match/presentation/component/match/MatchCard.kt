@@ -16,10 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.Grey100
-import com.diego.futty.core.presentation.Grey300
-import com.diego.futty.core.presentation.Grey900
+import com.diego.futty.core.presentation.theme.Grey0
+import com.diego.futty.core.presentation.theme.Grey100
+import com.diego.futty.core.presentation.theme.Grey300
+import com.diego.futty.core.presentation.theme.Grey900
 
 sealed class MatchCard {
     class HalfTime(

@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.Grey100
-import com.diego.futty.core.presentation.Grey900
+import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey900
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
 
@@ -35,7 +35,7 @@ fun TopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(Grey0)
+            .background(colorGrey0())
             .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -49,7 +49,7 @@ fun TopBar(
             modifier = Modifier.weight(1f),
             text = title,
             style = typography.headlineSmall,
-            color = Grey900
+            color = colorGrey900()
         )
 
         topBarActionType.Draw()
@@ -61,12 +61,12 @@ fun TopBarIcon(icon: ImageVector, onClick: () -> Unit) {
     Icon(
         modifier = Modifier
             .clip(CircleShape)
-            .background(Grey100)
+            .background(colorGrey100())
             .clickable { onClick() }
             .size(36.dp)
             .padding(8.dp),
         imageVector = icon,
-        tint = Grey900,
+        tint = colorGrey900(),
         contentDescription = ""
     )
 }

@@ -28,8 +28,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
-import com.diego.futty.core.presentation.Grey100
-import com.diego.futty.core.presentation.Grey900
+import com.diego.futty.core.presentation.theme.Grey100
+import com.diego.futty.core.presentation.theme.Grey900
 import com.diego.futty.core.presentation.PulseAnimation
 import com.diego.futty.match.domain.model.league.League
 import com.diego.futty.match.domain.model.match.LiveMatch

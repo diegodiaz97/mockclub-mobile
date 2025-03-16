@@ -2,10 +2,13 @@ package com.diego.futty.design.preview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.diego.futty.core.presentation.theme.colorAlert
+import com.diego.futty.core.presentation.theme.colorError
+import com.diego.futty.core.presentation.theme.colorInfo
+import com.diego.futty.core.presentation.theme.colorSuccess
 import com.diego.futty.design.presentation.component.banner.BannerUIData
 import com.diego.futty.design.presentation.component.banner.ScrollBanner
 import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.book_error_2
 import futty.composeapp.generated.resources.compose_multiplatform
 import futty.composeapp.generated.resources.girasoles
 
@@ -15,14 +18,14 @@ import futty.composeapp.generated.resources.girasoles
 fun BannerPreview() {
     ScrollBanner(
         items =
-        listOf(
-            getBannerUIData().copy(style = BannerUIData.BannerStyle.Primary, illustration = Res.drawable.girasoles),
-            getBannerUIData().copy(style = BannerUIData.BannerStyle.Dark, illustration = Res.drawable.compose_multiplatform),
-            getBannerUIData(),
-            getBannerUIData().copy(style = BannerUIData.BannerStyle.Yellow),
-            getBannerUIData().copy(style = BannerUIData.BannerStyle.Pink),
-            getBannerUIData().copy(style = BannerUIData.BannerStyle.Green),
-        ),
+            listOf(
+                getBannerUIData().copy(color = colorInfo(), illustration = Res.drawable.girasoles),
+                getBannerUIData().copy(illustration = Res.drawable.compose_multiplatform),
+                getBannerUIData(),
+                getBannerUIData().copy(color = colorError()),
+                getBannerUIData().copy(color = colorAlert()),
+                getBannerUIData().copy(color = colorSuccess()),
+            ),
     )
 }
 

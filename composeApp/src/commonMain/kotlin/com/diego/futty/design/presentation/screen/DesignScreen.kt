@@ -14,10 +14,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.Grey900
+import com.diego.futty.core.presentation.theme.colorAlert
+import com.diego.futty.core.presentation.theme.colorError
+import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey900
+import com.diego.futty.core.presentation.theme.colorInfo
+import com.diego.futty.core.presentation.theme.colorSuccess
 import com.diego.futty.design.presentation.component.banner.Banner
-import com.diego.futty.design.presentation.component.banner.BannerUIData
 import com.diego.futty.design.presentation.component.banner.ScrollBanner
 import com.diego.futty.design.presentation.component.button.PrimaryButton
 import com.diego.futty.design.presentation.component.button.SecondaryButton
@@ -37,20 +40,19 @@ fun DesignScreen(
     onBack: () -> Unit,
 ) {
     Scaffold(
-        containerColor = Grey0,
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding(),
+        containerColor = colorGrey0(),
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopBar(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(horizontal = 16.dp),
                 title = "Hola Diego!",
                 topBarActionType = TopBarActionType.Profile(
                     initials = "DD",
-                    tint = Grey0,
-                    background = Grey900,
-                    onClick = {}
+                    tint = colorGrey0(),
+                    background = colorGrey900(),
+                    onClick = { viewModel.onProfilePressed() }
                 )
             )
         },
@@ -58,20 +60,23 @@ fun DesignScreen(
             DesignContent(viewModel, paddingValues)
         },
         bottomBar = {
-            Column {
+            Column(
+                modifier = Modifier
+                    .navigationBarsPadding()
+            ) {
                 PrimaryButton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .padding(top = 8.dp),
-                    title = "Continuar",
+                    title = viewModel.buttonText.value,
                     isEnabled = viewModel.buttonEnabled.value,
                     onClick = { viewModel.onButtonPressed() }
                 )
                 SecondaryButton(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .padding(horizontal = 16.dp),
                     title = "Cancelar",
                     isEnabled = viewModel.buttonEnabled.value,
                     onClick = { viewModel.onButtonPressed() }
@@ -92,7 +97,7 @@ fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
     ) {
         Banner.BorderBanner(
             title = "Dinero en cuenta:",
-            subtitle = "$ 254.300,59 ARS\n\n$ 3.000 USD",
+            subtitle = "$ 254.300,59 ARS\n\n$ 3.700 USD",
         ).Draw()
 
         Banner.SuccessBanner(
@@ -132,11 +137,27 @@ fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
         ScrollBanner(
             items = listOf(
                 scrollableBanners,
-                scrollableBanners.copy(style = BannerUIData.BannerStyle.Primary, illustration = Res.drawable.girasoles),
-                scrollableBanners.copy(style = BannerUIData.BannerStyle.Dark, illustration = Res.drawable.compose_multiplatform),
-                scrollableBanners.copy(style = BannerUIData.BannerStyle.Yellow),
-                scrollableBanners.copy(style = BannerUIData.BannerStyle.Pink),
-                scrollableBanners.copy(style = BannerUIData.BannerStyle.Green),
+                scrollableBanners.copy(
+                    action = { viewModel.onScrollBannerPressed("accion girasoles") },
+                    illustration = Res.drawable.girasoles
+                ),
+                scrollableBanners.copy(
+                    action = { viewModel.onScrollBannerPressed("accion 3") },
+                    color = colorError(),
+                    illustration = Res.drawable.compose_multiplatform
+                ),
+                scrollableBanners.copy(
+                    action = { viewModel.onScrollBannerPressed("accion 4") },
+                    color = colorAlert(),
+                ),
+                scrollableBanners.copy(
+                    action = { viewModel.onScrollBannerPressed("accion 5") },
+                    color = colorInfo(),
+                ),
+                scrollableBanners.copy(
+                    action = { viewModel.onScrollBannerPressed("accion 6") },
+                    color = colorSuccess(),
+                ),
             ),
         )
     }

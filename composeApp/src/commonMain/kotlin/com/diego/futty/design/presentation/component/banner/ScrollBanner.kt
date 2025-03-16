@@ -40,13 +40,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.diego.futty.core.presentation.AlertLight
-import com.diego.futty.core.presentation.ErrorLight
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.Grey100
-import com.diego.futty.core.presentation.Grey200
-import com.diego.futty.core.presentation.Grey900
-import com.diego.futty.core.presentation.SuccessLight
+import com.diego.futty.core.presentation.theme.Grey0
+import com.diego.futty.core.presentation.theme.Grey900
+import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey200
+import com.diego.futty.core.presentation.theme.colorGrey900
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowRight
 import kotlinx.coroutines.delay
@@ -59,7 +57,6 @@ import kotlin.math.absoluteValue
 fun ScrollBanner(
     modifier: Modifier = Modifier,
     items: List<BannerUIData>,
-    onClick: (Int) -> Unit = {}
 ) {
     val itemsToShow = items.take(7)
     val state: PagerState = rememberPagerState { itemsToShow.size }
@@ -70,7 +67,7 @@ fun ScrollBanner(
             state = state,
             pageSpacing = 12.dp,
             pageContent = { page: Int ->
-                CreateBanner(items[page], page, state, onClick)
+                CreateBanner(items[page], page, state)
             },
         )
         if (itemsToShow.size > 1) {
@@ -97,13 +94,13 @@ private fun DotIndicators(
     ) {
         repeat(pageCount) { iteration ->
             val color =
-                if (pagerState.currentPage == iteration) Grey900 else Grey200
+                if (pagerState.currentPage == iteration) colorGrey900() else colorGrey200()
             Box(
                 modifier =
-                Modifier
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(color),
+                    Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(color),
             )
         }
     }
@@ -114,21 +111,21 @@ private fun CreateBanner(
     bannerUIData: BannerUIData,
     page: Int,
     state: PagerState,
-    onBannerClicked: (Int) -> Unit,
 ) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(140.dp)
-        .clip(RoundedCornerShape(12.dp))
-        .background(bannerUIData.style.color)
-        .carouselTransition(page, state)
-        .clickable { onBannerClicked(page) }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(bannerUIData.color ?: colorGrey100())
+            .carouselTransition(page, state)
+            .clickable { bannerUIData.action?.invoke() }
     ) {
         val textColor =
             if (bannerUIData.illustration != null) {
                 Grey0
             } else {
-                Grey900
+                colorGrey900()
             }
 
         if (bannerUIData.illustration != null) {
@@ -137,7 +134,7 @@ private fun CreateBanner(
                 painter = painterResource(bannerUIData.illustration),
                 contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(
-                    color = Grey900.copy(alpha = 0.4f),
+                    color = Grey900.copy(alpha = 0.5f),
                     blendMode = BlendMode.Darken
                 ),
                 contentDescription = null
@@ -155,7 +152,7 @@ private fun CreateBanner(
                 maxLines = 1,
             )
             Text(
-                modifier = Modifier.padding(top = 4.dp).weight(1f),
+                modifier = Modifier.padding(top = 4.dp, end = 32.dp).weight(1f),
                 text = bannerUIData.description,
                 style = typography.titleSmall,
                 fontWeight = FontWeight.Normal,
@@ -190,24 +187,9 @@ data class BannerUIData(
     val description: String,
     val labelAction: String,
     val illustration: DrawableResource? = null,
-    val style: BannerStyle = BannerStyle.Light,
-) {
-    sealed class BannerStyle(
-        val color: Color,
-    ) {
-        object Light : BannerStyle(color = Grey100)
-
-        object Dark : BannerStyle(color = Grey200)
-
-        object Yellow : BannerStyle(color = AlertLight)
-
-        object Pink : BannerStyle(color = ErrorLight)
-
-        object Green : BannerStyle(color = SuccessLight)
-
-        object Primary : BannerStyle(color = Grey900)
-    }
-}
+    val color: Color? = null,
+    val action: (() -> Unit)? = null
+)
 
 @Composable
 private fun PageControls(state: PagerState) {

@@ -35,9 +35,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.diego.futty.bookdeprecated.domain.Book
 import com.diego.futty.bookdeprecated.presentation.book_list.components.BookList
 import com.diego.futty.bookdeprecated.presentation.book_list.components.BookSearchBar
-import com.diego.futty.core.presentation.DesertWhite
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.SandYellow
+import com.diego.futty.core.presentation.theme.DesertWhite
+import com.diego.futty.core.presentation.theme.Grey0
+import com.diego.futty.core.presentation.theme.SandYellow
 import com.diego.futty.design.presentation.component.topbar.TopBar
 import com.diego.futty.design.presentation.component.topbar.TopBarActionType
 import compose.icons.TablerIcons

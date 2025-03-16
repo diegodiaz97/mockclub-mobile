@@ -1,4 +1,4 @@
-package com.diego.futty.core.presentation
+package com.diego.futty.core.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -12,7 +12,7 @@ val LightBlue = Color(0xFF9AD9FF)
 
 // Futty
 
-
+// Light theme
 
 val Success = Color(0xFF28A745)
 val SuccessLight = Color(0xFF71D88A)
@@ -41,3 +41,21 @@ val Grey600 = Color(0xFF4D4D4D)
 val Grey700 = Color(0xFF333333)
 val Grey800 = Color(0xFF1A1A1A)
 val Grey900 = Color(0xFF000000)
+
+// Dark theme
+
+val NightSuccess = Color(0xFF20C977)
+val NightSuccessLight = Color(0xFF4DD89A)
+val NightSuccessDark = Color(0xFF177347)
+
+val NightError = Color(0xFFE03B47)
+val NightErrorLight = Color(0xFFF08086)
+val NightErrorDark = Color(0xFF8A1A23)
+
+val NightAlert = Color(0xFFE0A500)
+val NightAlertLight = Color(0xFFFFC94A)
+val NightAlertDark = Color(0xFF8C6D00)
+
+val NightInfo = Color(0xFF1294B8)
+val NightInfoLight = Color(0xFF5BC2DA)
+val NightInfoDark = Color(0xFF0A4E5D)

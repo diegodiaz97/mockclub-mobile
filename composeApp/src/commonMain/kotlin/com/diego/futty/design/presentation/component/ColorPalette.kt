@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.Grey0
+import com.diego.futty.core.presentation.theme.Grey0
+import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey900
 
 @Composable
 fun ColorPalette(title: String, background: Color) {
@@ -23,7 +25,7 @@ fun ColorPalette(title: String, background: Color) {
         Text(
             text = title,
             style = typography.titleLarge,
-            color = Grey0
+            color = colorGrey900()
         )
     }
 }

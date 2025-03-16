@@ -2,7 +2,7 @@ package com.diego.futty.design.preview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.diego.futty.core.presentation.FuttyTheme
+import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.design.presentation.component.banner.Banner
 import futty.composeapp.generated.resources.Res
 import futty.composeapp.generated.resources.book_error_2

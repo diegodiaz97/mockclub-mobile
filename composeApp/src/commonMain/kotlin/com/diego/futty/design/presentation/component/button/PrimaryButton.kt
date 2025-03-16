@@ -12,10 +12,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.Grey200
-import com.diego.futty.core.presentation.Grey600
-import com.diego.futty.core.presentation.Info
+import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey200
+import com.diego.futty.core.presentation.theme.colorGrey600
+import com.diego.futty.core.presentation.theme.colorInfo
 
 @Composable
 fun PrimaryButton(
@@ -29,9 +29,9 @@ fun PrimaryButton(
             .clip(RoundedCornerShape(12.dp))
             .background(
                 if (isEnabled) {
-                    Info
+                    colorInfo()
                 } else {
-                    Grey200
+                    colorGrey200()
                 }
             )
             .clickable { onClick() }
@@ -40,9 +40,9 @@ fun PrimaryButton(
         style = typography.bodyLarge,
         fontWeight = FontWeight.SemiBold,
         color = if (isEnabled) {
-            Grey0
+            colorGrey0()
         } else {
-            Grey600
+            colorGrey600()
         },
         textAlign = TextAlign.Center
     )

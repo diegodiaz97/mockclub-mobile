@@ -23,11 +23,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.AlertLight
-import com.diego.futty.core.presentation.ErrorLight
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.Grey100
-import com.diego.futty.core.presentation.Grey900
+import com.diego.futty.core.presentation.theme.AlertLight
+import com.diego.futty.core.presentation.theme.ErrorLight
+import com.diego.futty.core.presentation.theme.Grey0
+import com.diego.futty.core.presentation.theme.Grey100
+import com.diego.futty.core.presentation.theme.Grey900
 import com.diego.futty.match.domain.model.match.LiveMatch
 import com.diego.futty.design.presentation.component.button.PrimaryButton
 import com.diego.futty.match.presentation.component.league.LeagueCard

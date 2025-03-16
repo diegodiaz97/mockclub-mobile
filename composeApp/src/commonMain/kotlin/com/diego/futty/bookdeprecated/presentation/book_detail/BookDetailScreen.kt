@@ -33,7 +33,7 @@ import com.diego.futty.bookdeprecated.presentation.book_detail.components.Blurre
 import com.diego.futty.bookdeprecated.presentation.book_detail.components.BookChip
 import com.diego.futty.bookdeprecated.presentation.book_detail.components.ChipSize
 import com.diego.futty.bookdeprecated.presentation.book_detail.components.TitledContent
-import com.diego.futty.core.presentation.SandYellow
+import com.diego.futty.core.presentation.theme.SandYellow
 import futty.composeapp.generated.resources.description_unavailable
 import futty.composeapp.generated.resources.languages
 import futty.composeapp.generated.resources.pages

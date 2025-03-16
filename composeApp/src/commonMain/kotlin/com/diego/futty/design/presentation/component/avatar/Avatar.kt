@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.Grey0
-import com.diego.futty.core.presentation.Grey900
+import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey900
 
 sealed interface Avatar {
     @Composable
@@ -37,7 +37,7 @@ sealed interface Avatar {
             modifier = Modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
-                .background(Grey0)
+                .background(colorGrey0())
                 .size(avatarSize.size),
             contentScale = ContentScale.Crop,
             painter = image,
@@ -55,7 +55,7 @@ sealed interface Avatar {
             modifier = Modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
-                .background(Grey0)
+                .background(colorGrey0())
                 .size(avatarSize.size)
                 .padding(avatarSize.padding),
             painter = image,
@@ -65,8 +65,8 @@ sealed interface Avatar {
 
     class IconAvatar(
         val icon: ImageVector,
-        val tint: Color = Grey900,
-        val background: Color = Grey0,
+        val tint: Color? = null,
+        val background: Color? = null,
         val avatarSize: AvatarSize = AvatarSize.Medium,
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
@@ -75,19 +75,19 @@ sealed interface Avatar {
             modifier = Modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
-                .background(background)
+                .background(background ?: colorGrey0())
                 .size(avatarSize.size)
                 .padding(avatarSize.padding),
             imageVector = icon,
-            tint = tint,
+            tint = tint ?: colorGrey900(),
             contentDescription = null
         )
     }
 
     class InitialsAvatar(
         val initials: String,
-        val tint: Color = Grey900,
-        val background: Color = Grey0,
+        val tint: Color? = null,
+        val background: Color? = null,
         val avatarSize: AvatarSize = AvatarSize.Medium,
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
@@ -96,7 +96,7 @@ sealed interface Avatar {
             modifier = Modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
-                .background(background)
+                .background(background ?: colorGrey0())
                 .size(avatarSize.size)
                 .padding(top = avatarSize.padding),
             text = initials,
@@ -107,7 +107,7 @@ sealed interface Avatar {
             },
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
-            color = tint,
+            color = tint ?: colorGrey900(),
         )
     }
 }

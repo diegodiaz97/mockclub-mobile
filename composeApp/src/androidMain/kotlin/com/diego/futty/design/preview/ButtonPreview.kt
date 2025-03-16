@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.diego.futty.core.presentation.FuttyTheme
+import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.design.presentation.component.button.PrimaryButton
 import com.diego.futty.design.presentation.component.button.SecondaryButton
 

@@ -41,10 +41,10 @@ import futty.composeapp.generated.resources.book_error_2
 import futty.composeapp.generated.resources.mark_as_favorite
 import futty.composeapp.generated.resources.remove_from_favorites
 import coil3.compose.rememberAsyncImagePainter
-import com.diego.futty.core.presentation.DarkBlue
-import com.diego.futty.core.presentation.DesertWhite
+import com.diego.futty.core.presentation.theme.DarkBlue
+import com.diego.futty.core.presentation.theme.DesertWhite
 import com.diego.futty.core.presentation.PulseAnimation
-import com.diego.futty.core.presentation.SandYellow
+import com.diego.futty.core.presentation.theme.SandYellow
 import futty.composeapp.generated.resources.book_cover
 import futty.composeapp.generated.resources.go_back
 import org.jetbrains.compose.resources.painterResource

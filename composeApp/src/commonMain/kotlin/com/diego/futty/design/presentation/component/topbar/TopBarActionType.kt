@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.Grey100
-import com.diego.futty.core.presentation.Grey900
+import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.design.presentation.component.avatar.Avatar
 
 sealed class TopBarActionType {
@@ -31,9 +31,9 @@ sealed class TopBarActionType {
                 modifier = Modifier
                     .clip(CircleShape)
                     .clickable { onClick() }
-                    .background(Grey100)
+                    .background(colorGrey100())
                     .padding(horizontal = 12.dp, vertical = 8.dp),
-                color = Grey900,
+                color = colorGrey900(),
                 style = typography.labelLarge,
                 text = text
             )
@@ -54,8 +54,8 @@ sealed class TopBarActionType {
         private val image: Painter? = null,
         private val icon: ImageVector? = null,
         private val initials: String? = null,
-        private val tint: Color = Grey900,
-        private val background: Color = Grey100,
+        private val tint: Color? = null,
+        private val background: Color? = null,
         private val onClick: () -> Unit
     ) : TopBarActionType() {
         @Composable
@@ -71,8 +71,8 @@ sealed class TopBarActionType {
                 initials != null -> {
                     Avatar.InitialsAvatar(
                         initials = initials,
-                        tint = tint,
-                        background = background,
+                        tint = tint ?: colorGrey900(),
+                        background = background ?: colorGrey100(),
                         onClick = onClick
                     ).Draw()
                 }
@@ -80,8 +80,8 @@ sealed class TopBarActionType {
                 icon != null -> {
                     Avatar.IconAvatar(
                         icon = icon,
-                        tint = tint,
-                        background = background,
+                        tint = tint ?: colorGrey900(),
+                        background = background ?: colorGrey100(),
                         onClick = onClick
                     ).Draw()
                 }

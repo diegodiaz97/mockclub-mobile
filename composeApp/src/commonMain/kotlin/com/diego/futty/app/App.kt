@@ -20,18 +20,23 @@ import com.diego.futty.bookdeprecated.presentation.book_detail.BookDetailScreenR
 import com.diego.futty.bookdeprecated.presentation.book_detail.BookDetailViewModel
 import com.diego.futty.bookdeprecated.presentation.book_list.BookListScreenRoot
 import com.diego.futty.bookdeprecated.presentation.book_list.BookListViewModel
-import com.diego.futty.core.presentation.FuttyTheme
+import com.diego.futty.core.presentation.theme.FuttyTheme
+import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.design.presentation.screen.DesignScreen
 import com.diego.futty.design.presentation.viewmodel.DesignViewModel
+import com.diego.futty.design.utils.SetStatusBarColor
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
-
 
 @Composable
 @Preview
 fun App() {
-    FuttyTheme {
+    val designViewModel = koinViewModel<DesignViewModel>()
+
+    FuttyTheme(designViewModel.palette.value) {
+        SetStatusBarColor(colorGrey0())
         val navController = rememberNavController()
+
         NavHost(
             navController = navController,
             startDestination = Route.BookGraph
@@ -43,13 +48,11 @@ fun App() {
                     exitTransition = { slideOutHorizontally() },
                     popEnterTransition = { slideInHorizontally() }
                 ) {
-                    val viewModel = koinViewModel<DesignViewModel>()
-
                     LaunchedEffect(true) {
-                        viewModel.setup()
+                        designViewModel.setup()
                     }
                     DesignScreen(
-                        viewModel = viewModel,
+                        viewModel = designViewModel,
                         onBack = { navController.navigate(Route.BookList) }
                     )
                 }
@@ -58,7 +61,7 @@ fun App() {
                     exitTransition = { slideOutHorizontally() },
                     popEnterTransition = { slideInHorizontally() }
                 ) {
-                    val viewModel = koinViewModel<BookListViewModel>()
+                    val bookViewModel = koinViewModel<BookListViewModel>()
                     val selectedBookViewModel =
                         it.sharedKoinViewModel<SelectedBookViewModel>(navController)
 
@@ -67,7 +70,7 @@ fun App() {
                     }
 
                     BookListScreenRoot(
-                        viewModel = viewModel,
+                        viewModel = bookViewModel,
                         onBookClick = { book ->
                             selectedBookViewModel.onSelectBook(book)
                             navController.navigate(
@@ -77,6 +80,7 @@ fun App() {
                         onBack = { navController.navigate(Route.Design) }
                     )
                 }
+
                 composable<Route.BookDetail>(
                     enterTransition = {
                         slideInHorizontally { initialOffset ->
