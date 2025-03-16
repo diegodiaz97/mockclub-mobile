@@ -115,5 +115,5 @@ sealed interface Avatar {
 enum class AvatarSize(val size: Dp, val padding: Dp) {
     Small(size = 28.dp, padding = 4.dp),
     Medium(size = 36.dp, padding = 8.dp),
-    Big(size = 50.dp, padding = 8.dp)
+    Big(size = 50.dp, padding = 10.dp)
 }

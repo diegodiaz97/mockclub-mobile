@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.AlertLight
-import com.diego.futty.core.presentation.theme.SandYellow
 
 @Composable
 fun PulseAnimation(modifier: Modifier = Modifier) {

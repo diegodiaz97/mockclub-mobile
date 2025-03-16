@@ -5,6 +5,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -13,7 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.diego.futty.core.presentation.theme.FuttyTheme
-import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.design.presentation.screen.DesignScreen
 import com.diego.futty.design.presentation.viewmodel.DesignViewModel
 import com.diego.futty.design.utils.SetStatusBarColor
@@ -26,7 +26,7 @@ fun App() {
     val designViewModel = koinViewModel<DesignViewModel>()
 
     FuttyTheme(designViewModel.palette.value) {
-        SetStatusBarColor(colorGrey0())
+        SetStatusBarColor(Color.Transparent)
         val navController = rememberNavController()
 
         NavHost(
@@ -43,10 +43,7 @@ fun App() {
                     LaunchedEffect(true) {
                         designViewModel.setup()
                     }
-                    DesignScreen(
-                        viewModel = designViewModel,
-                        onBack = { navController.navigate(Route.Match) }
-                    )
+                    DesignScreen(viewModel = designViewModel)
                 }
             }
         }

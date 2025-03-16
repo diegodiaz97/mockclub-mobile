@@ -14,22 +14,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.theme.colorAlert
-import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey900
-import com.diego.futty.core.presentation.theme.colorInfo
-import com.diego.futty.core.presentation.theme.colorSuccess
 import com.diego.futty.design.presentation.component.banner.Banner
 import com.diego.futty.design.presentation.component.banner.ScrollBanner
+import com.diego.futty.design.presentation.component.bottomsheet.BottomSheet
 import com.diego.futty.design.presentation.component.button.PrimaryButton
 import com.diego.futty.design.presentation.component.button.SecondaryButton
+import com.diego.futty.design.presentation.component.flowrow.FlowList
 import com.diego.futty.design.presentation.component.topbar.TopBar
 import com.diego.futty.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.design.presentation.viewmodel.DesignViewModel
 import futty.composeapp.generated.resources.Res
 import futty.composeapp.generated.resources.book_error_2
-import futty.composeapp.generated.resources.compose_multiplatform
 import futty.composeapp.generated.resources.girasoles
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -37,7 +34,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun DesignScreen(
     viewModel: DesignViewModel = koinViewModel(),
-    onBack: () -> Unit,
 ) {
     Scaffold(
         containerColor = colorGrey0(),
@@ -141,7 +137,7 @@ fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
                     action = { viewModel.onScrollBannerPressed("accion girasoles") },
                     illustration = Res.drawable.girasoles
                 ),
-                scrollableBanners.copy(
+                /* scrollableBanners.copy(
                     action = { viewModel.onScrollBannerPressed("accion 3") },
                     color = colorError(),
                     illustration = Res.drawable.compose_multiplatform
@@ -157,7 +153,7 @@ fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
                 scrollableBanners.copy(
                     action = { viewModel.onScrollBannerPressed("accion 6") },
                     color = colorSuccess(),
-                ),
+                ), */
             ),
         )
     }
