@@ -13,6 +13,7 @@ androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-plugin = "1.7.0"
 firebase = "2.1.0"
+flexibleBottomsheetMaterial3 = "0.1.5"
 google_services_version = "4.4.2"
 junit = "4.13.2"
 kotlin = "2.0.21"
@@ -35,6 +36,7 @@ com-google-firebase-firebase-storage = { module = "com.google.firebase:firebase-
 firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase" }
 firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase" }
 firebase-storage = { module = "dev.gitlive:firebase-storage", version.ref = "firebase" }
+flexible-bottomsheet-material3 = { module = "com.github.skydoves:flexible-bottomsheet-material3", version.ref = "flexibleBottomsheetMaterial3" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

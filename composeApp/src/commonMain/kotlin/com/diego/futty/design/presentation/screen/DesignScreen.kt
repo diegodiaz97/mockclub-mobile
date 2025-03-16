@@ -80,6 +80,14 @@ fun DesignScreen(
             }
         }
     )
+    BottomSheetContent(viewModel)
+}
+
+@Composable
+fun BottomSheetContent(viewModel: DesignViewModel) {
+    if (viewModel.bottomsheetDismissed.value.not()) {
+        BottomSheet { viewModel.onBottomSheetDismissed() }
+    }
 }
 
 @Composable
