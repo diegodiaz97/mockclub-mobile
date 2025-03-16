@@ -99,6 +99,10 @@ fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        FlowList(viewModel.chipItems.value, viewModel.selectedChip.value) { index ->
+            viewModel.onChipSelected(index)
+        }
+
         Banner.BorderBanner(
             title = "Dinero en cuenta:",
             subtitle = "$ 254.300,59 ARS\n\n$ 3.700 USD",
