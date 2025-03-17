@@ -9,6 +9,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.diego.futty.app.App
+import com.diego.futty.authentication.login.presentation.screen.LoginScreen
+import com.diego.futty.authentication.login.presentation.viewmodel.LoginViewModel
 import com.diego.futty.authentication.signup.presentation.screen.SignupScreen
 import com.diego.futty.authentication.signup.presentation.viewmodel.SignupViewModel
 import com.diego.futty.core.presentation.theme.FuttyTheme
@@ -21,7 +24,7 @@ fun AuthenticationView() {
     val authenticationViewModel = koinViewModel<AuthenticationViewModel>()
     //val welcomeViewModel = koinViewModel<AppViewModel>()
     val signupViewModel = koinViewModel<SignupViewModel>()
-    //val loginViewModel = koinViewModel<MatchViewModel>()
+    val loginViewModel = koinViewModel<LoginViewModel>()
     //val recoveryViewModel = koinViewModel<MatchViewModel>()
     val navController = rememberNavController()
 
@@ -31,7 +34,7 @@ fun AuthenticationView() {
             authenticationViewModel.setup()
             //designViewModel.setup()
             signupViewModel.setup()
-            //loginViewModel.setup()
+            loginViewModel.setup(navController)
             //recoveryViewModel.setup()
         }
 
@@ -77,7 +80,7 @@ fun AuthenticationView() {
                         LaunchedEffect(true) {
                             authenticationViewModel.updateRoute(AuthenticationRoute.Login)
                         }
-                        // LoginScreen(viewModel = loginViewModel)
+                        LoginScreen(viewModel = loginViewModel)
                     }
 
                     composable<AuthenticationRoute.Recovery>(
@@ -90,6 +93,18 @@ fun AuthenticationView() {
                             authenticationViewModel.updateRoute(AuthenticationRoute.Recovery)
                         }
                         // WelcomeScreen(viewModel = welcomeViewModel)
+                    }
+
+                    composable<AuthenticationRoute.Home>(
+                        enterTransition = Transitions.LeftScreenEnter,
+                        exitTransition = Transitions.LeftScreenExit,
+                        popEnterTransition = Transitions.LeftScreenPopEnter,
+                        popExitTransition = Transitions.LeftScreenPopExit
+                    ) {
+                        LaunchedEffect(true) {
+                            authenticationViewModel.updateRoute(AuthenticationRoute.Home)
+                        }
+                        App()
                     }
                 }
             }

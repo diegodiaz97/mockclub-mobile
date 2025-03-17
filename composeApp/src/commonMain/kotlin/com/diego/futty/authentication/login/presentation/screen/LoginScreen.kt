@@ -1,4 +1,4 @@
-package com.diego.futty.authentication.signup.presentation.screen
+package com.diego.futty.authentication.login.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -16,7 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.diego.futty.authentication.signup.presentation.viewmodel.SignupViewModel
+import com.diego.futty.authentication.login.presentation.viewmodel.LoginViewModel
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.design.presentation.component.button.PrimaryButton
 import com.diego.futty.design.presentation.component.button.SecondaryButton
@@ -26,7 +26,7 @@ import com.diego.futty.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.design.utils.HideKeyboard
 
 @Composable
-fun SignupScreen(viewModel: SignupViewModel) {
+fun LoginScreen(viewModel: LoginViewModel) {
     Scaffold(
         containerColor = colorGrey0(),
         modifier = Modifier.fillMaxSize().clickable { viewModel.hideKeyboard() },
@@ -35,12 +35,12 @@ fun SignupScreen(viewModel: SignupViewModel) {
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp),
-                title = "Crear cuenta",
+                title = "Bienvenido!",
                 topBarActionType = TopBarActionType.None
             )
         },
         content = { paddingValues ->
-            SignupContent(viewModel, paddingValues)
+            LoginContent(viewModel, paddingValues)
         },
         bottomBar = {
             Column(modifier = Modifier.navigationBarsPadding()) {
@@ -49,17 +49,17 @@ fun SignupScreen(viewModel: SignupViewModel) {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .padding(top = 8.dp),
-                    title = "Crear cuenta",
-                    isEnabled = viewModel.canCreateAccount.value,
-                    onClick = { viewModel.onSignupClicked() }
+                    title = "Iniciar sesión",
+                    isEnabled = viewModel.canLogin.value,
+                    onClick = { viewModel.onLoginClicked() }
                 )
                 SecondaryButton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    title = "Ya tengo cuenta",
+                    title = "Registrarme",
                     isEnabled = true,
-                    onClick = { /*viewModel.onHaveAccountPressed()*/ }
+                    onClick = { viewModel.onSignupClicked() }
                 )
             }
         }
@@ -67,7 +67,7 @@ fun SignupScreen(viewModel: SignupViewModel) {
 }
 
 @Composable
-private fun SignupContent(viewModel: SignupViewModel, paddingValues: PaddingValues) {
+private fun LoginContent(viewModel: LoginViewModel, paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,12 +87,6 @@ private fun SignupContent(viewModel: SignupViewModel, paddingValues: PaddingValu
             viewModel.password.value,
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updatePassword(it) }
-        ).Draw()
-
-        TextInput.PasswordInput(
-            viewModel.confirmPassword.value,
-            onFocusChanged = { viewModel.hideKeyboard() },
-            onTextChangeAction = { viewModel.updateConfirmPassword(it) }
         ).Draw()
 
         AnimatedVisibility(viewModel.banner.value != null) {

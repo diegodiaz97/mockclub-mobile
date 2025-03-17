@@ -91,7 +91,7 @@ fun MatchScreen(
 }
 
 @Composable
-fun MatchContent(viewModel: MatchViewModel, paddingValues: PaddingValues) {
+private fun MatchContent(viewModel: MatchViewModel, paddingValues: PaddingValues) {
     when (val liveScores = viewModel.liveScores.value) {
         null -> {
             // LOADER
@@ -159,7 +159,7 @@ fun Section(color: Color, viewModel: MatchViewModel) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun MatchV2Content(paddingValues: PaddingValues) {
+private fun MatchV2Content(paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .padding(top = paddingValues.calculateTopPadding())

@@ -1,10 +1,12 @@
-package com.diego.futty.authentication.signup.presentation.viewmodel
+package com.diego.futty.authentication.login.presentation.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.diego.futty.authentication.signup.domain.repository.SignupRepository
+import androidx.navigation.NavHostController
+import com.diego.futty.authentication.login.domain.repository.LoginRepository
+import com.diego.futty.authentication.view.AuthenticationRoute
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.design.presentation.component.banner.Banner
@@ -12,30 +14,29 @@ import com.diego.futty.design.presentation.component.banner.BannerStatus
 import com.diego.futty.design.utils.RegexUtils
 import kotlinx.coroutines.launch
 
-class SignupViewModel(
-    private val signupRepository: SignupRepository
-) : SignupViewContract, ViewModel() {
-
+class LoginViewModel(
+    private val loginRepository: LoginRepository
+) : LoginViewContract, ViewModel() {
     private val _email = mutableStateOf("")
     override val email: State<String> = _email
 
     private val _password = mutableStateOf("")
     override val password: State<String> = _password
 
-    private val _confirmPassword = mutableStateOf("")
-    override val confirmPassword: State<String> = _confirmPassword
 
     private val _banner = mutableStateOf<Banner?>(null)
     override val banner: State<Banner?> = _banner
 
-    private val _canCreateAccount = mutableStateOf(false)
-    override val canCreateAccount: State<Boolean> = _canCreateAccount
+    private val _canLogin = mutableStateOf(false)
+    override val canLogin: State<Boolean> = _canLogin
 
     private val _hideKeyboard = mutableStateOf(true)
     override val hideKeyboard: State<Boolean> = _hideKeyboard
 
-    fun setup() {
-        // setup
+    private var _navigate: (AuthenticationRoute) -> Unit = {}
+
+    fun setup(navController: NavHostController) {
+        _navigate = { navController.navigate(it) }
     }
 
     override fun hideKeyboard() {
@@ -52,12 +53,7 @@ class SignupViewModel(
         validateButtonEnabled()
     }
 
-    override fun updateConfirmPassword(password: String) {
-        _confirmPassword.value = password
-        validateButtonEnabled()
-    }
-
-    override fun onSignupClicked() {
+    override fun onLoginClicked() {
         if (isValidEmail().not()) {
             _banner.value = Banner.StatusBanner(
                 title = "Email incorrecto",
@@ -75,23 +71,44 @@ class SignupViewModel(
             return
         }
         _banner.value = null
-        signUpWithMail()
+        loginWithMail()
     }
 
-    private fun signUpWithMail() {
+    override fun onSignupClicked() {
+        _navigate(AuthenticationRoute.Signup)
+    }
+
+    override fun onRecoveryClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLoginWithGoogleClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLoginWithAppleClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLoginWithBiometricsClicked() {
+        TODO("Not yet implemented")
+    }
+
+    private fun loginWithMail() {
         viewModelScope.launch {
-            signupRepository.signUpWithEmail(_email.value, _password.value)
+            loginRepository.loginWithEmail(_email.value, _password.value)
                 .onSuccess {
                     _banner.value = Banner.StatusBanner(
                         title = "¡Listo!",
-                        subtitle = it,
+                        subtitle = "Inicio de sesión exitosos",
                         status = BannerStatus.Success
                     )
+                    _navigate(AuthenticationRoute.Home)
                 }
                 .onError {
                     _banner.value = Banner.StatusBanner(
                         title = "Algo salió mal",
-                        subtitle = "No pudimos crear el usuario. (${it.name})",
+                        subtitle = "No se pudo iniciar sesión.",
                         status = BannerStatus.Error
                     )
                 }
@@ -100,12 +117,10 @@ class SignupViewModel(
 
     private fun validateButtonEnabled() {
         _banner.value = null
-        _canCreateAccount.value =
-            _email.value.isNotEmpty() && _password.value.isNotEmpty() && _confirmPassword.value.isNotEmpty()
+        _canLogin.value = _email.value.isNotEmpty() && _password.value.isNotEmpty()
     }
 
-    private fun isValidPassword() =
-        RegexUtils.passwordRegex.matches(_password.value) && _password.value == _confirmPassword.value
+    private fun isValidPassword() = RegexUtils.passwordRegex.matches(_password.value)
 
     private fun isValidEmail() = RegexUtils.emailRegex.matches(_email.value)
 }

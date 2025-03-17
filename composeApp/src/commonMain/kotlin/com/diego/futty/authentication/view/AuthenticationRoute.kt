@@ -17,4 +17,7 @@ sealed interface AuthenticationRoute {
 
     @Serializable
     data object Recovery: AuthenticationRoute
+
+    @Serializable
+    data object Home: AuthenticationRoute
 }

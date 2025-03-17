@@ -57,7 +57,7 @@ fun DesignScreen(
 }
 
 @Composable
-fun BottomSheetContent(viewModel: DesignViewModel) {
+private fun BottomSheetContent(viewModel: DesignViewModel) {
     if (viewModel.bottomsheetDismissed.value.not()) {
         BottomSheet(
             onDismiss = { viewModel.onBottomSheetDismissed() },
@@ -67,7 +67,7 @@ fun BottomSheetContent(viewModel: DesignViewModel) {
 }
 
 @Composable
-fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
+private fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .padding(top = paddingValues.calculateTopPadding())
