@@ -34,7 +34,11 @@ fun PrimaryButton(
                     colorGrey200()
                 }
             )
-            .clickable { onClick() }
+            .clickable {
+                if (isEnabled) {
+                    onClick()
+                }
+            }
             .padding(vertical = 16.dp),
         text = title,
         style = typography.bodyLarge,

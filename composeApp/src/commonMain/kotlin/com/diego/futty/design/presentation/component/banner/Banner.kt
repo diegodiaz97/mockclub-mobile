@@ -89,73 +89,17 @@ sealed interface Banner {
         }
     }
 
-    class ErrorBanner(
+    class StatusBanner(
         val title: String,
         val subtitle: String,
+        val status: BannerStatus,
     ) : Banner {
         @Composable
         override fun Draw() {
             DrawInformation(
                 title,
                 subtitle,
-                colorErrorLight()
-            )
-        }
-    }
-
-    class SuccessBanner(
-        val title: String,
-        val subtitle: String,
-    ) : Banner {
-        @Composable
-        override fun Draw() {
-            DrawInformation(
-                title,
-                subtitle,
-                colorSuccessLight()
-            )
-        }
-    }
-
-    class AlertBanner(
-        val title: String,
-        val subtitle: String,
-    ) : Banner {
-        @Composable
-        override fun Draw() {
-            DrawInformation(
-                title,
-                subtitle,
-                colorAlertLight()
-            )
-        }
-    }
-
-    class InfoBanner(
-        val title: String,
-        val subtitle: String,
-    ) : Banner {
-        @Composable
-        override fun Draw() {
-            DrawInformation(
-                title,
-                subtitle,
-                colorInfoLight()
-            )
-        }
-    }
-
-    class BorderBanner(
-        val title: String,
-        val subtitle: String,
-    ) : Banner {
-        @Composable
-        override fun Draw() {
-            DrawInformation(
-                title,
-                subtitle,
-                colorGrey0(),
-                true,
+                status
             )
         }
     }
@@ -165,18 +109,25 @@ sealed interface Banner {
 private fun DrawInformation(
     title: String,
     subtitle: String,
-    color: Color,
-    border: Boolean = false,
+    status: BannerStatus,
 ) = Column(
     modifier = Modifier
         .fillMaxWidth()
         .clip(RoundedCornerShape(12.dp))
         .border(
             width = 1.dp,
-            color = if (border) colorGrey200() else Color.Transparent,
+            color = if (status == BannerStatus.Border) colorGrey200() else Color.Transparent,
             shape = RoundedCornerShape(12.dp)
         )
-        .background(color)
+        .background(
+            when (status) {
+                BannerStatus.Success -> colorSuccessLight()
+                BannerStatus.Error -> colorErrorLight()
+                BannerStatus.Alert -> colorAlertLight()
+                BannerStatus.Info -> colorInfoLight()
+                BannerStatus.Border -> colorGrey0()
+            }
+        )
         .padding(horizontal = 16.dp, vertical = 12.dp),
     verticalArrangement = Arrangement.spacedBy(4.dp),
 ) {
@@ -184,11 +135,19 @@ private fun DrawInformation(
         text = title,
         style = typography.bodySmall,
         fontWeight = FontWeight.SemiBold,
-        color = if (border) colorGrey900() else Grey900,
+        color = if (status == BannerStatus.Border) colorGrey900() else Grey900,
     )
     Text(
         text = subtitle,
         style = typography.bodySmall,
-        color = if (border) colorGrey900() else Grey900,
+        color = if (status == BannerStatus.Border) colorGrey900() else Grey900,
     )
+}
+
+enum class BannerStatus {
+    Success,
+    Error,
+    Alert,
+    Info,
+    Border
 }

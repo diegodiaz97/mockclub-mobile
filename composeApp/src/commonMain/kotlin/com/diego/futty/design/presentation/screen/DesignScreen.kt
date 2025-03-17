@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.design.presentation.component.banner.Banner
+import com.diego.futty.design.presentation.component.banner.BannerStatus
 import com.diego.futty.design.presentation.component.banner.ScrollBanner
 import com.diego.futty.design.presentation.component.bottomsheet.BottomSheet
 import com.diego.futty.design.presentation.component.flowrow.FlowList
@@ -78,29 +79,34 @@ fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
             viewModel.onChipSelected(index)
         }
 
-        Banner.BorderBanner(
+        Banner.StatusBanner(
             title = "Dinero en cuenta:",
             subtitle = "$ 254.300,59 ARS\n\n$ 3.700 USD",
+            status = BannerStatus.Border
         ).Draw()
 
-        Banner.SuccessBanner(
+        Banner.StatusBanner(
             title = "¡Listo!",
             subtitle = "Éste banner te avisará de situaciones positivas.",
+            status = BannerStatus.Success
         ).Draw()
 
-        Banner.ErrorBanner(
+        Banner.StatusBanner(
             title = "Algo salió mal",
             subtitle = "Éste banner te avisará cuando algo salió mal.",
+            status = BannerStatus.Error
         ).Draw()
 
-        Banner.AlertBanner(
+        Banner.StatusBanner(
             title = "¡Cuidado!",
             subtitle = "Éste banner te avisará cuando algo pueda salir mal.",
+            status = BannerStatus.Alert
         ).Draw()
 
-        Banner.InfoBanner(
+        Banner.StatusBanner(
             title = "¿Sabías?",
             subtitle = "Éste banner te puede mostrar información.",
+            status = BannerStatus.Info
         ).Draw()
 
         Banner.ClickableBanner(

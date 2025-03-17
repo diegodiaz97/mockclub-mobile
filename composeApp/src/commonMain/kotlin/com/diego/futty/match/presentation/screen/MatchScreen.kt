@@ -41,6 +41,7 @@ import com.diego.futty.core.presentation.theme.colorSuccessLight
 import com.diego.futty.design.presentation.component.avatar.Avatar
 import com.diego.futty.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.design.presentation.component.banner.Banner
+import com.diego.futty.design.presentation.component.banner.BannerStatus
 import com.diego.futty.design.presentation.component.banner.BannerUIData
 import com.diego.futty.design.presentation.component.banner.ScrollBanner
 import com.diego.futty.design.presentation.component.topbar.TopBar
@@ -182,14 +183,16 @@ fun MatchV2Content(paddingValues: PaddingValues) {
             }
         }
 
-        Banner.ErrorBanner(
+        Banner.StatusBanner(
             title = "¿Sabías?",
             subtitle = "Éste banner te puede mostrar información.",
+            status = BannerStatus.Error
         ).Draw()
 
-        Banner.BorderBanner(
+        Banner.StatusBanner(
             title = "Dinero en cuenta:",
             subtitle = "$ 254.300,59 ARS\n\n$ 3.700 USD",
+            status = BannerStatus.Border
         ).Draw()
 
         ScrollBanner(

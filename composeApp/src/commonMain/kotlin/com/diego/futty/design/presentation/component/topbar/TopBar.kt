@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
@@ -49,6 +50,7 @@ fun TopBar(
             modifier = Modifier.weight(1f),
             text = title,
             style = typography.headlineSmall,
+            fontWeight = FontWeight.Medium,
             color = colorGrey900()
         )
 

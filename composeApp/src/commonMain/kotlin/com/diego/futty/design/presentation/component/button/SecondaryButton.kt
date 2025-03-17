@@ -31,7 +31,11 @@ fun SecondaryButton(
                 color = Color.Transparent,
                 shape = RoundedCornerShape(12.dp)
             )
-            .clickable { onClick() }
+            .clickable {
+                if (isEnabled) {
+                    onClick()
+                }
+            }
             .padding(vertical = 16.dp),
         text = title,
         style = typography.bodyLarge,

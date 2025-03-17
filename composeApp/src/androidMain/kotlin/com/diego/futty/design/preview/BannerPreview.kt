@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.design.presentation.component.banner.Banner
+import com.diego.futty.design.presentation.component.banner.BannerStatus
 import futty.composeapp.generated.resources.Res
 import futty.composeapp.generated.resources.book_error_2
 import org.jetbrains.compose.resources.painterResource
@@ -38,9 +39,10 @@ private fun ActionBannerWithImagePreview() {
 @Composable
 private fun BorderBannerPreview() {
     FuttyTheme {
-        Banner.BorderBanner(
+        Banner.StatusBanner(
             title = "Dinero en cuenta:",
             subtitle = "$ 254.300,59",
+            status = BannerStatus.Border
         ).Draw()
     }
 }
@@ -49,9 +51,10 @@ private fun BorderBannerPreview() {
 @Composable
 private fun SuccessBannerPreview() {
     FuttyTheme {
-        Banner.SuccessBanner(
+        Banner.StatusBanner(
             title = "¡Listo!",
             subtitle = "Éste banner te avisará de situaciones positivas.",
+            status = BannerStatus.Success
         ).Draw()
     }
 }
@@ -60,9 +63,10 @@ private fun SuccessBannerPreview() {
 @Composable
 private fun ErrorBannerPreview() {
     FuttyTheme {
-        Banner.ErrorBanner(
+        Banner.StatusBanner(
             title = "Algo salió mal",
             subtitle = "Éste banner te avisará cuando algo salió mal.",
+            status = BannerStatus.Error
         ).Draw()
     }
 }
@@ -71,9 +75,10 @@ private fun ErrorBannerPreview() {
 @Composable
 private fun AlertBannerPreview() {
     FuttyTheme {
-        Banner.AlertBanner(
+        Banner.StatusBanner(
             title = "¡Cuidado!",
             subtitle = "Éste banner te avisará cuando algo pueda salir mal.",
+            status = BannerStatus.Alert
         ).Draw()
     }
 }
@@ -82,9 +87,10 @@ private fun AlertBannerPreview() {
 @Composable
 private fun InfoBannerPreview() {
     FuttyTheme {
-        Banner.InfoBanner(
+        Banner.StatusBanner(
             title = "¿Sabías?",
             subtitle = "Éste banner te puede mostrar información.",
+            status = BannerStatus.Info
         ).Draw()
     }
 }
