@@ -14,14 +14,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.Grey0
-import com.diego.futty.core.presentation.theme.colorAlertLight
-import com.diego.futty.core.presentation.theme.colorErrorLight
+import com.diego.futty.core.presentation.theme.colorAlert
+import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
-import com.diego.futty.core.presentation.theme.colorInfoLight
-import com.diego.futty.core.presentation.theme.colorSuccessLight
+import com.diego.futty.core.presentation.theme.colorInfo
+import com.diego.futty.core.presentation.theme.colorSuccess
 import com.diego.futty.design.presentation.component.avatar.Avatar
 import com.diego.futty.design.presentation.component.avatar.AvatarSize
+import com.diego.futty.design.presentation.component.button.PrimaryButton
+import com.diego.futty.design.presentation.component.button.SecondaryButton
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
@@ -29,7 +31,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun BottomSheet(onDismiss: () -> Unit) {
+fun BottomSheet(onDismiss: () -> Unit, onAction: () -> Unit) {
     FlexibleBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = rememberFlexibleBottomSheetState(
@@ -69,6 +71,17 @@ fun BottomSheet(onDismiss: () -> Unit) {
                     ).Draw()
                 }
             }
+
+            PrimaryButton(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Aceptar",
+                onClick = { onAction() }
+            )
+            SecondaryButton(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Cancelar",
+                onClick = { onAction() }
+            )
         }
     }
 }
@@ -77,8 +90,8 @@ fun BottomSheet(onDismiss: () -> Unit) {
 private val initials = listOf("CM", "DC", "JC", "PD", "AT", "CF", "DD", "CH", "AP")
 
 @Composable
-fun getRandomColor(): Color {
-    val colors = listOf(colorSuccessLight(), colorErrorLight(), colorAlertLight(), colorInfoLight())
+private fun getRandomColor(): Color {
+    val colors = listOf(colorSuccess(), colorError(), colorAlert(), colorInfo())
     val index = Random.nextInt(4)
 
     return colors[index]

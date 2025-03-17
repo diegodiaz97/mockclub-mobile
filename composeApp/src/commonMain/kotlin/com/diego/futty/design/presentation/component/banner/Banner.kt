@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.diego.futty.core.presentation.theme.Grey900
 import com.diego.futty.core.presentation.theme.colorAlertLight
 import com.diego.futty.core.presentation.theme.colorErrorLight
 import com.diego.futty.core.presentation.theme.colorGrey0
@@ -183,11 +184,11 @@ private fun DrawInformation(
         text = title,
         style = typography.bodySmall,
         fontWeight = FontWeight.SemiBold,
-        color = colorGrey900(),
+        color = if (border) colorGrey900() else Grey900,
     )
     Text(
         text = subtitle,
         style = typography.bodySmall,
-        color = colorGrey800(),
+        color = if (border) colorGrey900() else Grey900,
     )
 }
