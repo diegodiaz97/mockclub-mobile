@@ -2,14 +2,14 @@ package com.diego.futty.app
 
 import kotlinx.serialization.Serializable
 
-sealed interface Route {
+sealed interface AppRoute {
 
     @Serializable
-    data object Graph: Route
+    data object Graph: AppRoute
 
     @Serializable
-    data object Match: Route
+    data object Match: AppRoute
 
     @Serializable
-    data object Design: Route
+    data object Design: AppRoute
 }

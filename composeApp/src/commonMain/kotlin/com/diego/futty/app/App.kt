@@ -57,31 +57,31 @@ fun App() {
             NavHost(
                 modifier = Modifier.weight(1f),
                 navController = navController,
-                startDestination = Route.Graph
+                startDestination = AppRoute.Graph
             ) {
-                navigation<Route.Graph>(
-                    startDestination = Route.Design
+                navigation<AppRoute.Graph>(
+                    startDestination = appViewModel.currentRoute.value
                 ) {
-                    composable<Route.Design>(
+                    composable<AppRoute.Design>(
                         enterTransition = Transitions.LeftScreenEnter,
                         exitTransition = Transitions.LeftScreenExit,
                         popEnterTransition = Transitions.LeftScreenPopEnter,
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
-                            appViewModel.updateRoute(Route.Design)
+                            appViewModel.updateRoute(AppRoute.Design)
                         }
                         DesignScreen(viewModel = designViewModel)
                     }
 
-                    composable<Route.Match>(
+                    composable<AppRoute.Match>(
                         enterTransition = Transitions.RightScreenEnter,
                         exitTransition = Transitions.RightScreenExit,
                         popEnterTransition = Transitions.RightScreenPopEnter,
                         popExitTransition = Transitions.RightScreenPopExit
                     ) {
                         LaunchedEffect(true) {
-                            appViewModel.updateRoute(Route.Match)
+                            appViewModel.updateRoute(AppRoute.Match)
                         }
                         MatchScreen(viewModel = matchViewModel) { }
                     }
@@ -92,14 +92,14 @@ fun App() {
     }
 }
 
-private fun navigateTo(navController: NavController, current: Route, destination: Route) {
+private fun navigateTo(navController: NavController, current: AppRoute, destination: AppRoute) {
     if (current != destination) {
         navController.navigate(destination)
     }
 }
 
 @Composable
-fun BottomNavBar(navController: NavController, currentRoute: Route) {
+fun BottomNavBar(navController: NavController, currentRoute: AppRoute) {
     Column {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth().height(1.dp),
@@ -119,7 +119,7 @@ fun BottomNavBar(navController: NavController, currentRoute: Route) {
                 background = Color.Transparent,
                 avatarSize = AvatarSize.Big,
             ) {
-                navigateTo(navController, currentRoute, Route.Design)
+                navigateTo(navController, currentRoute, AppRoute.Design)
             }.Draw()
 
             Avatar.IconAvatar(
@@ -128,7 +128,7 @@ fun BottomNavBar(navController: NavController, currentRoute: Route) {
                 background = Color.Transparent,
                 avatarSize = AvatarSize.Big,
             ) {
-                navigateTo(navController, currentRoute, Route.Match)
+                navigateTo(navController, currentRoute, AppRoute.Match)
             }.Draw()
         }
     }

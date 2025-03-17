@@ -2,7 +2,7 @@ package com.diego.futty.match.data.network
 
 import com.diego.futty.core.data.safeCall
 import com.diego.futty.core.domain.DataError
-import com.diego.futty.core.domain.Result
+import com.diego.futty.core.domain.DataResult
 import com.diego.futty.match.data.dto.league.ResponseLeagueDto
 import com.diego.futty.match.data.dto.match.ResponseLiveScoresDto
 import com.diego.futty.match.data.dto.match.ResponseTodayScoresDto
@@ -17,7 +17,7 @@ class KtorRemoteLiveScoresDataSource(
     private val httpClient: HttpClient
 ) : RemoteLiveScoresDataSource {
 
-    override suspend fun getLiveScores(): Result<ResponseLiveScoresDto, DataError.Remote> {
+    override suspend fun getLiveScores(): DataResult<ResponseLiveScoresDto, DataError.Remote> {
         return safeCall<ResponseLiveScoresDto> {
             httpClient.get(
                 urlString = "$BASE_URL/football-current-live"
@@ -28,7 +28,7 @@ class KtorRemoteLiveScoresDataSource(
         }
     }
 
-    override suspend fun getTodayScores(date: String): Result<ResponseTodayScoresDto, DataError.Remote> {
+    override suspend fun getTodayScores(date: String): DataResult<ResponseTodayScoresDto, DataError.Remote> {
         return safeCall<ResponseTodayScoresDto> {
             httpClient.get(
                 urlString = "$BASE_URL/football-get-matches-by-date"
@@ -40,7 +40,7 @@ class KtorRemoteLiveScoresDataSource(
         }
     }
 
-    override suspend fun getLeagues(): Result<ResponseLeagueDto, DataError.Remote> {
+    override suspend fun getLeagues(): DataResult<ResponseLeagueDto, DataError.Remote> {
         return safeCall<ResponseLeagueDto> {
             httpClient.get(
                 urlString = "$BASE_URL/football-get-all-leagues"

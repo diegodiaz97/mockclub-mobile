@@ -1,7 +1,7 @@
 package com.diego.futty.match.data.repository
 
 import com.diego.futty.core.domain.DataError
-import com.diego.futty.core.domain.Result
+import com.diego.futty.core.domain.DataResult
 import com.diego.futty.core.domain.map
 import com.diego.futty.match.data.network.RemoteLiveScoresDataSource
 import com.diego.futty.match.domain.LiveScoresRepository
@@ -14,7 +14,7 @@ import kotlinx.datetime.todayIn
 class LiveScoresRepositoryImpl(
     private val remoteLiveScoresDataSource: RemoteLiveScoresDataSource,
 ) : LiveScoresRepository {
-    override suspend fun getLeagues(): Result<List<League>?, DataError.Remote> {
+    override suspend fun getLeagues(): DataResult<List<League>?, DataError.Remote> {
         return remoteLiveScoresDataSource
             .getLeagues()
             .map { dto ->
@@ -22,7 +22,7 @@ class LiveScoresRepositoryImpl(
             }
     }
 
-    override suspend fun getLiveScores(): Result<List<LiveMatch>?, DataError.Remote> {
+    override suspend fun getLiveScores(): DataResult<List<LiveMatch>?, DataError.Remote> {
         return remoteLiveScoresDataSource
             .getLiveScores()
             .map { dto ->
@@ -30,7 +30,7 @@ class LiveScoresRepositoryImpl(
             }
     }
 
-    override suspend fun getTodayScores(): Result<List<LiveMatch>?, DataError.Remote> {
+    override suspend fun getTodayScores(): DataResult<List<LiveMatch>?, DataError.Remote> {
         val today = Clock.System.todayIn(TimeZone.currentSystemDefault()).toString()
             .replace("-", "")
 
