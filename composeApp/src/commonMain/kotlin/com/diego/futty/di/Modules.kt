@@ -1,6 +1,13 @@
 package com.diego.futty.di
 
 import com.diego.futty.app.presentation.viewmodel.AppViewModel
+import com.diego.futty.authentication.signup.data.network.KtorRemoteSignupDataSource
+import com.diego.futty.authentication.signup.data.network.RemoteSignupDataSource
+import com.diego.futty.authentication.signup.data.repository.SignupRepositoryImpl
+import com.diego.futty.authentication.signup.domain.repository.SignupRepository
+import com.diego.futty.authentication.signup.presentation.viewmodel.SignupViewModel
+import com.diego.futty.authentication.view.AuthenticationViewModel
+import com.diego.futty.core.data.FirebaseManager
 import com.diego.futty.core.data.HttpClientFactory
 import com.diego.futty.design.presentation.viewmodel.DesignViewModel
 import com.diego.futty.match.data.network.KtorRemoteLiveScoresDataSource
@@ -24,4 +31,12 @@ val sharedModule = module {
     viewModelOf(::AppViewModel)
     viewModelOf(::DesignViewModel)
     viewModelOf(::MatchViewModel)
+
+    // Authentication
+    single { FirebaseManager }
+    singleOf(::KtorRemoteSignupDataSource).bind<RemoteSignupDataSource>()
+    singleOf(::SignupRepositoryImpl).bind<SignupRepository>()
+
+    viewModelOf(::AuthenticationViewModel)
+    viewModelOf(::SignupViewModel)
 }

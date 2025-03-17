@@ -67,6 +67,7 @@ kotlin {
                 implementation(libs.firebase.firestore)
                 implementation(libs.firebase.auth)
                 implementation(libs.firebase.storage)
+                implementation(libs.firebase.messaging)
                 implementation(libs.flexible.bottomsheet.material3)
             }
         }
@@ -85,6 +86,7 @@ kotlin {
                 implementation(libs.com.google.firebase.firebase.auth)
                 implementation(libs.com.google.firebase.firebase.firestore)
                 implementation(libs.com.google.firebase.firebase.storage)
+                implementation(libs.com.google.firebase.firebase.messaging)
             }
         }
 
