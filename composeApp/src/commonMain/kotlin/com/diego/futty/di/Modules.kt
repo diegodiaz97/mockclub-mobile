@@ -1,5 +1,6 @@
 package com.diego.futty.di
 
+import com.diego.futty.app.presentation.viewmodel.AppViewModel
 import com.diego.futty.core.data.HttpClientFactory
 import com.diego.futty.design.presentation.viewmodel.DesignViewModel
 import com.diego.futty.match.data.network.KtorRemoteLiveScoresDataSource
@@ -20,6 +21,7 @@ val sharedModule = module {
     singleOf(::KtorRemoteLiveScoresDataSource).bind<RemoteLiveScoresDataSource>()
     singleOf(::LiveScoresRepositoryImpl).bind<LiveScoresRepository>()
 
+    viewModelOf(::AppViewModel)
     viewModelOf(::DesignViewModel)
     viewModelOf(::MatchViewModel)
 }

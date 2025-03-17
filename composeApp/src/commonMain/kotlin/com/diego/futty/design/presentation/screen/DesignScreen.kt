@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -19,8 +17,6 @@ import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.design.presentation.component.banner.Banner
 import com.diego.futty.design.presentation.component.banner.ScrollBanner
 import com.diego.futty.design.presentation.component.bottomsheet.BottomSheet
-import com.diego.futty.design.presentation.component.button.PrimaryButton
-import com.diego.futty.design.presentation.component.button.SecondaryButton
 import com.diego.futty.design.presentation.component.flowrow.FlowList
 import com.diego.futty.design.presentation.component.topbar.TopBar
 import com.diego.futty.design.presentation.component.topbar.TopBarActionType
@@ -55,30 +51,6 @@ fun DesignScreen(
         content = { paddingValues ->
             DesignContent(viewModel, paddingValues)
         },
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .navigationBarsPadding()
-            ) {
-                PrimaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 8.dp),
-                    title = viewModel.buttonText.value,
-                    isEnabled = viewModel.buttonEnabled.value,
-                    onClick = { viewModel.onButtonPressed() }
-                )
-                SecondaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    title = "Cancelar",
-                    isEnabled = viewModel.buttonEnabled.value,
-                    onClick = { viewModel.onButtonPressed() }
-                )
-            }
-        }
     )
     BottomSheetContent(viewModel)
 }
@@ -86,7 +58,10 @@ fun DesignScreen(
 @Composable
 fun BottomSheetContent(viewModel: DesignViewModel) {
     if (viewModel.bottomsheetDismissed.value.not()) {
-        BottomSheet { viewModel.onBottomSheetDismissed() }
+        BottomSheet(
+            onDismiss = { viewModel.onBottomSheetDismissed() },
+            onAction = { viewModel.onBottomSheetDismissed() },
+        )
     }
 }
 
@@ -94,7 +69,7 @@ fun BottomSheetContent(viewModel: DesignViewModel) {
 fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
-            .padding(paddingValues)
+            .padding(top = paddingValues.calculateTopPadding())
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -131,7 +106,7 @@ fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
         Banner.ClickableBanner(
             title = "Banner Accionable",
             subtitle = "Éste es un banner que se puede accionar.",
-            onClick = { }
+            onClick = { viewModel.onButtonPressed() }
         ).Draw()
 
         Banner.ClickableBanner(
@@ -149,23 +124,6 @@ fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValues) {
                     action = { viewModel.onScrollBannerPressed("accion girasoles") },
                     illustration = Res.drawable.girasoles
                 ),
-                /* scrollableBanners.copy(
-                    action = { viewModel.onScrollBannerPressed("accion 3") },
-                    color = colorError(),
-                    illustration = Res.drawable.compose_multiplatform
-                ),
-                scrollableBanners.copy(
-                    action = { viewModel.onScrollBannerPressed("accion 4") },
-                    color = colorAlert(),
-                ),
-                scrollableBanners.copy(
-                    action = { viewModel.onScrollBannerPressed("accion 5") },
-                    color = colorInfo(),
-                ),
-                scrollableBanners.copy(
-                    action = { viewModel.onScrollBannerPressed("accion 6") },
-                    color = colorSuccess(),
-                ), */
             ),
         )
     }
