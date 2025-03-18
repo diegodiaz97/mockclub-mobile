@@ -14,7 +14,7 @@ fun FuttyTheme(
 ) {
     MaterialTheme(
         colorScheme = palette,
-        typography = PoppinsTypography(),
+        typography = InterTypography(),
         content = content
     )
 }

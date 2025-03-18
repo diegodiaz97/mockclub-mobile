@@ -1,4 +1,4 @@
-package com.diego.futty.design.preview
+package com.diego.futty.design.presentation.preview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview

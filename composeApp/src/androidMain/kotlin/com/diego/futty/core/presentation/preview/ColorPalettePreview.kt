@@ -1,8 +1,17 @@
-package com.diego.futty.design.preview
+package com.diego.futty.core.presentation.preview
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.theme.NightColorScheme
 import com.diego.futty.core.presentation.theme.colorAlert
@@ -27,7 +36,6 @@ import com.diego.futty.core.presentation.theme.colorInfoLight
 import com.diego.futty.core.presentation.theme.colorSuccess
 import com.diego.futty.core.presentation.theme.colorSuccessDark
 import com.diego.futty.core.presentation.theme.colorSuccessLight
-import com.diego.futty.design.presentation.component.ColorPalette
 
 @Preview
 @Composable
@@ -95,5 +103,22 @@ private fun GreyScaleColors() {
         ColorPalette(title = "Grey700", background = colorGrey700())
         ColorPalette(title = "Grey800", background = colorGrey800())
         ColorPalette(title = "Grey900", background = colorGrey900())
+    }
+}
+
+@Composable
+fun ColorPalette(title: String, background: Color) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = background)
+            .padding(vertical = 12.dp, horizontal = 16.dp),
+    ) {
+        Text(
+            text = title,
+            style = typography.titleLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = colorGrey900()
+        )
     }
 }
