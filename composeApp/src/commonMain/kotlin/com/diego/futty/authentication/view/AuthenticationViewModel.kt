@@ -10,7 +10,7 @@ class AuthenticationViewModel : AuthenticationViewContract, ViewModel() {
     private val _palette = mutableStateOf(DayColorScheme)
     override val palette: State<ColorScheme> = _palette
 
-    private val _currentRoute = mutableStateOf<AuthenticationRoute>(AuthenticationRoute.Login)
+    private val _currentRoute = mutableStateOf<AuthenticationRoute>(AuthenticationRoute.Welcome)
     override val currentRoute: State<AuthenticationRoute> = _currentRoute
 
     fun setup() {

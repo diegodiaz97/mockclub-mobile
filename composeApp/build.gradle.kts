@@ -69,6 +69,7 @@ kotlin {
                 implementation(libs.firebase.storage)
                 implementation(libs.firebase.messaging)
                 implementation(libs.flexible.bottomsheet.material3)
+                implementation(libs.multiplatform.settings)
             }
         }
 

@@ -1,4 +1,4 @@
-package com.diego.futty.app
+package com.diego.futty.app.presentation.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.diego.futty.app.presentation.viewmodel.AppViewModel
+import com.diego.futty.app.presentation.viewmodel.HomeViewModel
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey200
@@ -39,8 +39,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @Preview
-fun App() {
-    val appViewModel = koinViewModel<AppViewModel>()
+fun HomeView() {
+    val appViewModel = koinViewModel<HomeViewModel>()
     val designViewModel = koinViewModel<DesignViewModel>()
     val matchViewModel = koinViewModel<MatchViewModel>()
     val navController = rememberNavController()
@@ -57,31 +57,31 @@ fun App() {
             NavHost(
                 modifier = Modifier.weight(1f),
                 navController = navController,
-                startDestination = AppRoute.Graph
+                startDestination = HomeRoute.Graph
             ) {
-                navigation<AppRoute.Graph>(
+                navigation<HomeRoute.Graph>(
                     startDestination = appViewModel.currentRoute.value
                 ) {
-                    composable<AppRoute.Design>(
+                    composable<HomeRoute.Design>(
                         enterTransition = Transitions.LeftScreenEnter,
                         exitTransition = Transitions.LeftScreenExit,
                         popEnterTransition = Transitions.LeftScreenPopEnter,
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
-                            appViewModel.updateRoute(AppRoute.Design)
+                            appViewModel.updateRoute(HomeRoute.Design)
                         }
                         DesignScreen(viewModel = designViewModel)
                     }
 
-                    composable<AppRoute.Match>(
+                    composable<HomeRoute.Match>(
                         enterTransition = Transitions.RightScreenEnter,
                         exitTransition = Transitions.RightScreenExit,
                         popEnterTransition = Transitions.RightScreenPopEnter,
                         popExitTransition = Transitions.RightScreenPopExit
                     ) {
                         LaunchedEffect(true) {
-                            appViewModel.updateRoute(AppRoute.Match)
+                            appViewModel.updateRoute(HomeRoute.Match)
                         }
                         MatchScreen(viewModel = matchViewModel) { }
                     }
@@ -92,14 +92,14 @@ fun App() {
     }
 }
 
-private fun navigateTo(navController: NavController, current: AppRoute, destination: AppRoute) {
+private fun navigateTo(navController: NavController, current: HomeRoute, destination: HomeRoute) {
     if (current != destination) {
         navController.navigate(destination)
     }
 }
 
 @Composable
-fun BottomNavBar(navController: NavController, currentRoute: AppRoute) {
+fun BottomNavBar(navController: NavController, currentRoute: HomeRoute) {
     Column {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth().height(1.dp),
@@ -119,7 +119,7 @@ fun BottomNavBar(navController: NavController, currentRoute: AppRoute) {
                 background = Color.Transparent,
                 avatarSize = AvatarSize.Big,
             ) {
-                navigateTo(navController, currentRoute, AppRoute.Design)
+                navigateTo(navController, currentRoute, HomeRoute.Design)
             }.Draw()
 
             Avatar.IconAvatar(
@@ -128,7 +128,7 @@ fun BottomNavBar(navController: NavController, currentRoute: AppRoute) {
                 background = Color.Transparent,
                 avatarSize = AvatarSize.Big,
             ) {
-                navigateTo(navController, currentRoute, AppRoute.Match)
+                navigateTo(navController, currentRoute, HomeRoute.Match)
             }.Draw()
         }
     }

@@ -1,4 +1,4 @@
-package com.diego.futty.core.data
+package com.diego.futty.core.data.firebase
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth

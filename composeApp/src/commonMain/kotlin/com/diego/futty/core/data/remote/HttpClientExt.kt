@@ -1,4 +1,4 @@
-package com.diego.futty.core.data
+package com.diego.futty.core.data.remote
 
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult

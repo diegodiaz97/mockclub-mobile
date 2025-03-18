@@ -1,4 +1,4 @@
-package com.diego.futty.core.data.util
+package com.diego.futty.core.data.firebase
 
 /*actual class FirebaseMessagingService {
     private val firebase by lazy { Firebase.initialize() }

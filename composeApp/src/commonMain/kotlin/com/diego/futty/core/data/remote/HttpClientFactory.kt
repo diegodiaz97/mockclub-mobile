@@ -1,4 +1,4 @@
-package com.diego.futty.core.data
+package com.diego.futty.core.data.remote
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine

@@ -1,7 +1,5 @@
 package com.diego.futty.design.data
 
-import com.diego.futty.core.data.FirebaseManager
-
 class FirebaseAuthRepository {
    /* suspend fun loginUser(email: String, password: String): String? {
         return try {

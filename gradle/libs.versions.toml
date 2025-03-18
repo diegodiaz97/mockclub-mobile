@@ -20,6 +20,7 @@ junit = "4.13.2"
 kotlin = "2.0.21"
 kotlinx-coroutines = "1.9.0"
 kotlinxDatetime = "0.6.0"
+multiplatformSettings = "1.0.0"
 navigationCompose = "2.8.0-alpha10"
 kotlinSerialization = "1.7.3"
 koin = "4.0.0"
@@ -80,6 +81,7 @@ coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 xicon_pack_z = { module = "br.com.devsrsouza.compose.icons:tabler-icons", version.ref = "xicon_pack_z" }
 

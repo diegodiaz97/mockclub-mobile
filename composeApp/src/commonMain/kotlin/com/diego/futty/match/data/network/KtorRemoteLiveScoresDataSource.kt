@@ -1,6 +1,6 @@
 package com.diego.futty.match.data.network
 
-import com.diego.futty.core.data.safeCall
+import com.diego.futty.core.data.remote.safeCall
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
 import com.diego.futty.match.data.dto.league.ResponseLeagueDto
