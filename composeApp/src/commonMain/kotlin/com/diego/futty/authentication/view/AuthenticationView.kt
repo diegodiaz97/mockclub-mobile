@@ -32,8 +32,8 @@ fun AuthenticationView() {
         SetStatusBarColor(Color.Transparent)
         LaunchedEffect(true) {
             authenticationViewModel.setup()
-            //designViewModel.setup()
-            signupViewModel.setup()
+            //welcomeViewModel.setup()
+            signupViewModel.setup(navController)
             loginViewModel.setup(navController)
             //recoveryViewModel.setup()
         }
@@ -47,23 +47,23 @@ fun AuthenticationView() {
                 navigation<AuthenticationRoute.Graph>(
                     startDestination = authenticationViewModel.currentRoute.value
                 ) {
-                    composable<AuthenticationRoute.Welcome>(
+                    composable<AuthenticationRoute.Login>(
                         enterTransition = Transitions.LeftScreenEnter,
                         exitTransition = Transitions.LeftScreenExit,
-                        popEnterTransition = Transitions.LeftScreenPopEnter,
+                        popEnterTransition = Transitions.RightScreenPopEnter,
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
-                            authenticationViewModel.updateRoute(AuthenticationRoute.Welcome)
+                            authenticationViewModel.updateRoute(AuthenticationRoute.Login)
                         }
-                        // WelcomeScreen(viewModel = welcomeViewModel)
+                        LoginScreen(viewModel = loginViewModel)
                     }
 
                     composable<AuthenticationRoute.Signup>(
                         enterTransition = Transitions.RightScreenEnter,
-                        exitTransition = Transitions.RightScreenExit,
+                        exitTransition = Transitions.LeftScreenExit,
                         popEnterTransition = Transitions.RightScreenPopEnter,
-                        popExitTransition = Transitions.RightScreenPopExit
+                        popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
                             authenticationViewModel.updateRoute(AuthenticationRoute.Signup)
@@ -71,16 +71,16 @@ fun AuthenticationView() {
                         SignupScreen(viewModel = signupViewModel)
                     }
 
-                    composable<AuthenticationRoute.Login>(
-                        enterTransition = Transitions.LeftScreenEnter,
+                    composable<AuthenticationRoute.Welcome>(
+                        enterTransition = Transitions.RightScreenEnter,
                         exitTransition = Transitions.LeftScreenExit,
-                        popEnterTransition = Transitions.LeftScreenPopEnter,
+                        popEnterTransition = Transitions.RightScreenPopEnter,
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
-                            authenticationViewModel.updateRoute(AuthenticationRoute.Login)
+                            authenticationViewModel.updateRoute(AuthenticationRoute.Welcome)
                         }
-                        LoginScreen(viewModel = loginViewModel)
+                        // WelcomeScreen(viewModel = welcomeViewModel)
                     }
 
                     composable<AuthenticationRoute.Recovery>(
@@ -96,9 +96,9 @@ fun AuthenticationView() {
                     }
 
                     composable<AuthenticationRoute.Home>(
-                        enterTransition = Transitions.LeftScreenEnter,
+                        enterTransition = Transitions.RightScreenEnter,
                         exitTransition = Transitions.LeftScreenExit,
-                        popEnterTransition = Transitions.LeftScreenPopEnter,
+                        popEnterTransition = Transitions.RightScreenPopEnter,
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {

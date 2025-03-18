@@ -23,7 +23,6 @@ class LoginViewModel(
     private val _password = mutableStateOf("")
     override val password: State<String> = _password
 
-
     private val _banner = mutableStateOf<Banner?>(null)
     override val banner: State<Banner?> = _banner
 

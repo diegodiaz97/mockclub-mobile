@@ -9,7 +9,7 @@ import androidx.navigation.NavBackStackEntry
 
 object Transitions {
 
-    private const val TIME_DURATION = 300
+    private const val TIME_DURATION = 400
 
     // Left screen
     val LeftScreenEnter: AnimatedContentTransitionScope<NavBackStackEntry>.() ->

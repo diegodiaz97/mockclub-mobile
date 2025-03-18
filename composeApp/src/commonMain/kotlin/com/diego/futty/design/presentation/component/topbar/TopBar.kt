@@ -43,7 +43,7 @@ fun TopBar(
     ) {
         if (onBack != null) {
             TopBarIcon(TablerIcons.ArrowLeft, onBack)
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(12.dp))
         }
 
         Text(

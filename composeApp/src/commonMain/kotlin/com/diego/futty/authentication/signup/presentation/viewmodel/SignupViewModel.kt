@@ -4,7 +4,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.diego.futty.authentication.signup.domain.repository.SignupRepository
+import com.diego.futty.authentication.view.AuthenticationRoute
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.design.presentation.component.banner.Banner
@@ -34,8 +36,12 @@ class SignupViewModel(
     private val _hideKeyboard = mutableStateOf(true)
     override val hideKeyboard: State<Boolean> = _hideKeyboard
 
-    fun setup() {
-        // setup
+    private var _navigate: (AuthenticationRoute) -> Unit = {}
+    private var _back: () -> Unit = {}
+
+    fun setup(navController: NavHostController) {
+        _navigate = { navController.navigate(it) }
+        _back = { navController.popBackStack() }
     }
 
     override fun hideKeyboard() {
@@ -76,6 +82,10 @@ class SignupViewModel(
         }
         _banner.value = null
         signUpWithMail()
+    }
+
+    override fun onBackClicked() {
+        _back()
     }
 
     private fun signUpWithMail() {

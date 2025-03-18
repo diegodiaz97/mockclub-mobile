@@ -36,7 +36,8 @@ fun SignupScreen(viewModel: SignupViewModel) {
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp),
                 title = "Crear cuenta",
-                topBarActionType = TopBarActionType.None
+                topBarActionType = TopBarActionType.None,
+                onBack = { viewModel.onBackClicked() }
             )
         },
         content = { paddingValues ->
@@ -59,7 +60,7 @@ fun SignupScreen(viewModel: SignupViewModel) {
                         .padding(horizontal = 16.dp),
                     title = "Ya tengo cuenta",
                     isEnabled = true,
-                    onClick = { /*viewModel.onHaveAccountPressed()*/ }
+                    onClick = { viewModel.onBackClicked() }
                 )
             }
         }
