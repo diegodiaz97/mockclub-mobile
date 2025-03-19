@@ -31,6 +31,8 @@ import com.diego.futty.design.utils.SetStatusBarColor
 import com.diego.futty.design.utils.Transitions
 import com.diego.futty.match.presentation.screen.MatchScreen
 import com.diego.futty.match.presentation.viewmodel.MatchViewModel
+import com.diego.futty.profile.presentation.screen.ProfileScreen
+import com.diego.futty.profile.presentation.viewmodel.ProfileViewModel
 import compose.icons.TablerIcons
 import compose.icons.tablericons.BallFootball
 import compose.icons.tablericons.BrandPinterest
@@ -43,14 +45,16 @@ fun HomeView() {
     val appViewModel = koinViewModel<HomeViewModel>()
     val designViewModel = koinViewModel<DesignViewModel>()
     val matchViewModel = koinViewModel<MatchViewModel>()
+    val profileViewModel = koinViewModel<ProfileViewModel>()
     val navController = rememberNavController()
 
-    FuttyTheme(designViewModel.palette.value) {
+    FuttyTheme(profileViewModel.palette.value) {
         SetStatusBarColor(Color.Transparent)
         LaunchedEffect(true) {
             appViewModel.setup()
-            designViewModel.setup()
+            designViewModel.setup(navController)
             matchViewModel.setup()
+            profileViewModel.setup(navController)
         }
 
         Column {
@@ -65,7 +69,7 @@ fun HomeView() {
                     composable<HomeRoute.Design>(
                         enterTransition = Transitions.LeftScreenEnter,
                         exitTransition = Transitions.LeftScreenExit,
-                        popEnterTransition = Transitions.LeftScreenPopEnter,
+                        popEnterTransition = Transitions.RightScreenPopEnter,
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
@@ -84,6 +88,19 @@ fun HomeView() {
                             appViewModel.updateRoute(HomeRoute.Match)
                         }
                         MatchScreen(viewModel = matchViewModel) { }
+                    }
+
+
+                    composable<HomeRoute.Profile>(
+                        enterTransition = Transitions.RightScreenEnter,
+                        exitTransition = Transitions.LeftScreenExit,
+                        popEnterTransition = Transitions.RightScreenPopEnter,
+                        popExitTransition = Transitions.LeftScreenPopExit
+                    ) {
+                        LaunchedEffect(true) {
+                            appViewModel.updateRoute(HomeRoute.Profile)
+                        }
+                        ProfileScreen(viewModel = profileViewModel)
                     }
                 }
             }

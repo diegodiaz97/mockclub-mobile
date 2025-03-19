@@ -18,22 +18,13 @@ class UserPreferences(private val settings: Settings) {
         settings[DARK_MODE] = enabled
     }
 
-    fun isDarkModeEnabled(): Boolean {
-        return settings[DARK_MODE] ?: false
-    }
-
-    fun updateNewUser(enabled: Boolean) {
-        settings[DARK_MODE] = enabled
-    }
-
-    fun isNewUser(): Boolean {
-        return settings[DARK_MODE] ?: false
+    fun isDarkModeEnabled(): Boolean? {
+        return settings[DARK_MODE]
     }
 
     companion object {
         const val USERNAME = "username"
         const val DARK_MODE = "dark_mode"
-        const val NEW_USER = "new_user"
     }
 }
 

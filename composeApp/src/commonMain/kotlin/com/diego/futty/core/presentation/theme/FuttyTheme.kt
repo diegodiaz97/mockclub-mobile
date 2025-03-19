@@ -6,14 +6,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import com.diego.futty.core.data.local.UserPreferences
+import com.diego.futty.core.data.local.provideSettings
 
 @Composable
 fun FuttyTheme(
     palette: ColorScheme = if (isSystemInDarkTheme()) NightColorScheme else DayColorScheme,
     content: @Composable () -> Unit
 ) {
+    val colorScheme = when (UserPreferences(provideSettings()).isDarkModeEnabled()) {
+        true -> NightColorScheme
+        false -> DayColorScheme
+        null -> palette
+    }
+
     MaterialTheme(
-        colorScheme = palette,
+        colorScheme = colorScheme,
         typography = InterTypography(),
         content = content
     )

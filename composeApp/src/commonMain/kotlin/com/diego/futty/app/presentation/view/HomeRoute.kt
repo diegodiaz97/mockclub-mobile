@@ -5,11 +5,14 @@ import kotlinx.serialization.Serializable
 sealed interface HomeRoute {
 
     @Serializable
-    data object Graph: HomeRoute
+    data object Graph : HomeRoute
 
     @Serializable
-    data object Match: HomeRoute
+    data object Match : HomeRoute
 
     @Serializable
-    data object Design: HomeRoute
+    data object Design : HomeRoute
+
+    @Serializable
+    data object Profile : HomeRoute
 }

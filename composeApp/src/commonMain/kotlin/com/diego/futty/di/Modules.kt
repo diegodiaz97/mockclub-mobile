@@ -18,15 +18,16 @@ import com.diego.futty.authentication.welcome.data.repository.WelcomeRepositoryI
 import com.diego.futty.authentication.welcome.domain.repository.WelcomeRepository
 import com.diego.futty.authentication.welcome.presentation.viewmodel.WelcomeViewModel
 import com.diego.futty.core.data.firebase.FirebaseManager
-import com.diego.futty.core.data.remote.HttpClientFactory
 import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.data.local.provideSettings
+import com.diego.futty.core.data.remote.HttpClientFactory
 import com.diego.futty.design.presentation.viewmodel.DesignViewModel
 import com.diego.futty.match.data.network.KtorRemoteLiveScoresDataSource
 import com.diego.futty.match.data.network.RemoteLiveScoresDataSource
 import com.diego.futty.match.data.repository.LiveScoresRepositoryImpl
 import com.diego.futty.match.domain.LiveScoresRepository
 import com.diego.futty.match.presentation.viewmodel.MatchViewModel
+import com.diego.futty.profile.presentation.viewmodel.ProfileViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -40,14 +41,13 @@ val sharedModule = module {
     singleOf(::KtorRemoteLiveScoresDataSource).bind<RemoteLiveScoresDataSource>()
     singleOf(::LiveScoresRepositoryImpl).bind<LiveScoresRepository>()
 
-    viewModelOf(::HomeViewModel)
     viewModelOf(::DesignViewModel)
     viewModelOf(::MatchViewModel)
 
     // Authentication
     single { FirebaseManager }
     single { provideSettings() }
-    single { UserPreferences }
+    single { UserPreferences(get()) }
 
     singleOf(::KtorRemoteWelcomeDataSource).bind<RemoteWelcomeDataSource>()
     singleOf(::WelcomeRepositoryImpl).bind<WelcomeRepository>()
@@ -62,4 +62,8 @@ val sharedModule = module {
     viewModelOf(::WelcomeViewModel)
     viewModelOf(::SignupViewModel)
     viewModelOf(::LoginViewModel)
+
+    // Home
+    viewModelOf(::HomeViewModel)
+    viewModelOf(::ProfileViewModel)
 }

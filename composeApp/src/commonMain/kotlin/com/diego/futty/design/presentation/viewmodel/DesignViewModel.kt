@@ -1,14 +1,13 @@
 package com.diego.futty.design.presentation.viewmodel
 
-import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
+import com.diego.futty.app.presentation.view.HomeRoute
 import com.diego.futty.core.presentation.theme.AlertLight
-import com.diego.futty.core.presentation.theme.DayColorScheme
 import com.diego.futty.core.presentation.theme.ErrorLight
 import com.diego.futty.core.presentation.theme.InfoLight
-import com.diego.futty.core.presentation.theme.NightColorScheme
 import com.diego.futty.core.presentation.theme.SuccessLight
 import com.diego.futty.design.presentation.component.Chip.ChipModel
 import com.diego.futty.design.presentation.component.banner.BannerUIData
@@ -25,9 +24,6 @@ import compose.icons.tablericons.Video
 import compose.icons.tablericons.Wallet
 
 class DesignViewModel : DesignViewContract, ViewModel() {
-    private val _palette = mutableStateOf(DayColorScheme)
-    override val palette: State<ColorScheme> = _palette
-
     private val _buttonEnabled = mutableStateOf(true)
     override val buttonEnabled: State<Boolean> = _buttonEnabled
 
@@ -43,8 +39,10 @@ class DesignViewModel : DesignViewContract, ViewModel() {
     private val _selectedChip = mutableStateOf(0)
     override val selectedChip: State<Int> = _selectedChip
 
-    fun setup() {
-        // setup
+    private var _navigate: (HomeRoute) -> Unit = {}
+
+    fun setup(navController: NavHostController) {
+        _navigate = { navController.navigate(it) }
     }
 
     override fun onButtonPressed() {
@@ -52,16 +50,11 @@ class DesignViewModel : DesignViewContract, ViewModel() {
     }
 
     override fun onProfilePressed() {
-        _palette.value = if (_palette.value == DayColorScheme) {
-            NightColorScheme
-        } else {
-            DayColorScheme
-        }
+        _navigate(HomeRoute.Profile)
     }
 
     override fun onBottomSheetDismissed() {
         _bottomsheetDismissed.value = true
-        //_buttonEnabled.value = _buttonEnabled.value.not()
     }
 
     override fun getScrollableBanners() = BannerUIData(
