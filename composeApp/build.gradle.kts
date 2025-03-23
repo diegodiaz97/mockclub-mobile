@@ -70,6 +70,7 @@ kotlin {
                 implementation(libs.firebase.messaging)
                 implementation(libs.flexible.bottomsheet.material3)
                 implementation(libs.multiplatform.settings)
+                implementation(libs.maplibre.compose)
             }
         }
 

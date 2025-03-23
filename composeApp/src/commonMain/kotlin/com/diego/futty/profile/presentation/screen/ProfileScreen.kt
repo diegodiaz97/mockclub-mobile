@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -57,27 +58,27 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
     ) {
         Banner.ClickableBanner(
             title = "Notificaciones",
-            subtitle = "Éste es un banner que se puede accionar.",
+            subtitle = "Configuración de notificaciones.",
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
             title = "Verificar",
-            subtitle = "Éste es un banner que se puede accionar.",
+            subtitle = "Obten el verificado, justo a un gran conjunto de beneficios.",
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
             title = "Publicidad",
-            subtitle = "Éste es un banner que se puede accionar.",
+            subtitle = "¡Publicita lo que quieras con nosotros!",
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
             title = "Ayuda",
-            subtitle = "Éste es un banner que se puede accionar.",
+            subtitle = "Resuelve tus dudas.",
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
             title = "Guardado",
-            subtitle = "Éste es un banner que se puede accionar.",
+            subtitle = "guarda publicaciones para verlas más tarde.",
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(

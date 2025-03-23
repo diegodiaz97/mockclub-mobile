@@ -53,7 +53,7 @@ fun HomeView() {
         LaunchedEffect(true) {
             appViewModel.setup()
             designViewModel.setup(navController)
-            matchViewModel.setup()
+            // matchViewModel.setup()
             profileViewModel.setup(navController)
         }
 

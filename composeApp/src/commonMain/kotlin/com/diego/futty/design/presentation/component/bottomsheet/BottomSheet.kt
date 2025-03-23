@@ -31,7 +31,11 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun BottomSheet(onDismiss: () -> Unit, onAction: () -> Unit) {
+fun BottomSheet(
+    isModal: Boolean = true,
+    onDismiss: () -> Unit,
+    onAction: () -> Unit
+) {
     FlexibleBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = rememberFlexibleBottomSheetState(
@@ -40,7 +44,7 @@ fun BottomSheet(onDismiss: () -> Unit, onAction: () -> Unit) {
                 intermediatelyExpanded = 0.5f,
                 slightlyExpanded = 0.3f,
             ),
-            isModal = true,
+            isModal = isModal,
             skipSlightlyExpanded = false,
         ),
         containerColor = colorGrey100(),

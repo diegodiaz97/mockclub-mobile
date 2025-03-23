@@ -17,7 +17,7 @@ firebaseMessaging = "24.1.0"
 flexibleBottomsheetMaterial3 = "0.1.5"
 google_services_version = "4.4.2"
 junit = "4.13.2"
-kotlin = "2.0.21"
+kotlin = "2.1.0"
 kotlinx-coroutines = "1.9.0"
 kotlinxDatetime = "0.6.0"
 multiplatformSettings = "1.0.0"
@@ -32,6 +32,7 @@ room = "2.7.0-alpha11"
 xicon_pack_z = "1.1.1"
 
 [libraries]
+maplibre-compose = { module = "dev.sargunv.maplibre-compose:maplibre-compose", version = "0.6.0" }
 com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-auth" }
 com-google-firebase-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 com-google-firebase-firebase-storage = { module = "com.google.firebase:firebase-storage" }
