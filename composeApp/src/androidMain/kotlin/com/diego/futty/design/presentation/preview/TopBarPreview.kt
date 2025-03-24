@@ -3,8 +3,8 @@ package com.diego.futty.design.presentation.preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.diego.futty.core.presentation.theme.FuttyTheme
-import com.diego.futty.design.presentation.component.topbar.TopBar
-import com.diego.futty.design.presentation.component.topbar.TopBarActionType
+import com.diego.futty.home.design.presentation.component.topbar.TopBar
+import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Download
 import compose.icons.tablericons.Logout

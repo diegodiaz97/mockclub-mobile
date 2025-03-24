@@ -9,9 +9,9 @@ import com.diego.futty.authentication.signup.domain.repository.SignupRepository
 import com.diego.futty.authentication.view.AuthenticationRoute
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
-import com.diego.futty.design.presentation.component.banner.Banner
-import com.diego.futty.design.presentation.component.banner.BannerStatus
-import com.diego.futty.design.utils.RegexUtils
+import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.core.presentation.utils.RegexUtils
 import kotlinx.coroutines.launch
 
 class SignupViewModel(

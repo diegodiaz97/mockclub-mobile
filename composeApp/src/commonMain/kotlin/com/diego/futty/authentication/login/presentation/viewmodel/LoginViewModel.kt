@@ -9,9 +9,9 @@ import com.diego.futty.authentication.login.domain.repository.LoginRepository
 import com.diego.futty.authentication.view.AuthenticationRoute
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
-import com.diego.futty.design.presentation.component.banner.Banner
-import com.diego.futty.design.presentation.component.banner.BannerStatus
-import com.diego.futty.design.utils.RegexUtils
+import com.diego.futty.core.presentation.utils.RegexUtils
+import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
@@ -33,9 +33,15 @@ class LoginViewModel(
     override val hideKeyboard: State<Boolean> = _hideKeyboard
 
     private var _navigate: (AuthenticationRoute) -> Unit = {}
+    private var _onLogin: () -> Unit = {}
 
     fun setup(navController: NavHostController) {
         _navigate = { navController.navigate(it) }
+        _onLogin = {
+            navController.navigate(AuthenticationRoute.Home) {
+                popUpTo(AuthenticationRoute.Login) { inclusive = true }
+            }
+        }
     }
 
     override fun hideKeyboard() {
@@ -102,7 +108,7 @@ class LoginViewModel(
                         subtitle = "Inicio de sesión exitosos",
                         status = BannerStatus.Success
                     )
-                    _navigate(AuthenticationRoute.Home)
+                    _onLogin()
                 }
                 .onError {
                     _banner.value = Banner.StatusBanner(

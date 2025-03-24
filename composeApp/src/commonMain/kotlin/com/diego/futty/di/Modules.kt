@@ -1,6 +1,5 @@
 package com.diego.futty.di
 
-import com.diego.futty.app.presentation.viewmodel.HomeViewModel
 import com.diego.futty.authentication.login.data.network.KtorRemoteLoginDataSource
 import com.diego.futty.authentication.login.data.network.RemoteLoginDataSource
 import com.diego.futty.authentication.login.data.repository.LoginRepositoryImpl
@@ -21,13 +20,20 @@ import com.diego.futty.core.data.firebase.FirebaseManager
 import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.data.local.provideSettings
 import com.diego.futty.core.data.remote.HttpClientFactory
-import com.diego.futty.design.presentation.viewmodel.DesignViewModel
-import com.diego.futty.match.data.network.KtorRemoteLiveScoresDataSource
-import com.diego.futty.match.data.network.RemoteLiveScoresDataSource
-import com.diego.futty.match.data.repository.LiveScoresRepositoryImpl
-import com.diego.futty.match.domain.LiveScoresRepository
-import com.diego.futty.match.presentation.viewmodel.MatchViewModel
-import com.diego.futty.profile.presentation.viewmodel.ProfileViewModel
+import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
+import com.diego.futty.home.match.data.network.KtorRemoteLiveScoresDataSource
+import com.diego.futty.home.match.data.network.RemoteLiveScoresDataSource
+import com.diego.futty.home.match.data.repository.LiveScoresRepositoryImpl
+import com.diego.futty.home.match.domain.LiveScoresRepository
+import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
+import com.diego.futty.home.view.HomeViewModel
+import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
+import com.diego.futty.setup.settings.data.network.KtorRemoteLogoutDataSource
+import com.diego.futty.setup.settings.data.network.RemoteLogoutDataSource
+import com.diego.futty.setup.settings.data.repository.SettingsRepositoryImpl
+import com.diego.futty.setup.settings.domain.repository.SettingsRepository
+import com.diego.futty.setup.settings.presentation.viewmodel.SettingsViewModel
+import com.diego.futty.setup.view.SetupViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -37,14 +43,13 @@ import org.koin.dsl.module
 expect val platformModule: Module
 
 val sharedModule = module {
-    single { HttpClientFactory.create(get()) }
+    // Deprecated
     singleOf(::KtorRemoteLiveScoresDataSource).bind<RemoteLiveScoresDataSource>()
     singleOf(::LiveScoresRepositoryImpl).bind<LiveScoresRepository>()
-
-    viewModelOf(::DesignViewModel)
     viewModelOf(::MatchViewModel)
 
     // Authentication
+    single { HttpClientFactory.create(get()) }
     single { FirebaseManager }
     single { provideSettings() }
     single { UserPreferences(get()) }
@@ -65,5 +70,13 @@ val sharedModule = module {
 
     // Home
     viewModelOf(::HomeViewModel)
+    viewModelOf(::DesignViewModel)
+
+    // Setup
+    singleOf(::KtorRemoteLogoutDataSource).bind<RemoteLogoutDataSource>()
+    singleOf(::SettingsRepositoryImpl).bind<SettingsRepository>()
+
+    viewModelOf(::SetupViewModel)
     viewModelOf(::ProfileViewModel)
+    viewModelOf(::SettingsViewModel)
 }

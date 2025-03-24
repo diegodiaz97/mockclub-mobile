@@ -10,8 +10,8 @@ import com.diego.futty.core.presentation.theme.Info
 import com.diego.futty.core.presentation.theme.InfoDark
 import com.diego.futty.core.presentation.theme.SuccessDark
 import com.diego.futty.core.presentation.theme.SuccessLight
-import com.diego.futty.design.presentation.component.avatar.Avatar
-import com.diego.futty.design.presentation.component.avatar.AvatarSize
+import com.diego.futty.home.design.presentation.component.avatar.Avatar
+import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import compose.icons.TablerIcons
 import compose.icons.tablericons.BrandLinkedin
 import compose.icons.tablericons.BrandPinterest

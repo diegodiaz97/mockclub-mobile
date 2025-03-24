@@ -17,8 +17,8 @@ import com.diego.futty.authentication.signup.presentation.viewmodel.SignupViewMo
 import com.diego.futty.authentication.welcome.presentation.screen.WelcomeScreen
 import com.diego.futty.authentication.welcome.presentation.viewmodel.WelcomeViewModel
 import com.diego.futty.core.presentation.theme.FuttyTheme
-import com.diego.futty.design.utils.SetStatusBarColor
-import com.diego.futty.design.utils.Transitions
+import com.diego.futty.core.presentation.utils.SetStatusBarColor
+import com.diego.futty.core.presentation.utils.Transitions
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -44,9 +44,9 @@ fun AuthenticationView() {
             NavHost(
                 modifier = Modifier.weight(1f),
                 navController = navController,
-                startDestination = AuthenticationRoute.Graph
+                startDestination = AuthenticationRoute.AuthGraph
             ) {
-                navigation<AuthenticationRoute.Graph>(
+                navigation<AuthenticationRoute.AuthGraph>(
                     startDestination = authenticationViewModel.currentRoute.value
                 ) {
                     composable<AuthenticationRoute.Welcome>(
@@ -62,7 +62,7 @@ fun AuthenticationView() {
                     }
 
                     composable<AuthenticationRoute.Login>(
-                        enterTransition = Transitions.LeftScreenEnter,
+                        enterTransition = Transitions.RightScreenEnter,
                         exitTransition = Transitions.LeftScreenExit,
                         popEnterTransition = Transitions.RightScreenPopEnter,
                         popExitTransition = Transitions.LeftScreenPopExit
@@ -106,7 +106,9 @@ fun AuthenticationView() {
                         LaunchedEffect(true) {
                             authenticationViewModel.updateRoute(AuthenticationRoute.Home)
                         }
-                        HomeView()
+                        HomeView {
+                            navController.popBackStack()
+                        }
                     }
                 }
             }

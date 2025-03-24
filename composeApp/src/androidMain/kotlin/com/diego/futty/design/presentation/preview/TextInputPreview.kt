@@ -3,7 +3,7 @@ package com.diego.futty.design.presentation.preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.diego.futty.core.presentation.theme.FuttyTheme
-import com.diego.futty.design.presentation.component.input.TextInput
+import com.diego.futty.home.design.presentation.component.input.TextInput
 
 @Preview
 @Composable

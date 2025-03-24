@@ -6,8 +6,8 @@ import com.diego.futty.core.presentation.theme.colorAlert
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorInfo
 import com.diego.futty.core.presentation.theme.colorSuccess
-import com.diego.futty.design.presentation.component.banner.BannerUIData
-import com.diego.futty.design.presentation.component.banner.ScrollBanner
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
+import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
 import futty.composeapp.generated.resources.Res
 import futty.composeapp.generated.resources.compose_multiplatform
 import futty.composeapp.generated.resources.girasoles

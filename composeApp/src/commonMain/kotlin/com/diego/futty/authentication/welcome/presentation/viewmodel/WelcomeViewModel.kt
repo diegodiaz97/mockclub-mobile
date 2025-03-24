@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 class WelcomeViewModel(
     private val welcomeRepository: WelcomeRepository,
 ) : WelcomeViewContract, ViewModel() {
+
     private var _navigate: (AuthenticationRoute) -> Unit = {}
 
     fun setup(navController: NavHostController) {

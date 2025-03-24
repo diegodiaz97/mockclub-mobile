@@ -1,7 +1,7 @@
 package com.diego.futty.authentication.login.presentation.viewmodel
 
 import androidx.compose.runtime.State
-import com.diego.futty.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.banner.Banner
 
 interface LoginViewContract {
     val email: State<String>

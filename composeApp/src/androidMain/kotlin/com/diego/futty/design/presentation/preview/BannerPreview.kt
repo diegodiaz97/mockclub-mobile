@@ -3,8 +3,8 @@ package com.diego.futty.design.presentation.preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.diego.futty.core.presentation.theme.FuttyTheme
-import com.diego.futty.design.presentation.component.banner.Banner
-import com.diego.futty.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import futty.composeapp.generated.resources.Res
 import futty.composeapp.generated.resources.book_error_2
 import org.jetbrains.compose.resources.painterResource

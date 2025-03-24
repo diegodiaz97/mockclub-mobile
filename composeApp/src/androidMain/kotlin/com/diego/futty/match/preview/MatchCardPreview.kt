@@ -3,7 +3,7 @@ package com.diego.futty.match.preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.diego.futty.core.presentation.theme.FuttyTheme
-import com.diego.futty.match.presentation.component.match.MatchCard
+import com.diego.futty.home.match.presentation.component.match.MatchCard
 
 @Preview
 @Composable

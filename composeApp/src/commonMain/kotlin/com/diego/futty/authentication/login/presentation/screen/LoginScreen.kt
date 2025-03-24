@@ -18,12 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.diego.futty.authentication.login.presentation.viewmodel.LoginViewModel
 import com.diego.futty.core.presentation.theme.colorGrey0
-import com.diego.futty.design.presentation.component.button.PrimaryButton
-import com.diego.futty.design.presentation.component.button.SecondaryButton
-import com.diego.futty.design.presentation.component.input.TextInput
-import com.diego.futty.design.presentation.component.topbar.TopBar
-import com.diego.futty.design.presentation.component.topbar.TopBarActionType
-import com.diego.futty.design.utils.HideKeyboard
+import com.diego.futty.home.design.presentation.component.button.PrimaryButton
+import com.diego.futty.home.design.presentation.component.button.SecondaryButton
+import com.diego.futty.home.design.presentation.component.input.TextInput
+import com.diego.futty.home.design.presentation.component.topbar.TopBar
+import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
+import com.diego.futty.core.presentation.utils.HideKeyboard
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel) {
