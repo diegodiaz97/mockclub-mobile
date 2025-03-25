@@ -69,21 +69,9 @@ fun HomeView(navigateToLogin: () -> Unit) {
                 navigation<HomeRoute.HomeGraph>(
                     startDestination = appViewModel.currentRoute.value
                 ) {
-                    composable<HomeRoute.Design>(
-                        enterTransition = { EnterTransition.None }, // Sin animación de entrada
-                        exitTransition = { ExitTransition.None },    // Sin animación de salida
-                        popEnterTransition = Transitions.RightScreenPopEnter,
-                        popExitTransition = Transitions.LeftScreenPopExit
-                    ) {
-                        LaunchedEffect(true) {
-                            appViewModel.updateRoute(HomeRoute.Design)
-                        }
-                        DesignScreen(viewModel = designViewModel)
-                    }
-
                     composable<HomeRoute.Feed>(
                         enterTransition = { EnterTransition.None }, // Sin animación de entrada
-                        exitTransition = { ExitTransition.None }    // Sin animación de salida
+                        exitTransition = { ExitTransition.None },    // Sin animación de salida
                     ) {
                         LaunchedEffect(true) {
                             appViewModel.updateRoute(HomeRoute.Feed)
@@ -91,9 +79,19 @@ fun HomeView(navigateToLogin: () -> Unit) {
                         FeedScreen(viewModel = feedViewModel)
                     }
 
+                    composable<HomeRoute.Design>(
+                        enterTransition = { EnterTransition.None }, // Sin animación de entrada
+                        exitTransition = { ExitTransition.None },    // Sin animación de salida
+                    ) {
+                        LaunchedEffect(true) {
+                            appViewModel.updateRoute(HomeRoute.Design)
+                        }
+                        DesignScreen(viewModel = designViewModel)
+                    }
+
                     composable<HomeRoute.Match>(
                         enterTransition = { EnterTransition.None }, // Sin animación de entrada
-                        exitTransition = { ExitTransition.None }    // Sin animación de salida
+                        exitTransition = { ExitTransition.None },    // Sin animación de salida
                     ) {
                         LaunchedEffect(true) {
                             appViewModel.updateRoute(HomeRoute.Match)

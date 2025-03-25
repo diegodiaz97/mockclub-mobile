@@ -23,7 +23,7 @@ fun MapView() {
         rememberCameraState(
             firstPosition =
                 CameraPosition(
-                    target = Position(latitude = 45.521, longitude = -122.675),
+                    target = Position(latitude = -51.6965427, longitude = -57.9225379),
                     zoom = 16.1
                 )
         )

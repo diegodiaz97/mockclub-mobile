@@ -15,7 +15,7 @@ class HomeViewModel(
     private val _palette = mutableStateOf(DayColorScheme)
     override val palette: State<ColorScheme> = _palette
 
-    private val _currentRoute = mutableStateOf<HomeRoute>(HomeRoute.Design)
+    private val _currentRoute = mutableStateOf<HomeRoute>(HomeRoute.Feed)
     override val currentRoute: State<HomeRoute> = _currentRoute
 
     private val _showBottomBar = mutableStateOf(true)

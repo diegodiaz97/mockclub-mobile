@@ -52,7 +52,7 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = paddingValues.calculateTopPadding(), bottom = 24.dp)
+            .padding(top = paddingValues.calculateTopPadding())
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -60,14 +60,8 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
         BlurredImage(
             image = painterResource(Res.drawable.girasoles),
             blur = 50.dp
-        )
-        BlurredImage(
-            image = painterResource(Res.drawable.girasoles),
-            blur = 60.dp
-        )
-        BlurredImage(
-            image = painterResource(Res.drawable.girasoles),
-            blur = 70.dp
-        )
+        ) {
+
+        }
     }
 }
