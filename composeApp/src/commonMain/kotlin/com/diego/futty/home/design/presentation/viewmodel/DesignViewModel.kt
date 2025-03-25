@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.diego.futty.app.presentation.view.HomeRoute
+import com.diego.futty.home.view.HomeRoute
 import com.diego.futty.core.presentation.theme.AlertLight
 import com.diego.futty.core.presentation.theme.ErrorLight
 import com.diego.futty.core.presentation.theme.InfoLight

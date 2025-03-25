@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.diego.futty.app.presentation.view.HomeRoute
 import com.diego.futty.authentication.view.AuthenticationView
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.utils.SetStatusBarColor

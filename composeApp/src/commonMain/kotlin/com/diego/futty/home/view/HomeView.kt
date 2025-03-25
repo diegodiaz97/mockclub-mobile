@@ -1,5 +1,7 @@
 package com.diego.futty.app.presentation.view
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey200
+import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
 import com.diego.futty.core.presentation.utils.Transitions
@@ -28,13 +31,14 @@ import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.screen.DesignScreen
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
+import com.diego.futty.home.feed.presentation.screen.FeedScreen
+import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
 import com.diego.futty.home.match.presentation.screen.MatchScreen
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
+import com.diego.futty.home.view.BottomNavScreen
+import com.diego.futty.home.view.HomeRoute
 import com.diego.futty.home.view.HomeViewModel
 import com.diego.futty.setup.view.SetupView
-import compose.icons.TablerIcons
-import compose.icons.tablericons.BallFootball
-import compose.icons.tablericons.BrandPinterest
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -43,6 +47,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeView(navigateToLogin: () -> Unit) {
     val appViewModel = koinViewModel<HomeViewModel>()
     val designViewModel = koinViewModel<DesignViewModel>()
+    val feedViewModel = koinViewModel<FeedViewModel>()
     val matchViewModel = koinViewModel<MatchViewModel>()
     val navController = rememberNavController()
 
@@ -51,6 +56,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
         LaunchedEffect(true) {
             appViewModel.setup()
             designViewModel.setup(navController)
+            feedViewModel.setup(navController)
             // matchViewModel.setup()
         }
 
@@ -64,8 +70,8 @@ fun HomeView(navigateToLogin: () -> Unit) {
                     startDestination = appViewModel.currentRoute.value
                 ) {
                     composable<HomeRoute.Design>(
-                        enterTransition = Transitions.LeftScreenEnter,
-                        exitTransition = Transitions.LeftScreenExit,
+                        enterTransition = { EnterTransition.None }, // Sin animación de entrada
+                        exitTransition = { ExitTransition.None },    // Sin animación de salida
                         popEnterTransition = Transitions.RightScreenPopEnter,
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
@@ -75,11 +81,19 @@ fun HomeView(navigateToLogin: () -> Unit) {
                         DesignScreen(viewModel = designViewModel)
                     }
 
+                    composable<HomeRoute.Feed>(
+                        enterTransition = { EnterTransition.None }, // Sin animación de entrada
+                        exitTransition = { ExitTransition.None }    // Sin animación de salida
+                    ) {
+                        LaunchedEffect(true) {
+                            appViewModel.updateRoute(HomeRoute.Feed)
+                        }
+                        FeedScreen(viewModel = feedViewModel)
+                    }
+
                     composable<HomeRoute.Match>(
-                        enterTransition = Transitions.RightScreenEnter,
-                        exitTransition = Transitions.RightScreenExit,
-                        popEnterTransition = Transitions.RightScreenPopEnter,
-                        popExitTransition = Transitions.RightScreenPopExit
+                        enterTransition = { EnterTransition.None }, // Sin animación de entrada
+                        exitTransition = { ExitTransition.None }    // Sin animación de salida
                     ) {
                         LaunchedEffect(true) {
                             appViewModel.updateRoute(HomeRoute.Match)
@@ -133,23 +147,16 @@ fun BottomNavBar(navController: NavController, currentRoute: HomeRoute) {
                 .padding(top = 8.dp, bottom = 24.dp),
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
-            Avatar.IconAvatar(
-                icon = TablerIcons.BrandPinterest,
-                tint = colorGrey900(),
-                background = Color.Transparent,
-                avatarSize = AvatarSize.Big,
-            ) {
-                navigateTo(navController, currentRoute, HomeRoute.Design)
-            }.Draw()
-
-            Avatar.IconAvatar(
-                icon = TablerIcons.BallFootball,
-                tint = colorGrey900(),
-                background = Color.Transparent,
-                avatarSize = AvatarSize.Big,
-            ) {
-                navigateTo(navController, currentRoute, HomeRoute.Match)
-            }.Draw()
+            BottomNavScreen.allScreens.forEach { screen ->
+                Avatar.IconAvatar(
+                    icon = screen.icon,
+                    tint = if (currentRoute == screen.route) colorGrey900() else colorGrey500(),
+                    background = Color.Transparent,
+                    avatarSize = AvatarSize.Big,
+                ) {
+                    navigateTo(navController, currentRoute, screen.route)
+                }.Draw()
+            }
         }
     }
 }

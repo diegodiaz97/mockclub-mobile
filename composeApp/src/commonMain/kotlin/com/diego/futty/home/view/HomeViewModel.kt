@@ -4,7 +4,6 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.diego.futty.app.presentation.view.HomeRoute
 import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.presentation.theme.DayColorScheme
 import com.diego.futty.core.presentation.theme.NightColorScheme

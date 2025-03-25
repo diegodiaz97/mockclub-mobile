@@ -21,6 +21,7 @@ import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.data.local.provideSettings
 import com.diego.futty.core.data.remote.HttpClientFactory
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
+import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
 import com.diego.futty.home.match.data.network.KtorRemoteLiveScoresDataSource
 import com.diego.futty.home.match.data.network.RemoteLiveScoresDataSource
 import com.diego.futty.home.match.data.repository.LiveScoresRepositoryImpl
@@ -71,6 +72,7 @@ val sharedModule = module {
     // Home
     viewModelOf(::HomeViewModel)
     viewModelOf(::DesignViewModel)
+    viewModelOf(::FeedViewModel)
 
     // Setup
     singleOf(::KtorRemoteLogoutDataSource).bind<RemoteLogoutDataSource>()

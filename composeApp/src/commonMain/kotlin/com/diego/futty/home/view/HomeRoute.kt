@@ -1,4 +1,4 @@
-package com.diego.futty.app.presentation.view
+package com.diego.futty.home.view
 
 import kotlinx.serialization.Serializable
 
@@ -6,6 +6,9 @@ sealed interface HomeRoute {
 
     @Serializable
     data object HomeGraph : HomeRoute
+
+    @Serializable
+    data object Feed : HomeRoute
 
     @Serializable
     data object Match : HomeRoute
