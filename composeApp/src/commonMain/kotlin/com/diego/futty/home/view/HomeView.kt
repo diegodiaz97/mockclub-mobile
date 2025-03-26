@@ -22,7 +22,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.theme.colorGrey0
-import com.diego.futty.core.presentation.theme.colorGrey200
+import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
@@ -135,14 +135,14 @@ fun BottomNavBar(navController: NavController, currentRoute: HomeRoute) {
     Column {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth().height(1.dp),
-            color = colorGrey200(),
+            color = colorGrey100(),
         )
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(colorGrey0())
-                .padding(top = 8.dp, bottom = 24.dp),
+                .padding(top = 4.dp, bottom = 20.dp),
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
             BottomNavScreen.allScreens.forEach { screen ->

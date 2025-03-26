@@ -2,6 +2,8 @@ package com.diego.futty.core.presentation.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 
 @Composable
 internal fun colorSuccess() = MaterialTheme.colorScheme.surface
@@ -68,3 +70,31 @@ internal fun colorGrey800() = MaterialTheme.colorScheme.onErrorContainer
 
 @Composable
 internal fun colorGrey900() = MaterialTheme.colorScheme.outline
+
+fun Color.toHex(includeAlpha: Boolean = false): String {
+    val colorInt = this.toArgb()
+    val alpha = (colorInt shr 24) and 0xFF
+    val red = (colorInt shr 16) and 0xFF
+    val green = (colorInt shr 8) and 0xFF
+    val blue = colorInt and 0xFF
+
+    return buildString {
+        append("#")
+        if (includeAlpha) {
+            append(alpha.toString(16).padStart(2, '0'))
+        }
+        append(red.toString(16).padStart(2, '0'))
+        append(green.toString(16).padStart(2, '0'))
+        append(blue.toString(16).padStart(2, '0'))
+    }.uppercase()
+}
+
+fun String.toColor(): Color {
+    val hex = this.removePrefix("#") // Elimina el "#" si está presente
+    val parsedColor = when (hex.length) {
+        6 -> hex.toLong(16) or 0x00000000FF000000 // Agrega alpha FF
+        8 -> hex.toLong(16) // Ya incluye alpha
+        else -> throw IllegalArgumentException("Hex inválido: $this")
+    }
+    return Color(parsedColor)
+}

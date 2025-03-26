@@ -21,6 +21,13 @@ import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.setup.settings.presentation.viewmodel.SettingsViewModel
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Bell
+import compose.icons.tablericons.Bolt
+import compose.icons.tablericons.Certificate
+import compose.icons.tablericons.Download
+import compose.icons.tablericons.Notification
+import compose.icons.tablericons.QuestionMark
 import futty.composeapp.generated.resources.Res
 import futty.composeapp.generated.resources.girasoles
 import org.jetbrains.compose.resources.painterResource
@@ -74,26 +81,31 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Banner.ClickableBanner(
+            icon = TablerIcons.Bell,
             title = "Notificaciones",
             subtitle = "Configuración de notificaciones.",
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
+            icon = TablerIcons.Certificate,
             title = "Verificar",
             subtitle = "Obten el verificado, justo a un gran conjunto de beneficios.",
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
+            icon = TablerIcons.Bolt,
             title = "Publicidad",
             subtitle = "¡Publicita lo que quieras con nosotros!",
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
+            icon = TablerIcons.QuestionMark,
             title = "Ayuda",
             subtitle = "Resuelve tus dudas.",
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
+            icon = TablerIcons.Download,
             title = "Guardado",
             subtitle = "Mira las publicaciones que has guardado.",
             onClick = { }

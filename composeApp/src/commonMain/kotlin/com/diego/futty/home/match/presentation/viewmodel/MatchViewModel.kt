@@ -76,7 +76,7 @@ class MatchViewModel(
         }
     }
 
-    override fun onButtonPressed() {
+    override fun onButtonClicked() {
         _buttonEnabled.value = false
     }
 }

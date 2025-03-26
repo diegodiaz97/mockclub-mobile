@@ -32,6 +32,7 @@ import com.diego.futty.core.presentation.theme.colorSuccessLight
 
 @Composable
 fun LinearProgressBar(
+    modifier: Modifier = Modifier,
     progress: Float,
     color: Color = colorSuccessLight()
 ) {
@@ -46,7 +47,7 @@ fun LinearProgressBar(
     }
 
     LinearProgressIndicator(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .height(12.dp)
             .fillMaxSize(),
@@ -60,6 +61,7 @@ fun LinearProgressBar(
 
 @Composable
 fun CircularProgressBar(
+    modifier: Modifier = Modifier,
     progress: Float,
     text: String = "",
     color: Color = colorSuccessLight()
@@ -76,7 +78,7 @@ fun CircularProgressBar(
 
     Box {
         CircularProgressIndicator(
-            modifier = Modifier.size(90.dp),
+            modifier = modifier.size(90.dp),
             progress = { progressAnimation }, /* 0.0f a 1.0f*/
             color = color,
             trackColor = colorGrey100(),
@@ -85,7 +87,7 @@ fun CircularProgressBar(
             strokeWidth = 12.dp,
         )
         Text(
-            modifier = Modifier.align(Alignment.Center),
+            modifier = modifier.align(Alignment.Center),
             text = text,
             style = typography.bodyLarge,
             fontWeight = FontWeight.SemiBold,

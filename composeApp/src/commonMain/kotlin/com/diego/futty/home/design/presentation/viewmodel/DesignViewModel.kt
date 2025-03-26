@@ -4,13 +4,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.diego.futty.home.view.HomeRoute
 import com.diego.futty.core.presentation.theme.AlertLight
 import com.diego.futty.core.presentation.theme.ErrorLight
 import com.diego.futty.core.presentation.theme.InfoLight
 import com.diego.futty.core.presentation.theme.SuccessLight
 import com.diego.futty.home.design.presentation.component.Chip.ChipModel
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
+import com.diego.futty.home.view.HomeRoute
 import compose.icons.TablerIcons
 import compose.icons.tablericons.BallFootball
 import compose.icons.tablericons.BrandPinterest
@@ -45,11 +45,11 @@ class DesignViewModel : DesignViewContract, ViewModel() {
         _navigate = { navController.navigate(it) }
     }
 
-    override fun onButtonPressed() {
+    override fun onButtonClicked() {
         _bottomsheetDismissed.value = false
     }
 
-    override fun onProfilePressed() {
+    override fun onProfileClicked() {
         _navigate(HomeRoute.Setup)
     }
 
@@ -61,10 +61,10 @@ class DesignViewModel : DesignViewContract, ViewModel() {
         title = "Scrollable Banner",
         description = "Éste banner puede varias cosas en un mismo lugar. Máximo 2 líneas",
         labelAction = "Ver más",
-        action = { onScrollBannerPressed("accion 1") },
+        action = { onScrollBannerClicked("accion 1") },
     )
 
-    override fun onScrollBannerPressed(text: String) {
+    override fun onScrollBannerClicked(text: String) {
         _buttonText.value = text
     }
 

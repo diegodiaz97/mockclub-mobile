@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.Grey900
@@ -42,6 +43,7 @@ sealed interface Banner {
 
     class ClickableBanner(
         val image: Painter? = null,
+        val icon: ImageVector? = null,
         val title: String,
         val subtitle: String,
         val onClick: () -> Unit
@@ -61,6 +63,10 @@ sealed interface Banner {
                 Avatar.FullImageAvatar(
                     image = image,
                     avatarSize = AvatarSize.Big,
+                ).Draw()
+            } else if (icon != null) {
+                Avatar.IconAvatar(
+                    icon = icon,
                 ).Draw()
             }
 

@@ -8,10 +8,10 @@ interface DesignViewContract {
     val chipItems: State<List<ChipModel>>
     val buttonText: State<String>
     val buttonEnabled: State<Boolean>
-    fun onButtonPressed()
+    fun onButtonClicked()
     fun getScrollableBanners(): BannerUIData
-    fun onScrollBannerPressed(text: String)
-    fun onProfilePressed()
+    fun onScrollBannerClicked(text: String)
+    fun onProfileClicked()
     fun onBottomSheetDismissed()
     val bottomsheetDismissed: State<Boolean>
     val selectedChip: State<Int>

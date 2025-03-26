@@ -9,7 +9,6 @@ interface MatchViewContract {
     val liveScores: State<List<LiveMatch>?>
     val error: State<String>
     val leagues: State<List<League>?>
-
-    fun onButtonPressed()
     val todayScores: State<List<LiveMatch>?>
+    fun onButtonClicked()
 }

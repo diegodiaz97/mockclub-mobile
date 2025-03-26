@@ -45,7 +45,7 @@ fun DesignScreen(
                     initials = "DD",
                     tint = colorGrey0(),
                     background = colorGrey900(),
-                    onClick = { viewModel.onProfilePressed() }
+                    onClick = { viewModel.onProfileClicked() }
                 )
             )
         },
@@ -112,7 +112,7 @@ private fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValu
         Banner.ClickableBanner(
             title = "Banner Accionable",
             subtitle = "Éste es un banner que se puede accionar.",
-            onClick = { viewModel.onButtonPressed() }
+            onClick = { viewModel.onButtonClicked() }
         ).Draw()
 
         Banner.ClickableBanner(
@@ -127,7 +127,7 @@ private fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValu
             items = listOf(
                 scrollableBanners,
                 scrollableBanners.copy(
-                    action = { viewModel.onScrollBannerPressed("accion girasoles") },
+                    action = { viewModel.onScrollBannerClicked("accion girasoles") },
                     illustration = Res.drawable.girasoles
                 ),
             ),

@@ -22,19 +22,68 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey900
+import compose.icons.TablerIcons
+import compose.icons.tablericons.User
 
 sealed interface Avatar {
     @Composable
     fun Draw()
 
+    class ProfileAvatar(
+        val modifier: Modifier = Modifier,
+        val image: Painter?,
+        val initials: String?,
+        val tint: Color? = null,
+        val background: Color? = null,
+        val avatarSize: AvatarSize = AvatarSize.Medium,
+        val onClick: (() -> Unit)? = null,
+    ) : Avatar {
+        @Composable
+        override fun Draw() {
+            when {
+                image != null -> {
+                    FullImageAvatar(
+                        modifier = modifier,
+                        image = image,
+                        avatarSize = avatarSize,
+                        onClick = onClick,
+                    ).Draw()
+                }
+
+                initials != null -> {
+                    InitialsAvatar(
+                        modifier = modifier,
+                        initials = initials,
+                        tint = tint,
+                        background = background,
+                        avatarSize = avatarSize,
+                        onClick = onClick,
+                    ).Draw()
+                }
+
+                else -> {
+                    IconAvatar(
+                        modifier = modifier,
+                        icon = TablerIcons.User,
+                        tint = tint,
+                        background = background,
+                        avatarSize = avatarSize,
+                        onClick = onClick,
+                    )
+                }
+            }
+        }
+    }
+
     class FullImageAvatar(
+        val modifier: Modifier = Modifier,
         val image: Painter,
         val avatarSize: AvatarSize = AvatarSize.Medium,
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
         @Composable
         override fun Draw() = Image(
-            modifier = Modifier
+            modifier = modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
                 .background(colorGrey0())
@@ -46,13 +95,14 @@ sealed interface Avatar {
     }
 
     class ImageAvatar(
+        val modifier: Modifier = Modifier,
         val image: Painter,
         val avatarSize: AvatarSize = AvatarSize.Medium,
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
         @Composable
         override fun Draw() = Image(
-            modifier = Modifier
+            modifier = modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
                 .background(colorGrey0())
@@ -64,6 +114,7 @@ sealed interface Avatar {
     }
 
     class IconAvatar(
+        val modifier: Modifier = Modifier,
         val icon: ImageVector,
         val tint: Color? = null,
         val background: Color? = null,
@@ -72,7 +123,7 @@ sealed interface Avatar {
     ) : Avatar {
         @Composable
         override fun Draw() = Icon(
-            modifier = Modifier
+            modifier = modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
                 .background(background ?: colorGrey0())
@@ -85,6 +136,7 @@ sealed interface Avatar {
     }
 
     class InitialsAvatar(
+        val modifier: Modifier = Modifier,
         val initials: String,
         val tint: Color? = null,
         val background: Color? = null,
@@ -93,7 +145,7 @@ sealed interface Avatar {
     ) : Avatar {
         @Composable
         override fun Draw() = Text(
-            modifier = Modifier
+            modifier = modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
                 .background(background ?: colorGrey0())
@@ -104,6 +156,7 @@ sealed interface Avatar {
                 AvatarSize.Small -> typography.titleSmall
                 AvatarSize.Medium -> typography.bodyMedium
                 AvatarSize.Big -> typography.headlineSmall
+                AvatarSize.Extra -> typography.headlineMedium
             },
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
@@ -115,5 +168,6 @@ sealed interface Avatar {
 enum class AvatarSize(val size: Dp, val padding: Dp) {
     Small(size = 28.dp, padding = 4.dp),
     Medium(size = 36.dp, padding = 8.dp),
-    Big(size = 50.dp, padding = 10.dp)
+    Big(size = 50.dp, padding = 10.dp),
+    Extra(size = 60.dp, padding = 10.dp)
 }
