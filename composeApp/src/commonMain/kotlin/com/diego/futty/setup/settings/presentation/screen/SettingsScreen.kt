@@ -22,11 +22,10 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.setup.settings.presentation.viewmodel.SettingsViewModel
 import compose.icons.TablerIcons
+import compose.icons.tablericons.Award
 import compose.icons.tablericons.Bell
 import compose.icons.tablericons.Bolt
-import compose.icons.tablericons.Certificate
 import compose.icons.tablericons.Download
-import compose.icons.tablericons.Notification
 import compose.icons.tablericons.QuestionMark
 import futty.composeapp.generated.resources.Res
 import futty.composeapp.generated.resources.girasoles
@@ -87,7 +86,7 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
-            icon = TablerIcons.Certificate,
+            icon = TablerIcons.Award,
             title = "Verificar",
             subtitle = "Obten el verificado, justo a un gran conjunto de beneficios.",
             onClick = { }

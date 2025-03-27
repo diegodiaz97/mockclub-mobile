@@ -79,10 +79,18 @@ class FeedViewModel : FeedViewContract, ViewModel() {
         ),
         Post(
             id = "",
+            user = getUsers[0],
+            date = "22 de enero a las 14:43",
+            text = "Fotonnnn",
+            images = getImages.subList(0,1),
+            onClick = {},
+        ),
+        Post(
+            id = "",
             user = getUsers[1],
             date = "23 de enero a las 18:43",
             text = "Hoy vi unos girasoles muy amarilloss",
-            images = getImages,
+            images = getImages.subList(1,2),
             onClick = {},
         ),
         Post(

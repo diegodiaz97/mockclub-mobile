@@ -40,7 +40,7 @@ fun DesignScreen(
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp),
-                title = "Hola Diego!",
+                title = "Descubre",
                 topBarActionType = TopBarActionType.Profile(
                     initials = "DD",
                     tint = colorGrey0(),

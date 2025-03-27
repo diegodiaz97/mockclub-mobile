@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
@@ -43,14 +44,16 @@ fun TopBar(
     ) {
         if (onBack != null) {
             TopBarIcon(TablerIcons.ArrowLeft, onBack)
-            Spacer(Modifier.width(12.dp))
+        } else {
+            Spacer(Modifier.width(36.dp))
         }
 
         Text(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).padding(bottom = 2.dp),
             text = title,
-            style = typography.headlineSmall,
-            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center,
+            style = typography.titleMedium,
+            fontWeight = FontWeight.Bold,
             color = colorGrey900()
         )
 

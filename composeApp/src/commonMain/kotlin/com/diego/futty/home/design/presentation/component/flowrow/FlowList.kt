@@ -31,3 +31,29 @@ fun FlowList(list: List<ChipModel>, selectedIndex: Int, onSelected: (Int) -> Uni
         }
     }
 }
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun MultipleFlowList(
+    list: List<ChipModel>,
+    selectedChips: List<ChipModel>,
+    onSelected: (ChipModel) -> Unit
+) {
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        maxItemsInEachRow = 5,
+    ) {
+        list.withIndex().forEach { item ->
+            Chip(
+                item.value.icon,
+                item.value.text,
+                item.value.color,
+                selectedChips.contains(item.value),
+            ) {
+                onSelected(item.value)
+            }
+        }
+    }
+}

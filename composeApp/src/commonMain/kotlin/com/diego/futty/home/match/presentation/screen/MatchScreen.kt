@@ -22,15 +22,14 @@ import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Menu2
 import futty.composeapp.generated.resources.Res
 import futty.composeapp.generated.resources.girasoles
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun MatchScreen(
-    viewModel: MatchViewModel = koinViewModel(),
-    onBack: () -> Unit,
-) {
+fun MatchScreen(viewModel: MatchViewModel = koinViewModel()) {
     Scaffold(
         containerColor = colorGrey0(),
         modifier = Modifier.fillMaxSize(),
@@ -40,7 +39,10 @@ fun MatchScreen(
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp),
                 title = "Opina",
-                topBarActionType = TopBarActionType.Button(text = "Ayuda", onClick = { onBack() })
+                topBarActionType = TopBarActionType.Icon(
+                    icon = TablerIcons.Menu2,
+                    onClick = { }
+                )
             )
         },
         content = { paddingValues ->

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
+import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 
 sealed class TopBarActionType {
     class Button(
@@ -63,6 +64,8 @@ sealed class TopBarActionType {
             when {
                 image != null -> {
                     Avatar.FullImageAvatar(
+                        modifier = Modifier.padding(vertical = 4.dp).padding(end = 4.dp),
+                        avatarSize = AvatarSize.Small,
                         image = image,
                         onClick = onClick
                     ).Draw()
@@ -70,6 +73,8 @@ sealed class TopBarActionType {
 
                 initials != null -> {
                     Avatar.InitialsAvatar(
+                        modifier = Modifier.padding(vertical = 4.dp).padding(end = 4.dp),
+                        avatarSize = AvatarSize.Small,
                         initials = initials,
                         tint = tint ?: colorGrey900(),
                         background = background ?: colorGrey100(),
@@ -79,6 +84,8 @@ sealed class TopBarActionType {
 
                 icon != null -> {
                     Avatar.IconAvatar(
+                        modifier = Modifier.padding(vertical = 4.dp).padding(end = 4.dp),
+                        avatarSize = AvatarSize.Small,
                         icon = icon,
                         tint = tint ?: colorGrey900(),
                         background = background ?: colorGrey100(),

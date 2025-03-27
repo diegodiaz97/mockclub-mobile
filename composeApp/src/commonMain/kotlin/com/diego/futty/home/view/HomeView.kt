@@ -96,7 +96,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
                         LaunchedEffect(true) {
                             appViewModel.updateRoute(HomeRoute.Match)
                         }
-                        MatchScreen(viewModel = matchViewModel) { }
+                        MatchScreen(viewModel = matchViewModel)
                     }
 
                     composable<HomeRoute.Setup>(

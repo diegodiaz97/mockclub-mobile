@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +25,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
-import com.diego.futty.core.presentation.theme.colorGrey200
 import com.diego.futty.core.presentation.theme.colorGrey600
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
@@ -38,13 +37,9 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun Post.Draw() =
     Column(
-        modifier = Modifier.clickable { onClick(this) },
+        modifier = Modifier.padding(vertical = 12.dp).clickable { onClick(this) },
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth().height(1.dp),
-            color = colorGrey200(),
-        )
         PostInformation(user.profileImage, user.name, date)
         if (text != null) {
             Text(
@@ -102,26 +97,41 @@ private fun PostInformation(
 private fun PostImage(
     images: List<ActionableImage>,
 ) {
-    LazyRow(
-        modifier = Modifier.height(260.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        item { Spacer(Modifier.width(8.dp)) }
-        images.forEach { image ->
-            item {
-                Image(
-                    painter = painterResource(image.image),
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(260.dp)
-                        .clickable { image.onClick(image) }
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(colorGrey100())
-                )
+    if (images.size > 1) {
+        LazyRow(
+            modifier = Modifier.height(260.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            item { Spacer(Modifier.width(8.dp)) }
+            images.forEach { image ->
+                item {
+                    Image(
+                        painter = painterResource(image.image),
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(260.dp)
+                            .clickable { image.onClick(image) }
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colorGrey100())
+                    )
+                }
             }
+            item { Spacer(Modifier.width(8.dp)) }
         }
-        item { Spacer(Modifier.width(8.dp)) }
+    } else {
+        val image = images.last()
+        Image(
+            painter = painterResource(image.image),
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .clickable { image.onClick(image) }
+                .clip(RoundedCornerShape(12.dp))
+                .background(colorGrey100())
+        )
     }
 }

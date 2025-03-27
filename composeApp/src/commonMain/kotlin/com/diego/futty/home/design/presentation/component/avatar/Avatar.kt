@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -84,7 +84,7 @@ sealed interface Avatar {
         @Composable
         override fun Draw() = Image(
             modifier = modifier
-                .clip(CircleShape)
+                .clip(RoundedCornerShape(8.dp))
                 .clickable { onClick?.invoke() }
                 .background(colorGrey0())
                 .size(avatarSize.size),
@@ -103,7 +103,7 @@ sealed interface Avatar {
         @Composable
         override fun Draw() = Image(
             modifier = modifier
-                .clip(CircleShape)
+                .clip(RoundedCornerShape(8.dp))
                 .clickable { onClick?.invoke() }
                 .background(colorGrey0())
                 .size(avatarSize.size)
@@ -124,7 +124,7 @@ sealed interface Avatar {
         @Composable
         override fun Draw() = Icon(
             modifier = modifier
-                .clip(CircleShape)
+                .clip(RoundedCornerShape(8.dp))
                 .clickable { onClick?.invoke() }
                 .background(background ?: colorGrey0())
                 .size(avatarSize.size)
@@ -146,7 +146,7 @@ sealed interface Avatar {
         @Composable
         override fun Draw() = Text(
             modifier = modifier
-                .clip(CircleShape)
+                .clip(RoundedCornerShape(8.dp))
                 .clickable { onClick?.invoke() }
                 .background(background ?: colorGrey0())
                 .size(avatarSize.size)
@@ -166,8 +166,8 @@ sealed interface Avatar {
 }
 
 enum class AvatarSize(val size: Dp, val padding: Dp) {
-    Small(size = 28.dp, padding = 4.dp),
+    Small(size = 28.dp, padding = 3.dp),
     Medium(size = 36.dp, padding = 8.dp),
     Big(size = 50.dp, padding = 10.dp),
-    Extra(size = 60.dp, padding = 10.dp)
+    Extra(size = 60.dp, padding = 12.dp)
 }
