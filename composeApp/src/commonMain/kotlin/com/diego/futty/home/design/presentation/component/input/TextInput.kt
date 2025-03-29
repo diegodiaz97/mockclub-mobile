@@ -35,6 +35,68 @@ sealed interface TextInput {
     @Composable
     fun Draw()
 
+    class Input(
+        val input: String,
+        val label: String,
+        val onTextChangeAction: (String) -> Unit,
+        val onFocusChanged: () -> Unit,
+    ) : TextInput {
+        @Composable
+        override fun Draw() {
+            Column {
+                Text(
+                    text = label,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp),
+                    textAlign = TextAlign.Start,
+                    style = typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colorGrey900()
+                )
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(
+                            width = 1.dp,
+                            color = colorGrey200(),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .onFocusChanged {
+                            if (it.hasFocus) onFocusChanged()
+                        },
+                    value = input,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedTextColor = colorGrey900(),
+                        disabledTextColor = colorGrey900(),
+                        focusedTextColor = colorGrey900(),
+                        unfocusedContainerColor = colorGrey0(),
+                        focusedContainerColor = colorGrey0(),
+                        cursorColor = colorGrey900(),
+                        disabledLabelColor = colorGrey900(),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    onValueChange = { onTextChangeAction(it) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    trailingIcon = {
+                        if (input.isNotEmpty()) {
+                            IconButton(onClick = { onTextChangeAction("") }) {
+                                Icon(
+                                    imageVector = TablerIcons.X,
+                                    tint = colorGrey900(),
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    }
+
     class MailInput(
         val input: String,
         val onTextChangeAction: (String) -> Unit,

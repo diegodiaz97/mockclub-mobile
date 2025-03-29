@@ -12,6 +12,8 @@ import androidx.navigation.compose.rememberNavController
 import com.diego.futty.app.presentation.view.HomeView
 import com.diego.futty.authentication.login.presentation.screen.LoginScreen
 import com.diego.futty.authentication.login.presentation.viewmodel.LoginViewModel
+import com.diego.futty.authentication.profileCreation.presentation.screen.ProfileCreationScreen
+import com.diego.futty.authentication.profileCreation.presentation.viewmodel.ProfileCreationViewModel
 import com.diego.futty.authentication.signup.presentation.screen.SignupScreen
 import com.diego.futty.authentication.signup.presentation.viewmodel.SignupViewModel
 import com.diego.futty.authentication.welcome.presentation.screen.WelcomeScreen
@@ -26,6 +28,7 @@ fun AuthenticationView() {
     val authenticationViewModel = koinViewModel<AuthenticationViewModel>()
     val welcomeViewModel = koinViewModel<WelcomeViewModel>()
     val signupViewModel = koinViewModel<SignupViewModel>()
+    val profileCreationViewModel = koinViewModel<ProfileCreationViewModel>()
     val loginViewModel = koinViewModel<LoginViewModel>()
     //val recoveryViewModel = koinViewModel<MatchViewModel>()
     val navController = rememberNavController()
@@ -36,6 +39,7 @@ fun AuthenticationView() {
             authenticationViewModel.setup()
             welcomeViewModel.setup(navController)
             signupViewModel.setup(navController)
+            profileCreationViewModel.setup(navController)
             loginViewModel.setup(navController)
             //recoveryViewModel.setup()
         }
@@ -83,6 +87,18 @@ fun AuthenticationView() {
                             authenticationViewModel.updateRoute(AuthenticationRoute.Signup)
                         }
                         SignupScreen(viewModel = signupViewModel)
+                    }
+
+                    composable<AuthenticationRoute.ProfileCreation>(
+                        enterTransition = Transitions.RightScreenEnter,
+                        exitTransition = Transitions.LeftScreenExit,
+                        popEnterTransition = Transitions.RightScreenPopEnter,
+                        popExitTransition = Transitions.LeftScreenPopExit
+                    ) {
+                        LaunchedEffect(true) {
+                            authenticationViewModel.updateRoute(AuthenticationRoute.ProfileCreation)
+                        }
+                        ProfileCreationScreen(profileCreationViewModel)
                     }
 
                     composable<AuthenticationRoute.Recovery>(

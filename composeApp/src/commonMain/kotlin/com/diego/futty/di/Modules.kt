@@ -5,6 +5,10 @@ import com.diego.futty.authentication.login.data.network.RemoteLoginDataSource
 import com.diego.futty.authentication.login.data.repository.LoginRepositoryImpl
 import com.diego.futty.authentication.login.domain.repository.LoginRepository
 import com.diego.futty.authentication.login.presentation.viewmodel.LoginViewModel
+import com.diego.futty.authentication.profileCreation.data.network.KtorRemoteProfileCreationDataSource
+import com.diego.futty.authentication.profileCreation.data.network.RemoteProfileCreationDataSource
+import com.diego.futty.authentication.profileCreation.data.repository.ProfileCreationRepositoryImpl
+import com.diego.futty.authentication.profileCreation.domain.repository.ProfileCreationRepository
 import com.diego.futty.authentication.signup.data.network.KtorRemoteSignupDataSource
 import com.diego.futty.authentication.signup.data.network.RemoteSignupDataSource
 import com.diego.futty.authentication.signup.data.repository.SignupRepositoryImpl
@@ -18,6 +22,7 @@ import com.diego.futty.authentication.welcome.domain.repository.WelcomeRepositor
 import com.diego.futty.authentication.welcome.presentation.viewmodel.WelcomeViewModel
 import com.diego.futty.core.data.firebase.FirebaseManager
 import com.diego.futty.core.data.local.UserPreferences
+import com.diego.futty.authentication.profileCreation.presentation.viewmodel.ProfileCreationViewModel
 import com.diego.futty.core.data.local.provideSettings
 import com.diego.futty.core.data.remote.HttpClientFactory
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
@@ -61,12 +66,16 @@ val sharedModule = module {
     singleOf(::KtorRemoteSignupDataSource).bind<RemoteSignupDataSource>()
     singleOf(::SignupRepositoryImpl).bind<SignupRepository>()
 
+    singleOf(::KtorRemoteProfileCreationDataSource).bind<RemoteProfileCreationDataSource>()
+    singleOf(::ProfileCreationRepositoryImpl).bind<ProfileCreationRepository>()
+
     singleOf(::KtorRemoteLoginDataSource).bind<RemoteLoginDataSource>()
     singleOf(::LoginRepositoryImpl).bind<LoginRepository>()
 
     viewModelOf(::AuthenticationViewModel)
     viewModelOf(::WelcomeViewModel)
     viewModelOf(::SignupViewModel)
+    viewModelOf(::ProfileCreationViewModel)
     viewModelOf(::LoginViewModel)
 
     // Home

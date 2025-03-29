@@ -40,7 +40,7 @@ fun Post.Draw() =
         modifier = Modifier.padding(vertical = 12.dp).clickable { onClick(this) },
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        PostInformation(user.profileImage, user.name, date)
+        PostInformation(user.profileImage, user.name ?: "", date)
         if (text != null) {
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
@@ -57,7 +57,7 @@ fun Post.Draw() =
 
 @Composable
 private fun PostInformation(
-    profileImage: ProfileImage,
+    profileImage: ProfileImage?,
     title: String,
     subtitle: String,
 ) {
@@ -66,11 +66,11 @@ private fun PostInformation(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val image = profileImage.image
+        val image = profileImage?.image
         Avatar.ProfileAvatar(
-            image = if (image != null) painterResource(image) else null,
-            initials = profileImage.initials,
-            background = profileImage.background?.toColor(),
+            image = null, // if (image != null) painterResource(image) else null,
+            initials = profileImage?.initials,
+            background = profileImage?.background?.toColor(),
             onClick = { }
         ).Draw()
         Column(verticalArrangement = Arrangement.SpaceAround) {

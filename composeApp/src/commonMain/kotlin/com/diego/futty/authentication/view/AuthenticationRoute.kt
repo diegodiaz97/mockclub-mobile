@@ -13,6 +13,9 @@ sealed interface AuthenticationRoute {
     data object Signup: AuthenticationRoute
 
     @Serializable
+    data object ProfileCreation: AuthenticationRoute
+
+    @Serializable
     data object Login: AuthenticationRoute
 
     @Serializable

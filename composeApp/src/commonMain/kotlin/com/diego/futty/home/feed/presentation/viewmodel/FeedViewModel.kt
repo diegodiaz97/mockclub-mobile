@@ -3,7 +3,12 @@ package com.diego.futty.home.feed.presentation.viewmodel
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.diego.futty.authentication.profileCreation.domain.repository.ProfileCreationRepository
+import com.diego.futty.core.data.local.UserPreferences
+import com.diego.futty.core.domain.onError
+import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.core.presentation.theme.ErrorLight
 import com.diego.futty.core.presentation.theme.InfoLight
 import com.diego.futty.core.presentation.theme.toHex
@@ -17,14 +22,32 @@ import futty.composeapp.generated.resources.book_error_2
 import futty.composeapp.generated.resources.compose_multiplatform
 import futty.composeapp.generated.resources.dybala
 import futty.composeapp.generated.resources.girasoles
+import kotlinx.coroutines.launch
 
-class FeedViewModel : FeedViewContract, ViewModel() {
+class FeedViewModel(
+    private val profileCreationRepository: ProfileCreationRepository,
+    private val preferences: UserPreferences,
+) : FeedViewContract, ViewModel() {
     private val getImages = listOf(
         ActionableImage(image = Res.drawable.dybala) { onImageClicked(it) },
         ActionableImage(image = Res.drawable.girasoles) { onImageClicked(it) },
         ActionableImage(image = Res.drawable.compose_multiplatform) { onImageClicked(it) },
         ActionableImage(image = Res.drawable.book_error_2) { onImageClicked(it) },
     )
+
+    private val _user = mutableStateOf<User?>(null)
+    override val user: State<User?> = _user
+
+    private val _posts = mutableStateOf<List<Post>?>(null)
+    override val posts: State<List<Post>?> = _posts
+
+    private val _openedPost = mutableStateOf<Post?>(null)
+    override val openedPost: State<Post?> = _openedPost
+
+    private val _openedImage = mutableStateOf<ActionableImage?>(null)
+    override val openedImage: State<ActionableImage?> = _openedImage
+
+    private var _navigate: (HomeRoute) -> Unit = {}
 
     private val getUsers = listOf(
         User(
@@ -58,7 +81,7 @@ class FeedViewModel : FeedViewContract, ViewModel() {
             email = "",
             name = "Bizzarap",
             description = "",
-            profileImage = ProfileImage(image = Res.drawable.dybala),
+            profileImage = null, // ProfileImage(image = Res.drawable.dybala),
             creationDate = "",
             followers = null,
             following = null,
@@ -109,18 +132,8 @@ class FeedViewModel : FeedViewContract, ViewModel() {
         )
     )
 
-    private val _posts = mutableStateOf<List<Post>?>(null)
-    override val posts: State<List<Post>?> = _posts
-
-    private val _openedPost = mutableStateOf<Post?>(null)
-    override val openedPost: State<Post?> = _openedPost
-
-    private val _openedImage = mutableStateOf<ActionableImage?>(null)
-    override val openedImage: State<ActionableImage?> = _openedImage
-
-    private var _navigate: (HomeRoute) -> Unit = {}
-
     fun setup(navController: NavHostController) {
+        fetchUserInfo()
         _navigate = { navController.navigate(it) }
         _posts.value = getPosts
     }
@@ -143,5 +156,19 @@ class FeedViewModel : FeedViewContract, ViewModel() {
 
     override fun onPostClosed() {
         _openedPost.value = null
+    }
+
+    private fun fetchUserInfo() {
+        viewModelScope.launch {
+            val user = preferences.getUserId() ?: ""
+            profileCreationRepository.fetchProfile(user)
+                .onSuccess { loggedUser ->
+                    // show info
+                    _user.value = loggedUser
+                }
+                .onError {
+                    // show error
+                }
+        }
     }
 }

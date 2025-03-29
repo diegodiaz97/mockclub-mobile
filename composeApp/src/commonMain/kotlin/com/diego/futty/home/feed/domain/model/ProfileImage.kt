@@ -1,9 +1,10 @@
 package com.diego.futty.home.feed.domain.model
 
-import org.jetbrains.compose.resources.DrawableResource
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ProfileImage(
-    val image: DrawableResource? = null,
+    val image: String? = null,
     val initials: String? = null,
     val background: String? = null,
 )

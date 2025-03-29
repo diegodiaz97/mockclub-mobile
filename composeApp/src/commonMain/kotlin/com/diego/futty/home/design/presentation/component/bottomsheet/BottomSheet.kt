@@ -10,16 +10,12 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.diego.futty.core.presentation.theme.GetRandomLightColor
 import com.diego.futty.core.presentation.theme.Grey0
-import com.diego.futty.core.presentation.theme.colorAlert
-import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
-import com.diego.futty.core.presentation.theme.colorInfo
-import com.diego.futty.core.presentation.theme.colorSuccess
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
@@ -27,7 +23,6 @@ import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
-import kotlin.random.Random
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -70,7 +65,7 @@ fun BottomSheet(
                     Avatar.InitialsAvatar(
                         initials = initial,
                         tint = Grey0,
-                        background = getRandomColor(),
+                        background = GetRandomLightColor(),
                         avatarSize = AvatarSize.Big
                     ).Draw()
                 }
@@ -92,11 +87,3 @@ fun BottomSheet(
 
 
 private val initials = listOf("CM", "DC", "JC", "PD", "AT", "CF", "DD", "CH", "AP")
-
-@Composable
-private fun getRandomColor(): Color {
-    val colors = listOf(colorSuccess(), colorError(), colorAlert(), colorInfo())
-    val index = Random.nextInt(4)
-
-    return colors[index]
-}

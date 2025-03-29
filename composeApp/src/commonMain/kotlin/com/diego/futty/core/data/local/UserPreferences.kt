@@ -5,13 +5,20 @@ import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 
 class UserPreferences(private val settings: Settings) {
-
-    fun saveUsername(username: String) {
-        settings[USERNAME] = username
+    fun saveUserId(username: String) {
+        settings[USER_ID] = username
     }
 
-    fun getUsername(): String? {
-        return settings[USERNAME]
+    fun getUserId(): String? {
+        return settings[USER_ID]
+    }
+
+    fun saveUserEmail(email: String) {
+        settings[USER_EMAIL] = email
+    }
+
+    fun getUserEmail(): String? {
+        return settings[USER_EMAIL]
     }
 
     fun saveDarkMode(enabled: Boolean) {
@@ -23,7 +30,8 @@ class UserPreferences(private val settings: Settings) {
     }
 
     companion object {
-        const val USERNAME = "username"
+        const val USER_ID = "user_id"
+        const val USER_EMAIL = "user_email"
         const val DARK_MODE = "dark_mode"
     }
 }

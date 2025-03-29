@@ -38,7 +38,6 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBarActionTyp
 import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Settings
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel) {
@@ -120,19 +119,19 @@ private fun MainInfo(viewModel: ProfileViewModel) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val image = user.profileImage.image
+            val image = user.profileImage?.image
             Avatar.ProfileAvatar(
                 modifier = Modifier.align(Alignment.Top),
-                image = if (image != null) painterResource(image) else null,
-                initials = user.profileImage.initials,
-                background = user.profileImage.background?.toColor(),
+                image = null, // if (image != null) painterResource(image) else null,
+                initials = user.profileImage?.initials,
+                background = user.profileImage?.background?.toColor(),
                 avatarSize = AvatarSize.Extra,
                 onClick = { }
             ).Draw()
             Column(verticalArrangement = Arrangement.SpaceAround) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = user.name,
+                    text = user.name ?: "No especificado",
                     style = typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = colorGrey900()
@@ -141,11 +140,18 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = user.description,
-                        style = typography.titleSmall,
-                        fontWeight = FontWeight.Normal,
+                        style = typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
                         color = colorGrey400()
                     )
                 }
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "En Futty desde el ${user.creationDate}",
+                    style = typography.titleSmall,
+                    fontWeight = FontWeight.Normal,
+                    color = colorGrey400()
+                )
             }
         }
     } else {

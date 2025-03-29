@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -64,7 +66,6 @@ sealed class TopBarActionType {
             when {
                 image != null -> {
                     Avatar.FullImageAvatar(
-                        modifier = Modifier.padding(vertical = 4.dp).padding(end = 4.dp),
                         avatarSize = AvatarSize.Small,
                         image = image,
                         onClick = onClick
@@ -73,7 +74,6 @@ sealed class TopBarActionType {
 
                 initials != null -> {
                     Avatar.InitialsAvatar(
-                        modifier = Modifier.padding(vertical = 4.dp).padding(end = 4.dp),
                         avatarSize = AvatarSize.Small,
                         initials = initials,
                         tint = tint ?: colorGrey900(),
@@ -84,7 +84,6 @@ sealed class TopBarActionType {
 
                 icon != null -> {
                     Avatar.IconAvatar(
-                        modifier = Modifier.padding(vertical = 4.dp).padding(end = 4.dp),
                         avatarSize = AvatarSize.Small,
                         icon = icon,
                         tint = tint ?: colorGrey900(),
@@ -119,7 +118,7 @@ sealed class TopBarActionType {
     object None : TopBarActionType() {
         @Composable
         override fun Draw() {
-            // Do nothing
+            Spacer(Modifier.width(36.dp))
         }
     }
 

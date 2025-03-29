@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
-import com.diego.futty.core.presentation.theme.colorGrey900
+import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.PlatformInfo
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.post.Draw
@@ -53,9 +53,8 @@ fun FeedScreen(
                     .padding(horizontal = 16.dp),
                 title = "Futty",
                 topBarActionType = TopBarActionType.Profile(
-                    initials = "DD",
-                    tint = colorGrey0(),
-                    background = colorGrey900(),
+                    initials = viewModel.user.value?.profileImage?.initials,
+                    background = viewModel.user.value?.profileImage?.background?.toColor(),
                     onClick = { viewModel.onProfileClicked() }
                 )
             )

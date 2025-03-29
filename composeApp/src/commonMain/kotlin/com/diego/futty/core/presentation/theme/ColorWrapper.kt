@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import kotlin.random.Random
 
 @Composable
 internal fun colorSuccess() = MaterialTheme.colorScheme.surface
@@ -97,4 +98,19 @@ fun String.toColor(): Color {
         else -> throw IllegalArgumentException("Hex inválido: $this")
     }
     return Color(parsedColor)
+}
+
+fun getRandomLightColorHex(): String {
+    val colors = listOf("0xFF71D88A", "0xFFF28B92", "0xFFFFE17A", "0xFF69D2E7")
+    val index = Random.nextInt(4)
+
+    return colors[index]
+}
+
+@Composable
+fun GetRandomLightColor(): Color {
+    val colors = listOf(colorSuccessLight(), colorErrorLight(), colorAlertLight(), colorInfoLight())
+    val index = Random.nextInt(4)
+
+    return colors[index]
 }

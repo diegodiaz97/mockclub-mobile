@@ -3,7 +3,12 @@ package com.diego.futty.setup.profile.presentation.viewmodel
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.diego.futty.authentication.profileCreation.domain.repository.ProfileCreationRepository
+import com.diego.futty.core.data.local.UserPreferences
+import com.diego.futty.core.domain.onError
+import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.core.presentation.theme.AlertLight
 import com.diego.futty.core.presentation.theme.ErrorLight
 import com.diego.futty.core.presentation.theme.InfoLight
@@ -24,8 +29,12 @@ import compose.icons.tablericons.Plane
 import compose.icons.tablericons.School
 import compose.icons.tablericons.Video
 import compose.icons.tablericons.Wallet
+import kotlinx.coroutines.launch
 
-class ProfileViewModel : ProfileViewContract, ViewModel() {
+class ProfileViewModel(
+    private val profileCreationRepository: ProfileCreationRepository,
+    private val preferences: UserPreferences,
+) : ProfileViewContract, ViewModel() {
 
     private val dummyUser = User(
         id = "",
@@ -110,7 +119,7 @@ class ProfileViewModel : ProfileViewContract, ViewModel() {
         navController: NavHostController,
         onBack: () -> Unit,
     ) {
-        _user.value = dummyUser
+        fetchUserInfo()
         _chipItems.value = dummyChips
         _navigate = { navController.navigate(it) }
         _back = onBack
@@ -129,6 +138,20 @@ class ProfileViewModel : ProfileViewContract, ViewModel() {
             _selectedChips.value -= chip
         } else {
             _selectedChips.value += chip
+        }
+    }
+
+    private fun fetchUserInfo() {
+        viewModelScope.launch {
+            val user = preferences.getUserId() ?: ""
+            profileCreationRepository.fetchProfile(user)
+                .onSuccess { loggedUser ->
+                    // show info
+                    _user.value = loggedUser
+                }
+                .onError {
+                    // show error
+                }
         }
     }
 }
