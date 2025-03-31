@@ -89,6 +89,7 @@ kotlin {
                 implementation(libs.com.google.firebase.firebase.firestore)
                 implementation(libs.com.google.firebase.firebase.storage)
                 implementation(libs.com.google.firebase.firebase.messaging)
+                implementation(libs.accompanist.permissions)
             }
         }
 

@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
@@ -54,7 +53,7 @@ sealed class TopBarActionType {
     }
 
     class Profile(
-        private val image: Painter? = null,
+        private val imageUrl: String? = null,
         private val icon: ImageVector? = null,
         private val initials: String? = null,
         private val tint: Color? = null,
@@ -64,10 +63,10 @@ sealed class TopBarActionType {
         @Composable
         override fun Draw() {
             when {
-                image != null -> {
+                imageUrl != null -> {
                     Avatar.FullImageAvatar(
                         avatarSize = AvatarSize.Small,
-                        image = image,
+                        imageUrl = imageUrl,
                         onClick = onClick
                     ).Draw()
                 }

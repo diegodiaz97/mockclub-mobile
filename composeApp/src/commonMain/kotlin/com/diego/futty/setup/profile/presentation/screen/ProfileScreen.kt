@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -16,10 +17,22 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.diego.futty.core.presentation.photos.PermissionCallback
+import com.diego.futty.core.presentation.photos.PermissionStatus
+import com.diego.futty.core.presentation.photos.PermissionType
+import com.diego.futty.core.presentation.photos.createPermissionsManager
+import com.diego.futty.core.presentation.photos.rememberCameraManager
+import com.diego.futty.core.presentation.photos.rememberGalleryManager
 import com.diego.futty.core.presentation.theme.colorAlertLight
 import com.diego.futty.core.presentation.theme.colorErrorLight
 import com.diego.futty.core.presentation.theme.colorGrey0
@@ -30,6 +43,9 @@ import com.diego.futty.core.presentation.theme.colorInfoLight
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
+import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.button.PrimaryButton
+import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.flowrow.MultipleFlowList
 import com.diego.futty.home.design.presentation.component.progressbar.CircularProgressBar
 import com.diego.futty.home.design.presentation.component.progressbar.LinearProgressBar
@@ -38,6 +54,9 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBarActionTyp
 import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Settings
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel) {
@@ -74,6 +93,7 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
         MainInfo(viewModel)
         Desires(viewModel)
         Levels()
+        ImageHandler(viewModel)
     }
 }
 
@@ -122,11 +142,11 @@ private fun MainInfo(viewModel: ProfileViewModel) {
             val image = user.profileImage?.image
             Avatar.ProfileAvatar(
                 modifier = Modifier.align(Alignment.Top),
-                image = null, // if (image != null) painterResource(image) else null,
+                imageUrl = viewModel.urlImage.value,
                 initials = user.profileImage?.initials,
                 background = user.profileImage?.background?.toColor(),
                 avatarSize = AvatarSize.Extra,
-                onClick = { }
+                onClick = { viewModel.showUpdateImage(true) }
             ).Draw()
             Column(verticalArrangement = Arrangement.SpaceAround) {
                 Text(
@@ -181,5 +201,133 @@ private fun Desires(viewModel: ProfileViewModel) {
         } else {
             // SHIMMERS
         }
+    }
+}
+
+/*TODO - MEJORAR ESTO*/
+@Composable
+private fun ImageHandler(
+    viewModel: ProfileViewModel,
+    /*showOptions: Boolean,
+    launchCamera: Boolean,
+    launchGallery: Boolean,
+    launchSettings: Boolean,*/
+) {
+    val coroutineScope = rememberCoroutineScope()
+    var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+    var imageByteArray by remember { mutableStateOf<ByteArray?>(null) }
+    var imageSourceOptionDialog by remember { mutableStateOf(value = false) } // SHOW OPTIONS
+    var launchCamera by remember { mutableStateOf(value = false) } // LANZA CAMARA
+    var launchGallery by remember { mutableStateOf(value = false) } // LANZA GALERIA
+    var launchSetting by remember { mutableStateOf(value = false) } // LANZA SETTINGS
+    var permissionRationalDialog by remember { mutableStateOf(value = false) }
+    val permissionsManager = createPermissionsManager(object : PermissionCallback {
+        override fun onPermissionStatus(
+            permissionType: PermissionType,
+            status: PermissionStatus
+        ) {
+            when (status) {
+                PermissionStatus.GRANTED -> {
+                    when (permissionType) {
+                        PermissionType.CAMERA -> launchCamera = true
+                        PermissionType.GALLERY -> launchGallery = true
+                    }
+                }
+
+                else -> {
+                    permissionRationalDialog = true
+                }
+            }
+        }
+    })
+
+    val cameraManager = rememberCameraManager {
+        coroutineScope.launch {
+            val bitmap = withContext(Dispatchers.Default) {
+                it?.toImageBitmap()
+            }
+            val byteArray = withContext(Dispatchers.Default) {
+                it?.toByteArray()
+            }
+            imageBitmap = bitmap
+            imageByteArray = byteArray
+        }
+    }
+
+    val galleryManager = rememberGalleryManager {
+        coroutineScope.launch {
+            val bitmap = withContext(Dispatchers.Default) {
+                it?.toImageBitmap()
+            }
+            val byteArray = withContext(Dispatchers.Default) {
+                it?.toByteArray()
+            }
+            imageBitmap = bitmap
+            imageByteArray = byteArray
+        }
+    }
+
+    // MOSTRAR OPCIONES (CAMARA Y GALERIA)
+    if (viewModel.showUpdateImage.value) {
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            PrimaryButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 8.dp),
+                title = "Crear cuenta",
+                isEnabled = true,
+                onClick = {
+                    imageSourceOptionDialog = false
+                    viewModel.showUpdateImage(false)
+                    launchGallery = true
+                }
+            )
+            SecondaryButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                title = "Ya tengo cuenta",
+                isEnabled = true,
+                onClick = {
+                    imageSourceOptionDialog = false
+                    viewModel.showUpdateImage(false)
+                    launchCamera = true
+                }
+            )
+        }
+    }
+    if (launchGallery) { // ABRIR GALERÍA
+        if (permissionsManager.isPermissionGranted(PermissionType.GALLERY)) {
+            galleryManager.launch()
+        } else {
+            permissionsManager.askPermission(PermissionType.GALLERY)
+        }
+        launchGallery = false
+    }
+    if (launchCamera) { // ABRIR CAMARA
+        if (permissionsManager.isPermissionGranted(PermissionType.CAMERA)) {
+            cameraManager.launch()
+        } else {
+            permissionsManager.askPermission(PermissionType.CAMERA)
+        }
+        launchCamera = false
+    }
+    if (launchSetting) { // IR A SETTINGS
+        permissionsManager.launchSettings()
+        launchSetting = false
+    }
+    if (permissionRationalDialog) { // ERROR NO ACEPTO PERMISOS
+        Banner.ClickableBanner(
+            title = "Algo salió mal",
+            subtitle = "Éste banner te avisará cuando algo salió mal.",
+            onClick = {
+                permissionRationalDialog = false
+                launchSetting = true
+            }
+        ).Draw()
+    }
+    if (imageBitmap != null) {
+        viewModel.updateImage(imageBitmap!!, imageByteArray!!)
     }
 }

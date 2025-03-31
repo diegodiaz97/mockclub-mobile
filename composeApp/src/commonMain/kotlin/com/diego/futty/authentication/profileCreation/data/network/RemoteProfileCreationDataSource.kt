@@ -11,4 +11,6 @@ interface RemoteProfileCreationDataSource {
         id: String,
         updates: Map<String, Any?>
     ): DataResult<String, DataError.Remote>
+
+    suspend fun updateProfileImage(image: ByteArray): DataResult<String, DataError.Remote>
 }

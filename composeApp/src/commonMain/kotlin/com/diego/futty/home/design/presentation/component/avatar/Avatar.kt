@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil3.compose.rememberAsyncImagePainter
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey900
 import compose.icons.TablerIcons
@@ -31,7 +32,7 @@ sealed interface Avatar {
 
     class ProfileAvatar(
         val modifier: Modifier = Modifier,
-        val image: Painter?,
+        val imageUrl: String?,
         val initials: String?,
         val tint: Color? = null,
         val background: Color? = null,
@@ -41,10 +42,10 @@ sealed interface Avatar {
         @Composable
         override fun Draw() {
             when {
-                image != null -> {
+                imageUrl != null -> {
                     FullImageAvatar(
                         modifier = modifier,
-                        image = image,
+                        imageUrl = imageUrl,
                         avatarSize = avatarSize,
                         onClick = onClick,
                     ).Draw()
@@ -77,7 +78,7 @@ sealed interface Avatar {
 
     class FullImageAvatar(
         val modifier: Modifier = Modifier,
-        val image: Painter,
+        val imageUrl: String?,
         val avatarSize: AvatarSize = AvatarSize.Medium,
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
@@ -89,7 +90,7 @@ sealed interface Avatar {
                 .background(colorGrey0())
                 .size(avatarSize.size),
             contentScale = ContentScale.Crop,
-            painter = image,
+            painter = rememberAsyncImagePainter(imageUrl),
             contentDescription = null
         )
     }

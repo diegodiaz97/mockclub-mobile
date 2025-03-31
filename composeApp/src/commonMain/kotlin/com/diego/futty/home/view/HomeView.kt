@@ -75,6 +75,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
                     ) {
                         LaunchedEffect(true) {
                             appViewModel.updateRoute(HomeRoute.Feed)
+                            feedViewModel.setup(navController)
                         }
                         FeedScreen(viewModel = feedViewModel)
                     }

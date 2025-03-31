@@ -53,6 +53,7 @@ fun FeedScreen(
                     .padding(horizontal = 16.dp),
                 title = "Futty",
                 topBarActionType = TopBarActionType.Profile(
+                    imageUrl = viewModel.user.value?.profileImage?.image,
                     initials = viewModel.user.value?.profileImage?.initials,
                     background = viewModel.user.value?.profileImage?.background?.toColor(),
                     onClick = { viewModel.onProfileClicked() }

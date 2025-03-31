@@ -24,4 +24,8 @@ class ProfileCreationRepositoryImpl(
     ): DataResult<String, DataError.Remote> {
         return remoteProfileCreationDataSource.updateProfile(id, updates)
     }
+
+    override suspend fun updateProfileImage(image: ByteArray): DataResult<String, DataError.Remote> {
+        return remoteProfileCreationDataSource.updateProfileImage(image)
+    }
 }

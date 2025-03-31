@@ -101,13 +101,13 @@ class ProfileCreationViewModel(
                 updates["profileImage.initials"] = _initials.value
             }
             if (_description.value.isNotEmpty()) {
-                updates["description"] = description.value
+                updates["description"] = _description.value
             }
             if (_image.value.isNotEmpty()) {
-                updates["profileImage.image"] = image.value
+                updates["profileImage.image"] = _image.value
             }
             if (_country.value.isNotEmpty()) {
-                updates["country"] = country.value
+                updates["country"] = _country.value
             }
 
             profileCreationRepository.updateProfile(id, updates)

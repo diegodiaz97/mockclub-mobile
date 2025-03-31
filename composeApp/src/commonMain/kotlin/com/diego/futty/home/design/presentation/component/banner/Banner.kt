@@ -60,7 +60,7 @@ sealed interface Banner {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             if (image != null) {
-                Avatar.FullImageAvatar(
+                Avatar.ImageAvatar(
                     image = image,
                     avatarSize = AvatarSize.Big,
                 ).Draw()

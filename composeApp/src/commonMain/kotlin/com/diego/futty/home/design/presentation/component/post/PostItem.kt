@@ -68,7 +68,7 @@ private fun PostInformation(
     ) {
         val image = profileImage?.image
         Avatar.ProfileAvatar(
-            image = null, // if (image != null) painterResource(image) else null,
+            imageUrl = profileImage?.image, // if (image != null) painterResource(image) else null,
             initials = profileImage?.initials,
             background = profileImage?.background?.toColor(),
             onClick = { }

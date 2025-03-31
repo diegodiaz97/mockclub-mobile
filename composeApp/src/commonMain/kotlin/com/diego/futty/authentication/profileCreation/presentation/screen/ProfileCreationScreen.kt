@@ -82,7 +82,7 @@ private fun ProfileCreationContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Avatar.ProfileAvatar(
-            image = null,
+            imageUrl = viewModel.image.value,
             initials = viewModel.initials.value,
             background = viewModel.background.value.toColor(),
             avatarSize = AvatarSize.Extra

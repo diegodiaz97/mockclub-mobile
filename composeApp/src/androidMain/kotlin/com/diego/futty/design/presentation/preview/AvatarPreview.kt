@@ -59,7 +59,7 @@ private fun ImageAvatarBigPreview() {
 private fun FullImageAvatarSmallPreview() {
     FuttyTheme {
         Avatar.FullImageAvatar(
-            image = painterResource(Res.drawable.girasoles),
+            imageUrl = "",
             avatarSize = AvatarSize.Small
         ).Draw()
     }
@@ -70,7 +70,7 @@ private fun FullImageAvatarSmallPreview() {
 private fun FullImageAvatarMediumPreview() {
     FuttyTheme {
         Avatar.FullImageAvatar(
-            image = painterResource(Res.drawable.girasoles),
+            imageUrl = "",
             avatarSize = AvatarSize.Medium
         ).Draw()
     }
@@ -81,7 +81,7 @@ private fun FullImageAvatarMediumPreview() {
 private fun FullImageAvatarBigPreview() {
     FuttyTheme {
         Avatar.FullImageAvatar(
-            image = painterResource(Res.drawable.girasoles),
+            imageUrl = "",
             avatarSize = AvatarSize.Big
         ).Draw()
     }

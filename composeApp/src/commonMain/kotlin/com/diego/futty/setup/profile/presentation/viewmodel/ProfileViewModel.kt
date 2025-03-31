@@ -2,6 +2,7 @@ package com.diego.futty.setup.profile.presentation.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -13,9 +14,7 @@ import com.diego.futty.core.presentation.theme.AlertLight
 import com.diego.futty.core.presentation.theme.ErrorLight
 import com.diego.futty.core.presentation.theme.InfoLight
 import com.diego.futty.core.presentation.theme.SuccessLight
-import com.diego.futty.core.presentation.theme.toHex
 import com.diego.futty.home.design.presentation.component.Chip.ChipModel
-import com.diego.futty.home.feed.domain.model.ProfileImage
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.setup.view.SetupRoute
 import compose.icons.TablerIcons
@@ -35,20 +34,6 @@ class ProfileViewModel(
     private val profileCreationRepository: ProfileCreationRepository,
     private val preferences: UserPreferences,
 ) : ProfileViewContract, ViewModel() {
-
-    private val dummyUser = User(
-        id = "",
-        email = "",
-        name = "Diego Díaz",
-        description = "Hincha de Estudiantes L.P - Tandil, Argentina.",
-        profileImage = ProfileImage(initials = "DD", background = InfoLight.toHex()),
-        creationDate = "",
-        followers = null,
-        following = null,
-        level = 3,
-        country = "Argentina",
-        desires = null,
-    )
 
     private val dummyChips = listOf(
         ChipModel(
@@ -106,12 +91,20 @@ class ProfileViewModel(
     private val _user = mutableStateOf<User?>(null)
     override val user: State<User?> = _user
 
+    private val _showUpdateImage = mutableStateOf<Boolean>(false)
+    override val showUpdateImage: State<Boolean> = _showUpdateImage
+
+    private val _urlImage = mutableStateOf<String?>(null)
+    override val urlImage: State<String?> = _urlImage
+
     private val _chipItems = mutableStateOf<List<ChipModel>?>(null)
     override val chipItems: State<List<ChipModel>?> = _chipItems
 
     private val _selectedChips = mutableStateOf<List<ChipModel>>(emptyList())
     override val selectedChips: State<List<ChipModel>> = _selectedChips
 
+    private val _bitmapImage = mutableStateOf<ImageBitmap?>(null)
+    private val _byteArrayImage = mutableStateOf<ByteArray?>(null)
     private var _navigate: (SetupRoute) -> Unit = {}
     private var _back: () -> Unit = {}
 
@@ -141,6 +134,16 @@ class ProfileViewModel(
         }
     }
 
+    override fun updateImage(imageBitmap: ImageBitmap, imageByteArray: ByteArray) {
+        _bitmapImage.value = imageBitmap
+        _byteArrayImage.value = imageByteArray
+        updateProfileImage()
+    }
+
+    override fun showUpdateImage(show: Boolean) {
+        _showUpdateImage.value = show
+    }
+
     private fun fetchUserInfo() {
         viewModelScope.launch {
             val user = preferences.getUserId() ?: ""
@@ -148,6 +151,19 @@ class ProfileViewModel(
                 .onSuccess { loggedUser ->
                     // show info
                     _user.value = loggedUser
+                    _urlImage.value = loggedUser.profileImage?.image
+                }
+                .onError {
+                    // show error
+                }
+        }
+    }
+
+    private fun updateProfileImage() {
+        viewModelScope.launch {
+            profileCreationRepository.updateProfileImage(_byteArrayImage.value!!)
+                .onSuccess { url ->
+                    _urlImage.value = url
                 }
                 .onError {
                     // show error

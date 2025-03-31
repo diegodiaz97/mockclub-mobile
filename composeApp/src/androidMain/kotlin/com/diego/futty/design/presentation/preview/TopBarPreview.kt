@@ -84,7 +84,7 @@ private fun TopBarImageProfile() {
             title = "Hola Diego!",
             onBack = null,
             topBarActionType = TopBarActionType.Profile(
-                image = painterResource(Res.drawable.book_error_2),
+                imageUrl = "",
                 onClick = {}
             )
         )
