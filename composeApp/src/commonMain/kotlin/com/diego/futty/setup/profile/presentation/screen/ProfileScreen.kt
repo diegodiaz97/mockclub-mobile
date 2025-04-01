@@ -1,19 +1,24 @@
 package com.diego.futty.setup.profile.presentation.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -26,37 +31,49 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.core.presentation.photos.PermissionCallback
 import com.diego.futty.core.presentation.photos.PermissionStatus
 import com.diego.futty.core.presentation.photos.PermissionType
 import com.diego.futty.core.presentation.photos.createPermissionsManager
 import com.diego.futty.core.presentation.photos.rememberCameraManager
 import com.diego.futty.core.presentation.photos.rememberGalleryManager
+import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorAlertLight
 import com.diego.futty.core.presentation.theme.colorErrorLight
 import com.diego.futty.core.presentation.theme.colorGrey0
-import com.diego.futty.core.presentation.theme.colorGrey400
+import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey700
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.colorInfoLight
 import com.diego.futty.core.presentation.theme.toColor
+import com.diego.futty.core.presentation.utils.PlatformInfo
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.banner.Banner
-import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.flowrow.MultipleFlowList
+import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.design.presentation.component.progressbar.CircularProgressBar
 import com.diego.futty.home.design.presentation.component.progressbar.LinearProgressBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
+import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
+import com.skydoves.flexible.core.FlexibleSheetSize
+import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Calendar
 import compose.icons.tablericons.Settings
+import compose.icons.tablericons.X
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -83,6 +100,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
             ProfileContent(viewModel, paddingValues)
         },
     )
+    ImageHandler(viewModel)
 }
 
 @Composable
@@ -96,7 +114,6 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
         MainInfo(viewModel)
         Desires(viewModel)
         Levels()
-        ImageHandler(viewModel)
     }
 }
 
@@ -142,29 +159,52 @@ private fun MainInfo(viewModel: ProfileViewModel) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Avatar.ProfileAvatar(
-                modifier = Modifier.align(Alignment.Top),
-                imageUrl = viewModel.urlImage.value,
-                initials = viewModel.initials.value,
-                background = user.profileImage?.background?.toColor(),
-                avatarSize = AvatarSize.Extra,
-                onClick = { viewModel.showUpdateImage(true) }
-            ).Draw()
-            Column(verticalArrangement = Arrangement.SpaceAround) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Avatar.ProfileAvatar(
+                    imageUrl = viewModel.urlImage.value,
+                    initials = viewModel.initials.value,
+                    background = user.profileImage?.background?.toColor(),
+                    avatarSize = AvatarSize.Extra,
+                    onClick = { viewModel.showUpdateImage() }
+                ).Draw()
                 Text(
-                    modifier = Modifier.fillMaxWidth().padding(start = 1.dp),
-                    text = user.name ?: "No especificado",
-                    style = typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .clickable { viewModel.onEditClicked() },
+                    text = "Editar",
+                    style = typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
                     color = colorGrey900()
                 )
+            }
+
+            Column(
+                modifier = Modifier.align(Alignment.Top),
+                verticalArrangement = Arrangement.SpaceAround
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(start = 1.dp),
+                        text = "${user.name} ${user.lastName}",
+                        style = typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = colorGrey900()
+                    )
+                    VerifiedIcon(Modifier.padding(top = 4.dp))
+                }
                 if (user.description != null) {
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(start = 1.dp),
                         text = user.description,
                         style = typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = colorGrey400()
+                        color = colorGrey500()
                     )
                 }
                 Row(
@@ -175,7 +215,7 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                     Icon(
                         modifier = Modifier.size(16.dp),
                         imageVector = TablerIcons.Calendar,
-                        tint = colorGrey400(),
+                        tint = colorGrey500(),
                         contentDescription = null
                     )
                     Text(
@@ -183,7 +223,7 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                         text = "En Futty desde el ${user.creationDate}",
                         style = typography.titleSmall,
                         fontWeight = FontWeight.Normal,
-                        color = colorGrey400()
+                        color = colorGrey500()
                     )
                 }
             }
@@ -220,19 +260,10 @@ private fun Desires(viewModel: ProfileViewModel) {
 
 /*TODO - MEJORAR ESTO*/
 @Composable
-private fun ImageHandler(
-    viewModel: ProfileViewModel,
-    /*showOptions: Boolean,
-    launchCamera: Boolean,
-    launchGallery: Boolean,
-    launchSettings: Boolean,*/
-) {
+private fun ImageHandler(viewModel: ProfileViewModel) {
     val coroutineScope = rememberCoroutineScope()
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     var imageByteArray by remember { mutableStateOf<ByteArray?>(null) }
-    var imageSourceOptionDialog by remember { mutableStateOf(value = false) } // SHOW OPTIONS
-    var launchCamera by remember { mutableStateOf(value = false) } // LANZA CAMARA
-    var launchGallery by remember { mutableStateOf(value = false) } // LANZA GALERIA
     var launchSetting by remember { mutableStateOf(value = false) } // LANZA SETTINGS
     var permissionRationalDialog by remember { mutableStateOf(value = false) }
     val permissionsManager = createPermissionsManager(object : PermissionCallback {
@@ -243,8 +274,8 @@ private fun ImageHandler(
             when (status) {
                 PermissionStatus.GRANTED -> {
                     when (permissionType) {
-                        PermissionType.CAMERA -> launchCamera = true
-                        PermissionType.GALLERY -> launchGallery = true
+                        PermissionType.CAMERA -> viewModel.launchCamera()
+                        PermissionType.GALLERY -> viewModel.launchGallery()
                     }
                 }
 
@@ -284,49 +315,23 @@ private fun ImageHandler(
     // MOSTRAR OPCIONES (CAMARA Y GALERIA)
     if (viewModel.showUpdateImage.value) {
         imageBitmap = null
-        Column(modifier = Modifier.navigationBarsPadding()) {
-            PrimaryButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 8.dp),
-                title = "Crear cuenta",
-                isEnabled = true,
-                onClick = {
-                    imageSourceOptionDialog = false
-                    viewModel.showUpdateImage(false)
-                    launchGallery = true
-                }
-            )
-            SecondaryButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                title = "Ya tengo cuenta",
-                isEnabled = true,
-                onClick = {
-                    imageSourceOptionDialog = false
-                    viewModel.showUpdateImage(false)
-                    launchCamera = true
-                }
-            )
-        }
+        OpenedImage(viewModel)
     }
-    if (launchGallery) { // ABRIR GALERÍA
+    if (viewModel.launchGallery.value) { // ABRIR GALERÍA
         if (permissionsManager.isPermissionGranted(PermissionType.GALLERY)) {
             galleryManager.launch()
         } else {
             permissionsManager.askPermission(PermissionType.GALLERY)
         }
-        launchGallery = false
+        viewModel.launchGallery()
     }
-    if (launchCamera) { // ABRIR CAMARA
+    if (viewModel.launchCamera.value) { // ABRIR CAMARA
         if (permissionsManager.isPermissionGranted(PermissionType.CAMERA)) {
             cameraManager.launch()
         } else {
             permissionsManager.askPermission(PermissionType.CAMERA)
         }
-        launchCamera = false
+        viewModel.launchCamera()
     }
     if (launchSetting) { // IR A SETTINGS
         permissionsManager.launchSettings()
@@ -344,5 +349,106 @@ private fun ImageHandler(
     }
     if (imageBitmap != null) {
         viewModel.updateImage(imageBitmap!!, imageByteArray!!)
+    }
+}
+
+@Composable
+private fun OpenedImage(viewModel: ProfileViewModel) {
+    FlexibleBottomSheet(
+        containerColor = colorGrey0().copy(alpha = 0.9f),
+        scrimColor = Color.Transparent,
+        onDismissRequest = { viewModel.showUpdateImage() },
+        sheetState = rememberFlexibleBottomSheetState(
+            flexibleSheetSize = FlexibleSheetSize(
+                fullyExpanded = 1f
+            ),
+            isModal = true,
+            skipIntermediatelyExpanded = true,
+            skipSlightlyExpanded = true,
+        ),
+        windowInsets = WindowInsets(0.dp),
+        dragHandle = {},
+    ) {
+        Box(Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center
+            ) {
+                when {
+                    viewModel.urlImage.value?.isNotEmpty() == true -> {
+                        SubcomposeAsyncImage(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp)
+                                .aspectRatio(1f)
+                                .clip(CircleShape),
+                            model = viewModel.urlImage.value,
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "profile image",
+                            loading = {
+                                Shimmer(
+                                    modifier = Modifier
+                                        .padding(horizontal = 24.dp)
+                                        .clip(CircleShape)
+                                        .align(Alignment.Center)
+                                )
+                            }
+                        )
+                    }
+
+                    viewModel.initials.value != null -> {
+                        val color = viewModel.user.value?.profileImage?.background?.toColor() ?: colorGrey900()
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 50.dp)
+                                .aspectRatio(1f)
+                                .clip(CircleShape)
+                                .background(color),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = viewModel.initials.value ?: "",
+                                fontWeight = FontWeight.Bold,
+                                style = typography.headlineLarge,
+                                color = colorGrey900(),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
+                }
+
+                Row(modifier = Modifier.padding(20.dp)) {
+                    SecondaryButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp),
+                        title = "Tomar foto",
+                        onClick = {
+                            viewModel.showUpdateImage()
+                            viewModel.launchCamera()
+                        }
+                    )
+                    SecondaryButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp),
+                        title = "Seleccionar foto",
+                        onClick = {
+                            viewModel.showUpdateImage()
+                            viewModel.launchGallery()
+                        }
+                    )
+                }
+            }
+            Avatar.IconAvatar(
+                modifier = Modifier
+                    .padding(top = if (PlatformInfo.isAndroid) 12.dp else 60.dp, end = 16.dp)
+                    .align(Alignment.TopEnd),
+                icon = TablerIcons.X,
+                background = colorGrey100(),
+                onClick = { viewModel.showUpdateImage() }
+            ).Draw()
+        }
     }
 }

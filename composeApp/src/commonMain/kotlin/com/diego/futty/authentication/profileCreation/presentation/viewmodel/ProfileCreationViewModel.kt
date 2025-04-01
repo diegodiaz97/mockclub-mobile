@@ -2,6 +2,7 @@ package com.diego.futty.authentication.profileCreation.presentation.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -10,9 +11,9 @@ import com.diego.futty.authentication.view.AuthenticationRoute
 import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
-import com.diego.futty.core.presentation.theme.getRandomLightColorHex
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.feed.domain.model.User
 import kotlinx.coroutines.launch
 
 class ProfileCreationViewModel(
@@ -23,7 +24,7 @@ class ProfileCreationViewModel(
     private val _banner = mutableStateOf<Banner?>(null)
     override val banner: State<Banner?> = _banner
 
-    private val _background = mutableStateOf("")
+    private val _background = mutableStateOf("0xFF71D88A")
     override val background: State<String> = _background
 
     private val _name = mutableStateOf("")
@@ -32,14 +33,23 @@ class ProfileCreationViewModel(
     private val _lastName = mutableStateOf("")
     override val lastName: State<String> = _lastName
 
-    private val _initials = mutableStateOf("")
-    override val initials: State<String> = _initials
+    private val _initials = mutableStateOf<String?>(null)
+    override val initials: State<String?> = _initials
 
     private val _description = mutableStateOf("")
     override val description: State<String> = _description
 
-    private val _image = mutableStateOf("")
-    override val image: State<String> = _image
+    private val _showUpdateImage = mutableStateOf(false)
+    override val showUpdateImage: State<Boolean> = _showUpdateImage
+
+    private val _launchGallery = mutableStateOf(false)
+    override val launchGallery: State<Boolean> = _launchGallery
+
+    private val _launchCamera = mutableStateOf(false)
+    override val launchCamera: State<Boolean> = _launchCamera
+
+    private val _urlImage = mutableStateOf<String?>(null)
+    override val urlImage: State<String?> = _urlImage
 
     private val _country = mutableStateOf("")
     override val country: State<String> = _country
@@ -50,13 +60,22 @@ class ProfileCreationViewModel(
     private val _hideKeyboard = mutableStateOf(true)
     override val hideKeyboard: State<Boolean> = _hideKeyboard
 
-    private var _onLogin: () -> Unit = {}
+    private val _user = mutableStateOf<User?>(null)
+    private val _bitmapImage = mutableStateOf<ImageBitmap?>(null)
+    private val _byteArrayImage = mutableStateOf<ByteArray?>(null)
+    private var _onClose: () -> Unit = {}
 
-    fun setup(navController: NavHostController) {
-        _background.value = getRandomLightColorHex()
-        _onLogin = {
-            navController.navigate(AuthenticationRoute.Home) {
-                popUpTo(AuthenticationRoute.ProfileCreation) { inclusive = true }
+    fun setup(navController: NavHostController, flow: String? = "home") {
+        fetchUserInfo()
+        _onClose = {
+            when (flow) {
+                "home" -> {
+                    navController.navigate(AuthenticationRoute.Home) {
+                        popUpTo(AuthenticationRoute.ProfileCreation) { inclusive = true }
+                    }
+                }
+
+                else -> navController.popBackStack()
             }
         }
     }
@@ -84,8 +103,25 @@ class ProfileCreationViewModel(
         validateButtonEnabled()
     }
 
-    override fun updateProfileImage(imageUri: String) {
-        _image.value = imageUri
+    private fun fetchUserInfo() {
+        viewModelScope.launch {
+            val user = preferences.getUserId() ?: ""
+            profileCreationRepository.fetchProfile(user)
+                .onSuccess { loggedUser ->
+                    // show info
+                    _user.value = loggedUser
+                    _name.value = loggedUser.name ?: ""
+                    _lastName.value = loggedUser.lastName ?: ""
+                    _description.value = loggedUser.description ?: ""
+                    _urlImage.value = loggedUser.profileImage?.image
+                    _initials.value = loggedUser.profileImage?.initials
+                    _background.value = loggedUser.profileImage?.background ?: ""
+                    _country.value = loggedUser.country ?: ""
+                }
+                .onError {
+                    // show error
+                }
+        }
     }
 
     override fun onContinueClicked() {
@@ -97,22 +133,19 @@ class ProfileCreationViewModel(
             if (_name.value.isNotEmpty()) {
                 updates["name"] = _name.value
                 updates["lastName"] = _lastName.value
-                updates["profileImage.background"] = _background.value
-                updates["profileImage.initials"] = _initials.value
+                updates["profileImage.initials"] = _initials.value ?: ""
             }
             if (_description.value.isNotEmpty()) {
                 updates["description"] = _description.value
             }
-            if (_image.value.isNotEmpty()) {
-                updates["profileImage.image"] = _image.value
-            }
+
             if (_country.value.isNotEmpty()) {
                 updates["country"] = _country.value
             }
 
             profileCreationRepository.updateProfile(id, updates)
                 .onSuccess {
-                    _onLogin()
+                    _onClose()
                 }
                 .onError {
                     _banner.value = Banner.StatusBanner(
@@ -125,7 +158,40 @@ class ProfileCreationViewModel(
     }
 
     override fun onCloseClicked() {
-        _onLogin()
+        _onClose()
+    }
+
+    override fun updateImage(imageBitmap: ImageBitmap, imageByteArray: ByteArray) {
+        _urlImage.value = null
+        _initials.value = null
+        _bitmapImage.value = imageBitmap
+        _byteArrayImage.value = imageByteArray
+        updateProfileImage()
+    }
+
+    private fun updateProfileImage() {
+        viewModelScope.launch {
+            profileCreationRepository.updateProfileImage(_byteArrayImage.value!!)
+                .onSuccess { url ->
+                    _urlImage.value = url
+                }
+                .onError {
+                    _initials.value = _user.value?.profileImage?.initials
+                    // show error
+                }
+        }
+    }
+
+    override fun showUpdateImage() {
+        _showUpdateImage.value = _showUpdateImage.value.not()
+    }
+
+    override fun launchGallery() {
+        _launchGallery.value = _launchGallery.value.not()
+    }
+
+    override fun launchCamera() {
+        _launchCamera.value = _launchCamera.value.not()
     }
 
     private fun validateButtonEnabled() {

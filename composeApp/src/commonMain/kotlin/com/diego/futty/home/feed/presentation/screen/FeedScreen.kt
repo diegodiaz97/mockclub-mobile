@@ -81,7 +81,7 @@ private fun FeedContent(viewModel: FeedViewModel, paddingValues: PaddingValues) 
 }
 
 @Composable
-fun OpenedImage(viewModel: FeedViewModel) {
+private fun OpenedImage(viewModel: FeedViewModel) {
     val image = viewModel.openedImage.value?.image
     if (image != null) {
         FlexibleBottomSheet(

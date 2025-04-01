@@ -11,9 +11,11 @@ import com.diego.futty.authentication.view.AuthenticationRoute
 import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
+import com.diego.futty.core.presentation.theme.getRandomLightColorHex
 import com.diego.futty.core.presentation.utils.RegexUtils
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.feed.domain.model.ProfileImage
 import com.diego.futty.home.feed.domain.model.User
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -126,6 +128,9 @@ class SignupViewModel(
             val user = User(
                 id = preferences.getUserId() ?: "",
                 email = preferences.getUserEmail() ?: "",
+                profileImage = ProfileImage(
+                    background = getRandomLightColorHex()
+                ),
                 creationDate = date,
                 level = 0,
             )

@@ -94,6 +94,12 @@ class ProfileViewModel(
     private val _showUpdateImage = mutableStateOf(false)
     override val showUpdateImage: State<Boolean> = _showUpdateImage
 
+    private val _launchGallery = mutableStateOf(false)
+    override val launchGallery: State<Boolean> = _launchGallery
+
+    private val _launchCamera = mutableStateOf(false)
+    override val launchCamera: State<Boolean> = _launchCamera
+
     private val _urlImage = mutableStateOf<String?>(null)
     override val urlImage: State<String?> = _urlImage
 
@@ -145,8 +151,20 @@ class ProfileViewModel(
         updateProfileImage()
     }
 
-    override fun showUpdateImage(show: Boolean) {
-        _showUpdateImage.value = show
+    override fun showUpdateImage() {
+        _showUpdateImage.value = _showUpdateImage.value.not()
+    }
+
+    override fun launchGallery() {
+        _launchGallery.value = _launchGallery.value.not()
+    }
+
+    override fun launchCamera() {
+        _launchCamera.value = _launchCamera.value.not()
+    }
+
+    override fun onEditClicked() {
+        _navigate(SetupRoute.ProfileCreation)
     }
 
     private fun fetchUserInfo() {
@@ -172,7 +190,7 @@ class ProfileViewModel(
                     _urlImage.value = url
                 }
                 .onError {
-                    _initials.value = user.value?.profileImage?.initials
+                    _initials.value = _user.value?.profileImage?.initials
                     // show error
                 }
         }

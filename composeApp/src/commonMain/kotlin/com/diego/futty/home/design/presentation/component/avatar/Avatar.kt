@@ -162,7 +162,7 @@ sealed interface Avatar {
                 AvatarSize.Small -> typography.titleSmall
                 AvatarSize.Medium -> typography.bodyMedium
                 AvatarSize.Big -> typography.headlineSmall
-                AvatarSize.Extra -> typography.headlineMedium
+                AvatarSize.Extra -> typography.headlineLarge
             },
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
@@ -175,5 +175,5 @@ enum class AvatarSize(val size: Dp, val padding: Dp) {
     Small(size = 28.dp, padding = 3.dp),
     Medium(size = 36.dp, padding = 8.dp),
     Big(size = 50.dp, padding = 10.dp),
-    Extra(size = 80.dp, padding = 14.dp)
+    Extra(size = 80.dp, padding = 22.dp)
 }

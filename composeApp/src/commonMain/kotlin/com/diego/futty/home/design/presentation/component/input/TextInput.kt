@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey200
+import com.diego.futty.core.presentation.theme.colorGrey700
 import com.diego.futty.core.presentation.theme.colorGrey900
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Eye
@@ -38,6 +39,7 @@ sealed interface TextInput {
     class Input(
         val input: String,
         val label: String,
+        val placeholder: String = "",
         val onTextChangeAction: (String) -> Unit,
         val onFocusChanged: () -> Unit,
     ) : TextInput {
@@ -55,6 +57,15 @@ sealed interface TextInput {
                     color = colorGrey900()
                 )
                 TextField(
+                    placeholder = {
+                        Text(
+                            text = placeholder,
+                            textAlign = TextAlign.Start,
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Normal,
+                            color = colorGrey700()
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
@@ -86,7 +97,7 @@ sealed interface TextInput {
                             IconButton(onClick = { onTextChangeAction("") }) {
                                 Icon(
                                     imageVector = TablerIcons.X,
-                                    tint = colorGrey900(),
+                                    tint = colorGrey200(),
                                     contentDescription = null
                                 )
                             }
@@ -147,7 +158,7 @@ sealed interface TextInput {
                             IconButton(onClick = { onTextChangeAction("") }) {
                                 Icon(
                                     imageVector = TablerIcons.X,
-                                    tint = colorGrey900(),
+                                    tint = colorGrey200(),
                                     contentDescription = null
                                 )
                             }
@@ -215,7 +226,7 @@ sealed interface TextInput {
                         IconButton(onClick = { setVisible(visible.not()) }) {
                             Icon(
                                 imageVector = if (visible) TablerIcons.Eye else TablerIcons.EyeOff,
-                                tint = colorGrey900(),
+                                tint = colorGrey200(),
                                 contentDescription = null
                             )
                         }

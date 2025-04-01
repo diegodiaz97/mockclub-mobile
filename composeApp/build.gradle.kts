@@ -62,7 +62,8 @@ kotlin {
 
                 implementation(libs.bundles.ktor)
                 implementation(libs.bundles.coil)
-                implementation(libs.xicon.pack.z)
+                implementation(libs.xicon.pack.z.tabler)
+                implementation(libs.xicon.pack.z.octicon)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.firebase.firestore)
                 implementation(libs.firebase.auth)
@@ -82,7 +83,8 @@ kotlin {
                 implementation(libs.koin.android)
                 implementation(libs.koin.androidx.compose)
                 implementation(libs.ktor.client.okhttp)
-                implementation(libs.xicon.pack.z)
+                implementation(libs.xicon.pack.z.tabler)
+                implementation(libs.xicon.pack.z.octicon)
 
                 implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
                 implementation(libs.com.google.firebase.firebase.auth)
@@ -98,7 +100,8 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutines.swing)
                 implementation(libs.ktor.client.okhttp)
-                implementation(libs.xicon.pack.z)
+                implementation(libs.xicon.pack.z.tabler)
+                implementation(libs.xicon.pack.z.octicon)
             }
         }
 

@@ -21,8 +21,9 @@ import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.setup.settings.presentation.viewmodel.SettingsViewModel
+import compose.icons.Octicons
 import compose.icons.TablerIcons
-import compose.icons.tablericons.Award
+import compose.icons.octicons.Verified16
 import compose.icons.tablericons.Bell
 import compose.icons.tablericons.Bolt
 import compose.icons.tablericons.Download
@@ -86,7 +87,7 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
             onClick = { }
         ).Draw()
         Banner.ClickableBanner(
-            icon = TablerIcons.Award,
+            icon = Octicons.Verified16,
             title = "Verificar",
             subtitle = "Obten el verificado, justo a un gran conjunto de beneficios.",
             onClick = { }

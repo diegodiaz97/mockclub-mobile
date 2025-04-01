@@ -39,7 +39,6 @@ fun AuthenticationView() {
             authenticationViewModel.setup()
             welcomeViewModel.setup(navController)
             signupViewModel.setup(navController)
-            profileCreationViewModel.setup(navController)
             loginViewModel.setup(navController)
             //recoveryViewModel.setup()
         }
@@ -97,6 +96,7 @@ fun AuthenticationView() {
                     ) {
                         LaunchedEffect(true) {
                             authenticationViewModel.updateRoute(AuthenticationRoute.ProfileCreation)
+                            profileCreationViewModel.setup(navController)
                         }
                         ProfileCreationScreen(profileCreationViewModel)
                     }

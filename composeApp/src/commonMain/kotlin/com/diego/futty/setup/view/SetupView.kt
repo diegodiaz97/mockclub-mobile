@@ -10,6 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.diego.futty.authentication.profileCreation.presentation.screen.ProfileCreationScreen
+import com.diego.futty.authentication.profileCreation.presentation.viewmodel.ProfileCreationViewModel
 import com.diego.futty.authentication.view.AuthenticationView
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
@@ -27,6 +29,7 @@ fun SetupView(
 ) {
     val setupViewModel = koinViewModel<SetupViewModel>()
     val profileViewModel = koinViewModel<ProfileViewModel>()
+    val profileCreationViewModel = koinViewModel<ProfileCreationViewModel>()
     val settingsViewModel = koinViewModel<SettingsViewModel>()
 
     val navController = rememberNavController()
@@ -35,7 +38,7 @@ fun SetupView(
         SetStatusBarColor(Color.Transparent)
         LaunchedEffect(true) {
             setupViewModel.setup()
-            profileViewModel.setup(navController, onBack)
+            profileCreationViewModel.setup(navController, "profile")
             settingsViewModel.setup(navController, navigateToLogin)
         }
         Column {
@@ -55,8 +58,22 @@ fun SetupView(
                     ) {
                         LaunchedEffect(true) {
                             setupViewModel.updateRoute(SetupRoute.Profile)
+                            profileViewModel.setup(navController, onBack)
                         }
                         ProfileScreen(viewModel = profileViewModel)
+                    }
+
+                    composable<SetupRoute.ProfileCreation>(
+                        enterTransition = Transitions.RightScreenEnter,
+                        exitTransition = Transitions.LeftScreenExit,
+                        popEnterTransition = Transitions.RightScreenPopEnter,
+                        popExitTransition = Transitions.LeftScreenPopExit
+                    ) {
+                        LaunchedEffect(true) {
+                            setupViewModel.updateRoute(SetupRoute.ProfileCreation)
+                            profileCreationViewModel.setup(navController, "profile")
+                        }
+                        ProfileCreationScreen(profileCreationViewModel)
                     }
 
                     composable<SetupRoute.Setting>(
