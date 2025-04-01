@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -53,6 +55,7 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
 import compose.icons.TablerIcons
+import compose.icons.tablericons.Calendar
 import compose.icons.tablericons.Settings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -139,18 +142,17 @@ private fun MainInfo(viewModel: ProfileViewModel) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val image = user.profileImage?.image
             Avatar.ProfileAvatar(
                 modifier = Modifier.align(Alignment.Top),
                 imageUrl = viewModel.urlImage.value,
-                initials = user.profileImage?.initials,
+                initials = viewModel.initials.value,
                 background = user.profileImage?.background?.toColor(),
                 avatarSize = AvatarSize.Extra,
                 onClick = { viewModel.showUpdateImage(true) }
             ).Draw()
             Column(verticalArrangement = Arrangement.SpaceAround) {
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(start = 1.dp),
                     text = user.name ?: "No especificado",
                     style = typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
@@ -158,20 +160,32 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                 )
                 if (user.description != null) {
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(start = 1.dp),
                         text = user.description,
                         style = typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = colorGrey400()
                     )
                 }
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "En Futty desde el ${user.creationDate}",
-                    style = typography.titleSmall,
-                    fontWeight = FontWeight.Normal,
-                    color = colorGrey400()
-                )
+                Row(
+                    modifier = Modifier.padding(top = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        imageVector = TablerIcons.Calendar,
+                        tint = colorGrey400(),
+                        contentDescription = null
+                    )
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "En Futty desde el ${user.creationDate}",
+                        style = typography.titleSmall,
+                        fontWeight = FontWeight.Normal,
+                        color = colorGrey400()
+                    )
+                }
             }
         }
     } else {
@@ -269,6 +283,7 @@ private fun ImageHandler(
 
     // MOSTRAR OPCIONES (CAMARA Y GALERIA)
     if (viewModel.showUpdateImage.value) {
+        imageBitmap = null
         Column(modifier = Modifier.navigationBarsPadding()) {
             PrimaryButton(
                 modifier = Modifier

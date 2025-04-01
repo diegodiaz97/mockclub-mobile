@@ -9,6 +9,7 @@ interface ProfileViewContract {
     val showUpdateImage: State<Boolean>
     val user: State<User?>
     val urlImage: State<String?>
+    val initials: State<String?>
     val chipItems: State<List<ChipModel>?>
     val selectedChips: State<List<ChipModel>>
     fun onBackClicked()

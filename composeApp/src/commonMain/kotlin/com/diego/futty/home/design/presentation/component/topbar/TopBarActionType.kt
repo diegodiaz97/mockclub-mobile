@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
-import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 
 sealed class TopBarActionType {
     class Button(
@@ -54,7 +53,6 @@ sealed class TopBarActionType {
 
     class Profile(
         private val imageUrl: String? = null,
-        private val icon: ImageVector? = null,
         private val initials: String? = null,
         private val tint: Color? = null,
         private val background: Color? = null,
@@ -62,39 +60,13 @@ sealed class TopBarActionType {
     ) : TopBarActionType() {
         @Composable
         override fun Draw() {
-            when {
-                imageUrl != null -> {
-                    Avatar.FullImageAvatar(
-                        avatarSize = AvatarSize.Small,
-                        imageUrl = imageUrl,
-                        onClick = onClick
-                    ).Draw()
-                }
-
-                initials != null -> {
-                    Avatar.InitialsAvatar(
-                        avatarSize = AvatarSize.Small,
-                        initials = initials,
-                        tint = tint ?: colorGrey900(),
-                        background = background ?: colorGrey100(),
-                        onClick = onClick
-                    ).Draw()
-                }
-
-                icon != null -> {
-                    Avatar.IconAvatar(
-                        avatarSize = AvatarSize.Small,
-                        icon = icon,
-                        tint = tint ?: colorGrey900(),
-                        background = background ?: colorGrey100(),
-                        onClick = onClick
-                    ).Draw()
-                }
-
-                else -> {
-                    /* Do nothing */
-                }
-            }
+            Avatar.ProfileAvatar(
+                imageUrl = imageUrl,
+                initials = initials,
+                tint = tint,
+                background = background,
+                onClick = onClick
+            ).Draw()
         }
     }
 

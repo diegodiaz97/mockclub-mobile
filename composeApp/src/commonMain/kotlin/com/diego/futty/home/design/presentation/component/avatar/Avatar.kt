@@ -20,11 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.compose.rememberAsyncImagePainter
+import coil3.compose.SubcomposeAsyncImage
+import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey900
-import compose.icons.TablerIcons
-import compose.icons.tablericons.User
 
 sealed interface Avatar {
     @Composable
@@ -63,13 +62,10 @@ sealed interface Avatar {
                 }
 
                 else -> {
-                    IconAvatar(
-                        modifier = modifier,
-                        icon = TablerIcons.User,
-                        tint = tint,
-                        background = background,
-                        avatarSize = avatarSize,
-                        onClick = onClick,
+                    Shimmer(
+                        modifier = modifier
+                            .clip(CircleShape)
+                            .size(avatarSize.size)
                     )
                 }
             }
@@ -83,16 +79,25 @@ sealed interface Avatar {
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
         @Composable
-        override fun Draw() = Image(
-            modifier = modifier
-                .clip(CircleShape)
-                .clickable { onClick?.invoke() }
-                .background(colorGrey0())
-                .size(avatarSize.size),
-            contentScale = ContentScale.Crop,
-            painter = rememberAsyncImagePainter(imageUrl),
-            contentDescription = null
-        )
+        override fun Draw() {
+            SubcomposeAsyncImage(
+                modifier = modifier
+                    .clip(CircleShape)
+                    .clickable { onClick?.invoke() }
+                    .background(colorGrey0())
+                    .size(avatarSize.size),
+                model = imageUrl,
+                contentScale = ContentScale.Crop,
+                contentDescription = "profile image",
+                loading = {
+                    Shimmer(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(avatarSize.size)
+                    )
+                }
+            )
+        }
     }
 
     class ImageAvatar(
@@ -170,5 +175,5 @@ enum class AvatarSize(val size: Dp, val padding: Dp) {
     Small(size = 28.dp, padding = 3.dp),
     Medium(size = 36.dp, padding = 8.dp),
     Big(size = 50.dp, padding = 10.dp),
-    Extra(size = 60.dp, padding = 12.dp)
+    Extra(size = 80.dp, padding = 14.dp)
 }

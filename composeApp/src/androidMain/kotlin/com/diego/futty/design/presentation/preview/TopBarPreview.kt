@@ -9,10 +9,6 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.Download
 import compose.icons.tablericons.Logout
 import compose.icons.tablericons.Settings
-import compose.icons.tablericons.User
-import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.book_error_2
-import org.jetbrains.compose.resources.painterResource
 
 @Preview
 @Composable
@@ -93,13 +89,12 @@ private fun TopBarImageProfile() {
 
 @Preview
 @Composable
-private fun TopBarInitialsProfile() {
+private fun TopBarLoadingProfile() {
     FuttyTheme {
         TopBar(
             title = "Hola Diego!",
             onBack = null,
             topBarActionType = TopBarActionType.Profile(
-                icon = TablerIcons.User,
                 onClick = {}
             )
         )

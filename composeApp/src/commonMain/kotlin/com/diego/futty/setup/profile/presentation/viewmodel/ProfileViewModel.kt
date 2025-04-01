@@ -91,11 +91,14 @@ class ProfileViewModel(
     private val _user = mutableStateOf<User?>(null)
     override val user: State<User?> = _user
 
-    private val _showUpdateImage = mutableStateOf<Boolean>(false)
+    private val _showUpdateImage = mutableStateOf(false)
     override val showUpdateImage: State<Boolean> = _showUpdateImage
 
     private val _urlImage = mutableStateOf<String?>(null)
     override val urlImage: State<String?> = _urlImage
+
+    private val _initials = mutableStateOf<String?>(null)
+    override val initials: State<String?> = _initials
 
     private val _chipItems = mutableStateOf<List<ChipModel>?>(null)
     override val chipItems: State<List<ChipModel>?> = _chipItems
@@ -135,6 +138,8 @@ class ProfileViewModel(
     }
 
     override fun updateImage(imageBitmap: ImageBitmap, imageByteArray: ByteArray) {
+        _urlImage.value = null
+        _initials.value = null
         _bitmapImage.value = imageBitmap
         _byteArrayImage.value = imageByteArray
         updateProfileImage()
@@ -152,6 +157,7 @@ class ProfileViewModel(
                     // show info
                     _user.value = loggedUser
                     _urlImage.value = loggedUser.profileImage?.image
+                    _initials.value = loggedUser.profileImage?.initials
                 }
                 .onError {
                     // show error
@@ -166,6 +172,7 @@ class ProfileViewModel(
                     _urlImage.value = url
                 }
                 .onError {
+                    _initials.value = user.value?.profileImage?.initials
                     // show error
                 }
         }

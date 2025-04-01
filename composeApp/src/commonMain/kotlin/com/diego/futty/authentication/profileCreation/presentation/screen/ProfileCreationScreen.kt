@@ -104,7 +104,7 @@ private fun ProfileCreationContent(
 
         TextInput.Input(
             input = viewModel.description.value,
-            label = "Description (opcional)",
+            label = "Descripción (opcional)",
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updateDescription(it) }
         ).Draw()
