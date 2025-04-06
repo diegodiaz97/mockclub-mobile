@@ -35,7 +35,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp),
-                title = "Bienvenido!",
+                title = "Bienvenido",
                 topBarActionType = TopBarActionType.None
             )
         },
@@ -77,14 +77,17 @@ private fun LoginContent(viewModel: LoginViewModel, paddingValues: PaddingValues
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        TextInput.MailInput(
-            viewModel.email.value,
+        TextInput.Input(
+            input = viewModel.email.value,
+            label = "Email",
+            placeholder = "ejemplo@gmail.com",
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updateEmail(it) }
         ).Draw()
 
         TextInput.PasswordInput(
-            viewModel.password.value,
+            input = viewModel.password.value,
+            placeholder = "Ejemplo123",
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updatePassword(it) }
         ).Draw()

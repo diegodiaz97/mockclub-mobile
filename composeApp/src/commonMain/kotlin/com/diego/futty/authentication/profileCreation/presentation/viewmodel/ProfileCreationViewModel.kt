@@ -113,9 +113,9 @@ class ProfileCreationViewModel(
                     _name.value = loggedUser.name ?: ""
                     _lastName.value = loggedUser.lastName ?: ""
                     _description.value = loggedUser.description ?: ""
-                    _urlImage.value = loggedUser.profileImage?.image
-                    _initials.value = loggedUser.profileImage?.initials
-                    _background.value = loggedUser.profileImage?.background ?: ""
+                    _urlImage.value = loggedUser.profileImage.image
+                    _initials.value = loggedUser.profileImage.initials
+                    _background.value = loggedUser.profileImage.background
                     _country.value = loggedUser.country ?: ""
                 }
                 .onError {
@@ -134,6 +134,9 @@ class ProfileCreationViewModel(
                 updates["name"] = _name.value
                 updates["lastName"] = _lastName.value
                 updates["profileImage.initials"] = _initials.value ?: ""
+
+                updates["nameLowercase"] = _name.value.lowercase()
+                updates["lastNameLowercase"] = _lastName.value.lowercase()
             }
             if (_description.value.isNotEmpty()) {
                 updates["description"] = _description.value

@@ -9,6 +9,7 @@ import com.diego.futty.authentication.profileCreation.data.network.KtorRemotePro
 import com.diego.futty.authentication.profileCreation.data.network.RemoteProfileCreationDataSource
 import com.diego.futty.authentication.profileCreation.data.repository.ProfileCreationRepositoryImpl
 import com.diego.futty.authentication.profileCreation.domain.repository.ProfileCreationRepository
+import com.diego.futty.authentication.profileCreation.presentation.viewmodel.ProfileCreationViewModel
 import com.diego.futty.authentication.signup.data.network.KtorRemoteSignupDataSource
 import com.diego.futty.authentication.signup.data.network.RemoteSignupDataSource
 import com.diego.futty.authentication.signup.data.repository.SignupRepositoryImpl
@@ -22,9 +23,12 @@ import com.diego.futty.authentication.welcome.domain.repository.WelcomeRepositor
 import com.diego.futty.authentication.welcome.presentation.viewmodel.WelcomeViewModel
 import com.diego.futty.core.data.firebase.FirebaseManager
 import com.diego.futty.core.data.local.UserPreferences
-import com.diego.futty.authentication.profileCreation.presentation.viewmodel.ProfileCreationViewModel
 import com.diego.futty.core.data.local.provideSettings
 import com.diego.futty.core.data.remote.HttpClientFactory
+import com.diego.futty.home.design.data.network.KtorRemoteDiscoveryDataSource
+import com.diego.futty.home.design.data.network.RemoteDiscoveryDataSource
+import com.diego.futty.home.design.data.repository.DiscoverRepositoryImpl
+import com.diego.futty.home.design.domain.repository.DiscoverRepository
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
 import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
 import com.diego.futty.home.match.data.network.KtorRemoteLiveScoresDataSource
@@ -79,6 +83,9 @@ val sharedModule = module {
     viewModelOf(::LoginViewModel)
 
     // Home
+    singleOf(::KtorRemoteDiscoveryDataSource).bind<RemoteDiscoveryDataSource>()
+    singleOf(::DiscoverRepositoryImpl).bind<DiscoverRepository>()
+
     viewModelOf(::HomeViewModel)
     viewModelOf(::DesignViewModel)
     viewModelOf(::FeedViewModel)

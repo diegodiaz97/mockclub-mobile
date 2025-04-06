@@ -1,6 +1,5 @@
 package com.diego.futty.home.design.presentation.component.banner
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
@@ -40,8 +39,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.core.presentation.theme.Grey0
 import com.diego.futty.core.presentation.theme.Grey900
+import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey200
 import com.diego.futty.core.presentation.theme.colorGrey900
@@ -49,8 +50,6 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowRight
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.painterResource
 import kotlin.math.absoluteValue
 
 @Composable
@@ -129,15 +128,18 @@ private fun CreateBanner(
             }
 
         if (bannerUIData.illustration != null) {
-            Image(
+            SubcomposeAsyncImage(
                 modifier = Modifier.clipToBounds().fillMaxSize(),
-                painter = painterResource(bannerUIData.illustration),
+                model = bannerUIData.illustration,
                 contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(
                     color = Grey900.copy(alpha = 0.5f),
                     blendMode = BlendMode.Darken
                 ),
-                contentDescription = null
+                contentDescription = "profile image",
+                loading = {
+                    Shimmer(modifier = Modifier.clipToBounds().fillMaxSize())
+                }
             )
         }
 
@@ -186,7 +188,7 @@ data class BannerUIData(
     val title: String,
     val description: String,
     val labelAction: String,
-    val illustration: DrawableResource? = null,
+    val illustration: String? = null,
     val color: Color? = null,
     val action: (() -> Unit)? = null
 )

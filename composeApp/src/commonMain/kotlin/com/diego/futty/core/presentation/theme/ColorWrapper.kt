@@ -90,12 +90,22 @@ fun Color.toHex(includeAlpha: Boolean = false): String {
     }.uppercase()
 }
 
+@Composable
 fun String.toColor(): Color {
-    val hex = this.removePrefix("#") // Elimina el "#" si está presente
+    val hex = this.trim().removePrefix("#").removePrefix("0x")
+
+    if (hex.isEmpty() || hex.any { !it.isDigit() && it !in 'A'..'F' && it !in 'a'..'f' }) {
+        println("⚠️ Error: String inválido en toColor(): '$this'")
+        return Color(0xFFFFFFFF) // Blanco como fallback
+    }
+
     val parsedColor = when (hex.length) {
-        6 -> hex.toLong(16) or 0x00000000FF000000 // Agrega alpha FF
+        6 -> hex.toLong(16) or 0xFF000000 // Agrega alpha FF
         8 -> hex.toLong(16) // Ya incluye alpha
-        else -> throw IllegalArgumentException("Hex inválido: $this")
+        else -> {
+            println("⚠️ Error: Longitud inválida en toColor(): '$this'")
+            0xFFFFFFFF // Fallback
+        }
     }
     return Color(parsedColor)
 }

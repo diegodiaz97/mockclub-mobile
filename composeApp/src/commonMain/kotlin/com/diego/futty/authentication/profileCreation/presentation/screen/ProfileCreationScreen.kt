@@ -367,25 +367,27 @@ private fun OpenedImage(viewModel: ProfileCreationViewModel) {
                         }
                     }
                 }
-                Row(modifier = Modifier.padding(20.dp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     SecondaryButton(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 4.dp),
-                        title = "Tomar foto",
-                        onClick = {
-                            viewModel.showUpdateImage()
-                            viewModel.launchCamera()
-                        }
-                    )
-                    SecondaryButton(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 4.dp),
-                        title = "Seleccionar foto",
+                        title = "Elegir de la galería",
+                        color = colorGrey900(),
                         onClick = {
                             viewModel.showUpdateImage()
                             viewModel.launchGallery()
+                        }
+                    )
+                    SecondaryButton(
+                        title = "Tomar foto",
+                        color = colorGrey900(),
+                        onClick = {
+                            viewModel.showUpdateImage()
+                            viewModel.launchCamera()
                         }
                     )
                 }

@@ -9,7 +9,7 @@ data class User(
     val name: String? = null,
     val lastName: String? = null,
     val description: String? = null,
-    val profileImage: ProfileImage? = null,
+    val profileImage: ProfileImage,
     val creationDate: String,
     val followers: List<String>? = null, // Followers ID's
     val following: List<String>? = null, // Following ID's

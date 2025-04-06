@@ -91,6 +91,9 @@ class ProfileViewModel(
     private val _user = mutableStateOf<User?>(null)
     override val user: State<User?> = _user
 
+    private val _userId = mutableStateOf("")
+    override val userId: State<String> = _userId
+
     private val _showUpdateImage = mutableStateOf(false)
     override val showUpdateImage: State<Boolean> = _showUpdateImage
 
@@ -118,13 +121,15 @@ class ProfileViewModel(
     private var _back: () -> Unit = {}
 
     fun setup(
+        userId: String = "",
         navController: NavHostController,
         onBack: () -> Unit,
     ) {
-        fetchUserInfo()
+        _userId.value = userId
         _chipItems.value = dummyChips
         _navigate = { navController.navigate(it) }
         _back = onBack
+        fetchUserInfo()
     }
 
     override fun onSettingsClicked() {
@@ -169,7 +174,9 @@ class ProfileViewModel(
 
     private fun fetchUserInfo() {
         viewModelScope.launch {
-            val user = preferences.getUserId() ?: ""
+            val user = _userId.value.ifEmpty {
+                preferences.getUserId() ?: ""
+            }
             profileCreationRepository.fetchProfile(user)
                 .onSuccess { loggedUser ->
                     // show info

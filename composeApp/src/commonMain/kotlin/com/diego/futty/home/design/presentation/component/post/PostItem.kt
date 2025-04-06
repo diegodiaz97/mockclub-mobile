@@ -1,6 +1,5 @@
 package com.diego.futty.home.design.presentation.component.post
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +25,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil3.compose.SubcomposeAsyncImage
+import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey600
 import com.diego.futty.core.presentation.theme.colorGrey900
@@ -32,18 +35,17 @@ import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.feed.domain.model.ActionableImage
 import com.diego.futty.home.feed.domain.model.Post
 import com.diego.futty.home.feed.domain.model.ProfileImage
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun Post.Draw() =
-    Column(
-        modifier = Modifier.padding(vertical = 12.dp).clickable { onClick(this) },
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    Column(modifier = Modifier.padding(vertical = 12.dp).clickable { onClick(this) }) {
         PostInformation(user.profileImage, user.name ?: "", date)
         if (text != null) {
             Text(
-                modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 8.dp)
+                    .fillMaxWidth(),
                 text = text,
                 style = typography.bodyLarge,
                 fontWeight = FontWeight.Normal,
@@ -66,7 +68,6 @@ private fun PostInformation(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val image = profileImage?.image
         Avatar.ProfileAvatar(
             imageUrl = profileImage?.image, // if (image != null) painterResource(image) else null,
             initials = profileImage?.initials,
@@ -106,15 +107,24 @@ private fun PostImage(
             item { Spacer(Modifier.width(8.dp)) }
             images.forEach { image ->
                 item {
-                    Image(
-                        painter = painterResource(image.image),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
+                    SubcomposeAsyncImage(
                         modifier = Modifier
                             .size(260.dp)
                             .clickable { image.onClick(image) }
                             .clip(RoundedCornerShape(12.dp))
-                            .background(colorGrey100())
+                            .background(colorGrey100()),
+                        model = image.image,
+                        contentScale = ContentScale.Crop,
+                        contentDescription = "profile image",
+                        loading = {
+                            Shimmer(
+                                modifier = Modifier
+                                    .size(260.dp)
+                                    .clickable { image.onClick(image) }
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(colorGrey100())
+                            )
+                        }
                     )
                 }
             }
@@ -122,16 +132,51 @@ private fun PostImage(
         }
     } else {
         val image = images.last()
-        Image(
-            painter = painterResource(image.image),
-            contentDescription = "",
-            contentScale = ContentScale.Crop,
+        SubcomposeAsyncImage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
                 .clickable { image.onClick(image) }
                 .clip(RoundedCornerShape(12.dp))
-                .background(colorGrey100())
+                .background(colorGrey100()),
+            model = image.image,
+            contentScale = ContentScale.Crop,
+            contentDescription = "profile image",
+            loading = {
+                Shimmer(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                        .clickable { image.onClick(image) }
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(colorGrey100()),
+                )
+            }
         )
+    }
+}
+
+@Composable
+fun PostShimmer() {
+    Column(
+        modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Avatar.ProfileAvatar(
+                imageUrl = null,
+                initials = null,
+            ).Draw()
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Shimmer(modifier = Modifier.height(12.dp).width(70.dp).clip(CircleShape))
+                Shimmer(modifier = Modifier.height(12.dp).width(100.dp).clip(CircleShape))
+            }
+        }
+        Shimmer(modifier = Modifier.height(14.dp).width(300.dp).clip(CircleShape))
+        Shimmer(modifier = Modifier.height(260.dp).fillMaxWidth().clip(RoundedCornerShape(12.dp)))
+        HorizontalDivider(thickness = 1.dp, color = colorGrey100())
     }
 }

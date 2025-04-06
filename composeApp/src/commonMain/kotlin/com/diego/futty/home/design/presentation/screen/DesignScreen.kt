@@ -1,31 +1,36 @@
 package com.diego.futty.home.design.presentation.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey400
 import com.diego.futty.core.presentation.theme.colorGrey900
-import com.diego.futty.home.design.presentation.component.banner.Banner
-import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.design.presentation.component.avatar.Avatar
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
-import com.diego.futty.home.design.presentation.component.bottomsheet.BottomSheet
-import com.diego.futty.home.design.presentation.component.flowrow.FlowList
+import com.diego.futty.home.design.presentation.component.input.TextInput
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
+import com.diego.futty.home.design.presentation.component.user.Draw
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
-import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.book_error_2
-import futty.composeapp.generated.resources.girasoles
-import org.jetbrains.compose.resources.painterResource
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Search
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -53,17 +58,6 @@ fun DesignScreen(
             DesignContent(viewModel, paddingValues)
         },
     )
-    BottomSheetContent(viewModel)
-}
-
-@Composable
-private fun BottomSheetContent(viewModel: DesignViewModel) {
-    if (viewModel.bottomsheetDismissed.value.not()) {
-        BottomSheet(
-            onDismiss = { viewModel.onBottomSheetDismissed() },
-            onAction = { viewModel.onBottomSheetDismissed() },
-        )
-    }
 }
 
 @Composable
@@ -71,67 +65,90 @@ private fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValu
     Column(
         modifier = Modifier
             .padding(top = paddingValues.calculateTopPadding())
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        FlowList(viewModel.chipItems.value, viewModel.selectedChip.value) { index ->
-            viewModel.onChipSelected(index)
-        }
-
-        Banner.StatusBanner(
-            title = "Dinero en cuenta:",
-            subtitle = "$ 254.300,59 ARS\n\n$ 3.700 USD",
-            status = BannerStatus.Border
-        ).Draw()
-
-        Banner.StatusBanner(
-            title = "¡Listo!",
-            subtitle = "Éste banner te avisará de situaciones positivas.",
-            status = BannerStatus.Success
-        ).Draw()
-
-        Banner.StatusBanner(
-            title = "Algo salió mal",
-            subtitle = "Éste banner te avisará cuando algo salió mal.",
-            status = BannerStatus.Error
-        ).Draw()
-
-        Banner.StatusBanner(
-            title = "¡Cuidado!",
-            subtitle = "Éste banner te avisará cuando algo pueda salir mal.",
-            status = BannerStatus.Alert
-        ).Draw()
-
-        Banner.StatusBanner(
-            title = "¿Sabías?",
-            subtitle = "Éste banner te puede mostrar información.",
-            status = BannerStatus.Info
-        ).Draw()
-
-        Banner.ClickableBanner(
-            title = "Banner Accionable",
-            subtitle = "Éste es un banner que se puede accionar.",
-            onClick = { viewModel.onButtonClicked() }
-        ).Draw()
-
-        Banner.ClickableBanner(
-            image = painterResource(Res.drawable.book_error_2),
-            title = "Banner Accionable",
-            subtitle = "Éste es un banner que se puede accionar.",
-            onClick = { }
-        ).Draw()
-
-        val scrollableBanners = viewModel.getScrollableBanners()
-        ScrollBanner(
-            items = listOf(
-                scrollableBanners,
-                scrollableBanners.copy(
-                    action = { viewModel.onScrollBannerClicked("accion girasoles") },
-                    illustration = Res.drawable.girasoles
-                ),
-            ),
-        )
+        SearchInput(viewModel)
+        UsersList(viewModel)
+        MainBanner()
     }
 }
 
+@Composable
+fun SearchInput(viewModel: DesignViewModel) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TextInput.Input(
+            modifier = Modifier.weight(1f),
+            input = viewModel.searchText.collectAsState().value,
+            placeholder = "Buscar",
+            onFocusChanged = { /*viewModel.hideKeyboard()*/ },
+            onTextChangeAction = { viewModel.updateSearch(it) }
+        ).Draw()
+        Avatar.IconAvatar(
+            icon = TablerIcons.Search,
+            background = colorGrey0(),
+            tint = colorGrey400()
+        ).Draw()
+    }
+}
+
+@Composable
+fun MainBanner() {
+    ScrollBanner(
+        items = listOf(
+            BannerUIData(
+                title = "Memes",
+                description = "Mira las mejores imágenes estilo Ghibli!",
+                illustration = "https://www.portafolio.co/files/article_new_multimedia/uploads/2025/03/31/67eac96494a70.jpeg",
+                labelAction = "Ver más",
+                action = { },
+            ),
+            BannerUIData(
+                title = "Música",
+                description = "Nuevos detalles de la muerte de John Lennon.",
+                illustration = "https://d3b5jqy5xuub7g.cloudfront.net/wp-content/uploads/2025/03/estudio-ghibili.jpg",
+                labelAction = "Ver más",
+                action = { },
+            ),
+            BannerUIData(
+                title = "Deportes",
+                description = "Fotos inéditas de aquel maravilloso 18 de Diciembre.",
+                illustration = "https://cdn.eldestapeweb.com/eldestape/032025/1743453153943.webp?cw=1500&ch=1000&extw=jpeg",
+                labelAction = "Ver más",
+                action = { },
+            ),
+            BannerUIData(
+                title = "Internacional",
+                description = "Estas son las últimas noticias al rededor del mundo.",
+                illustration = "https://i0.wp.com/www.lineadecontraste.com/wp-content/uploads/2025/03/WhatsApp-Image-2025-03-31-at-7.42.56-PM.jpeg?w=1200&ssl=1",
+                labelAction = "Ver más",
+                action = { },
+            ),
+        ),
+    )
+}
+
+@Composable
+private fun UsersList(viewModel: DesignViewModel) {
+    val users = viewModel.searchUsers.collectAsState().value
+    val input = viewModel.searchText.collectAsState().value
+    AnimatedVisibility(users.isNotEmpty() && input.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            users.forEachIndexed { index, user ->
+                item {
+                    user.Draw { viewModel.onUserClicked(user) }
+                    if (index < users.lastIndex) {
+                        HorizontalDivider(thickness = 1.dp, color = colorGrey100())
+                    }
+                }
+            }
+        }
+    }
+}

@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.maps.MapView
 import com.diego.futty.core.presentation.theme.colorGrey0
-import com.diego.futty.core.presentation.theme.colorSuccessLight
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
@@ -24,8 +23,6 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBarActionTyp
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Menu2
-import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.girasoles
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -77,19 +74,12 @@ private fun MatchV2Content(paddingValues: PaddingValues) {
         ScrollBanner(
             items = listOf(
                 BannerUIData(
-                    title = "Girasoles",
-                    description = "Éste banner puede varias cosas en un mismo lugar. Máximo 2 líneas",
+                    title = "Playas paradisiacas",
+                    description = "Conoce las mejores playas del mundo según tus preferencias.",
                     labelAction = "Ver más",
-                    illustration = Res.drawable.girasoles,
+                    illustration = "https://media.vogue.mx/photos/5cdef8581f70812d0d7f4c4d/master/w_1600,c_limit/fotografia%20de%20paisaje%204.jpg",
                     action = { },
-                ),
-                BannerUIData(
-                    title = "Título",
-                    color = colorSuccessLight(),
-                    description = "Éste banner puede varias cosas en un mismo lugar. Máximo 2 líneas",
-                    labelAction = "Ver más",
-                    action = { },
-                ),
+                )
             )
         )
     }

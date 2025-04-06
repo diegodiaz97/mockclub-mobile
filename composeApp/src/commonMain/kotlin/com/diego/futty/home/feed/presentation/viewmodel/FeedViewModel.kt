@@ -29,10 +29,10 @@ class FeedViewModel(
     private val preferences: UserPreferences,
 ) : FeedViewContract, ViewModel() {
     private val getImages = listOf(
-        ActionableImage(image = Res.drawable.dybala) { onImageClicked(it) },
-        ActionableImage(image = Res.drawable.girasoles) { onImageClicked(it) },
-        ActionableImage(image = Res.drawable.compose_multiplatform) { onImageClicked(it) },
-        ActionableImage(image = Res.drawable.book_error_2) { onImageClicked(it) },
+        ActionableImage(image = "https://fotos.perfil.com/2025/02/20/trim/720/410/6j6M-000-36y93mz.jpg?webp") { onImageClicked(it) },
+        ActionableImage(image = "https://media.vogue.mx/photos/5cdef9dc1f70818ac67f4c53/2:3/w_2240,c_limit/fotografias%20de%20paisaje.jpg") { onImageClicked(it) },
+        ActionableImage(image = "https://media.vogue.mx/photos/5cdef7991f7081b6577f4c49/master/w_1600,c_limit/fotografia%20de%20paisaje%202.jpg") { onImageClicked(it) },
+        ActionableImage(image = "https://cdn.pixabay.com/photo/2014/04/03/10/50/adidas-311450_1280.png") { onImageClicked(it) },
     )
 
     private val _user = mutableStateOf<User?>(null)
@@ -53,19 +53,6 @@ class FeedViewModel(
         User(
             id = "",
             email = "",
-            name = "Diego Díaz",
-            description = "",
-            profileImage = ProfileImage(initials = "DD", background = InfoLight.toHex()),
-            creationDate = "",
-            followers = null,
-            following = null,
-            level = 3,
-            country = "Argentina",
-            desires = null,
-        ),
-        User(
-            id = "",
-            email = "",
             name = "Carolina Fubel",
             description = "",
             profileImage = ProfileImage(initials = "CF", background = ErrorLight.toHex()),
@@ -81,7 +68,10 @@ class FeedViewModel(
             email = "",
             name = "Bizzarap",
             description = "",
-            profileImage = null, // ProfileImage(image = Res.drawable.dybala),
+            profileImage = ProfileImage(
+                image = "https://forbes.es/wp-content/uploads/2022/08/Forbes_ListaCreativos_Web_Bizarrap.jpg",
+                background = "0xFF28A745"
+            ),
             creationDate = "",
             followers = null,
             following = null,
@@ -91,10 +81,10 @@ class FeedViewModel(
         )
     )
 
-    private val getPosts = listOf(
+    private fun getPosts(user: User) = listOf(
         Post(
             id = "",
-            user = getUsers[0],
+            user = user,
             date = "25 de enero a las 12:32",
             text = "Estoy aprendiendo Jetpack Compose \uD83D\uDEAC \uD83D\uDE0E",
             images = getImages,
@@ -102,7 +92,7 @@ class FeedViewModel(
         ),
         Post(
             id = "",
-            user = getUsers[0],
+            user = user,
             date = "22 de enero a las 14:43",
             text = "Fotonnnn",
             images = getImages.subList(0,1),
@@ -110,7 +100,7 @@ class FeedViewModel(
         ),
         Post(
             id = "",
-            user = getUsers[1],
+            user = getUsers[0],
             date = "23 de enero a las 18:43",
             text = "Hoy vi unos girasoles muy amarilloss",
             images = getImages.subList(1,2),
@@ -125,7 +115,7 @@ class FeedViewModel(
         ),
         Post(
             id = "",
-            user = getUsers[2],
+            user = getUsers[1],
             date = "18 de enero a las 18:12",
             text = "Ojalá Paredes le haga un gol a Brasil \uD83C\uDDE6\uD83C\uDDF7 ⚔\uFE0F \uD83C\uDDE7\uD83C\uDDF7",
             onClick = {},
@@ -135,7 +125,6 @@ class FeedViewModel(
     fun setup(navController: NavHostController) {
         fetchUserInfo()
         _navigate = { navController.navigate(it) }
-        _posts.value = getPosts
     }
 
     override fun onProfileClicked() {
@@ -165,6 +154,7 @@ class FeedViewModel(
                 .onSuccess { loggedUser ->
                     // show info
                     _user.value = loggedUser
+                    _posts.value = getPosts(loggedUser)
                 }
                 .onError {
                     // show error

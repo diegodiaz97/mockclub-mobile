@@ -1,6 +1,5 @@
 package com.diego.futty.home.feed.presentation.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,12 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import coil3.compose.SubcomposeAsyncImage
+import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.PlatformInfo
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.post.Draw
+import com.diego.futty.home.design.presentation.component.post.PostShimmer
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
@@ -33,10 +35,6 @@ import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
 import compose.icons.TablerIcons
 import compose.icons.tablericons.X
-import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.book_cover
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -100,10 +98,13 @@ private fun OpenedImage(viewModel: FeedViewModel) {
             dragHandle = {},
         ) {
             Box(Modifier.fillMaxSize()) {
-                Image(
+                SubcomposeAsyncImage(
                     modifier = Modifier.fillMaxSize().align(Alignment.Center),
-                    painter = painterResource(image),
-                    contentDescription = stringResource(Res.string.book_cover),
+                    model = image,
+                    contentDescription = "profile image",
+                    loading = {
+                        Shimmer(modifier = Modifier.fillMaxSize().align(Alignment.Center))
+                    }
                 )
                 Avatar.IconAvatar(
                     modifier = Modifier
@@ -120,17 +121,25 @@ private fun OpenedImage(viewModel: FeedViewModel) {
 
 @Composable
 private fun PostsList(viewModel: FeedViewModel) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val posts = viewModel.posts.value
-        posts?.forEachIndexed { index, post ->
-            item {
-                post.Draw()
-                if (index < posts.lastIndex) {
-                    HorizontalDivider(thickness = 1.dp, color = colorGrey100())
+    val posts = viewModel.posts.value
+    if (posts != null) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            posts.forEachIndexed { index, post ->
+                item {
+                    post.Draw()
+                    if (index < posts.lastIndex) {
+                        HorizontalDivider(thickness = 1.dp, color = colorGrey100())
+                    }
                 }
+            }
+        }
+    } else {
+        Column {
+            repeat(10) {
+                PostShimmer()
             }
         }
     }

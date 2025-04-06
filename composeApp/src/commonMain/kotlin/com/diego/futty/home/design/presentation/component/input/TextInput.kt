@@ -1,31 +1,37 @@
 package com.diego.futty.home.design.presentation.component.input
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.theme.colorGrey0
-import com.diego.futty.core.presentation.theme.colorGrey200
-import com.diego.futty.core.presentation.theme.colorGrey700
+import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey400
 import com.diego.futty.core.presentation.theme.colorGrey900
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Eye
@@ -37,134 +43,91 @@ sealed interface TextInput {
     fun Draw()
 
     class Input(
+        val modifier: Modifier = Modifier.fillMaxWidth(),
         val input: String,
-        val label: String,
+        val label: String? = null,
         val placeholder: String = "",
         val onTextChangeAction: (String) -> Unit,
         val onFocusChanged: () -> Unit,
     ) : TextInput {
         @Composable
         override fun Draw() {
-            Column {
-                Text(
-                    text = label,
+            val focusRequester = remember { FocusRequester() }
+            val isFocused = remember { mutableStateOf(false) }
+
+            Column(modifier = modifier) {
+                if (label != null) {
+                    Text(
+                        text = label,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp),
+                        textAlign = TextAlign.Start,
+                        style = typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colorGrey900()
+                    )
+                }
+
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 4.dp),
-                    textAlign = TextAlign.Start,
-                    style = typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colorGrey900()
-                )
-                TextField(
-                    placeholder = {
+                        .height(46.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                       /* .border(
+                            width = 1.dp,
+                            color = colorGrey300(),
+                            shape = RoundedCornerShape(12.dp)
+                        )*/
+                        .background(colorGrey100())
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { isFocused.value = it.hasFocus },
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (input.isEmpty() && !isFocused.value) {
                         Text(
+                            modifier = Modifier.padding(bottom = 4.dp, start = 16.dp),
                             text = placeholder,
-                            textAlign = TextAlign.Start,
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Normal,
-                            color = colorGrey700()
+                            color = colorGrey400()
                         )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .border(
-                            width = 1.dp,
-                            color = colorGrey200(),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .onFocusChanged {
-                            if (it.hasFocus) onFocusChanged()
-                        },
-                    value = input,
-                    colors = TextFieldDefaults.colors(
-                        unfocusedTextColor = colorGrey900(),
-                        disabledTextColor = colorGrey900(),
-                        focusedTextColor = colorGrey900(),
-                        unfocusedContainerColor = colorGrey0(),
-                        focusedContainerColor = colorGrey0(),
-                        cursorColor = colorGrey900(),
-                        disabledLabelColor = colorGrey900(),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    onValueChange = { onTextChangeAction(it) },
-                    shape = RoundedCornerShape(12.dp),
-                    singleLine = true,
-                    trailingIcon = {
-                        if (input.isNotEmpty()) {
-                            IconButton(onClick = { onTextChangeAction("") }) {
-                                Icon(
-                                    imageVector = TablerIcons.X,
-                                    tint = colorGrey200(),
-                                    contentDescription = null
-                                )
-                            }
-                        }
                     }
-                )
-            }
-        }
-    }
 
-    class MailInput(
-        val input: String,
-        val onTextChangeAction: (String) -> Unit,
-        val onFocusChanged: () -> Unit,
-    ) : TextInput {
-        @Composable
-        override fun Draw() {
-            Column {
-                Text(
-                    text = "Email",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 4.dp),
-                    textAlign = TextAlign.Start,
-                    style = typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colorGrey900()
-                )
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .border(
-                            width = 1.dp,
-                            color = colorGrey200(),
-                            shape = RoundedCornerShape(12.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 10.dp)
+                            .padding(start = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        BasicTextField(
+                            value = input,
+                            onValueChange = { onTextChangeAction(it) },
+                            singleLine = true,
+                            textStyle = TextStyle(
+                                color = colorGrey900(),
+                                fontSize = typography.titleMedium.fontSize,
+                                fontWeight = FontWeight.Normal
+                            ),
+                            cursorBrush = SolidColor(colorGrey400()),
+                            modifier = Modifier
+                                .weight(1f)
+                                .focusRequester(focusRequester)
+                                .onFocusChanged { isFocused.value = it.hasFocus }
                         )
-                        .onFocusChanged {
-                            if (it.hasFocus) onFocusChanged()
-                        },
-                    value = input,
-                    colors = TextFieldDefaults.colors(
-                        unfocusedTextColor = colorGrey900(),
-                        disabledTextColor = colorGrey900(),
-                        focusedTextColor = colorGrey900(),
-                        unfocusedContainerColor = colorGrey0(),
-                        focusedContainerColor = colorGrey0(),
-                        cursorColor = colorGrey900(),
-                        disabledLabelColor = colorGrey900(),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    onValueChange = { onTextChangeAction(it) },
-                    shape = RoundedCornerShape(12.dp),
-                    singleLine = true,
-                    trailingIcon = {
+
                         if (input.isNotEmpty()) {
                             IconButton(onClick = { onTextChangeAction("") }) {
                                 Icon(
                                     imageVector = TablerIcons.X,
-                                    tint = colorGrey200(),
-                                    contentDescription = null
+                                    tint = colorGrey400(),
+                                    contentDescription = "Borrar texto"
                                 )
                             }
                         }
                     }
-                )
+                }
             }
         }
     }
@@ -172,6 +135,7 @@ sealed interface TextInput {
     class PasswordInput(
         val input: String,
         val onTextChangeAction: (String) -> Unit,
+        val placeholder: String = "",
         val onFocusChanged: () -> Unit,
     ) : TextInput {
         @Composable
@@ -179,7 +143,10 @@ sealed interface TextInput {
             val maxLength = 16
             val (visible, setVisible) = remember { mutableStateOf(false) }
 
-            Column {
+            val focusRequester = remember { FocusRequester() }
+            val isFocused = remember { mutableStateOf(false) }
+
+            Column(modifier = Modifier) {
                 Text(
                     text = "Contraseña",
                     modifier = Modifier
@@ -190,48 +157,71 @@ sealed interface TextInput {
                     fontWeight = FontWeight.SemiBold,
                     color = colorGrey900()
                 )
-                TextField(
+
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(46.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .border(
+                        /*.border(
                             width = 1.dp,
-                            color = colorGrey200(),
+                            color = colorGrey300(),
                             shape = RoundedCornerShape(12.dp)
+                        )*/
+                        .background(colorGrey100())
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { isFocused.value = it.hasFocus },
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (input.isEmpty() && !isFocused.value) {
+                        Text(
+                            modifier = Modifier.padding(bottom = 4.dp, start = 16.dp),
+                            text = placeholder,
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Normal,
+                            color = colorGrey400()
                         )
-                        .onFocusChanged {
-                            if (it.hasFocus) onFocusChanged()
-                        },
-                    value = input,
-                    colors = TextFieldDefaults.colors(
-                        unfocusedTextColor = colorGrey900(),
-                        disabledTextColor = colorGrey900(),
-                        focusedTextColor = colorGrey900(),
-                        unfocusedContainerColor = colorGrey0(),
-                        focusedContainerColor = colorGrey0(),
-                        cursorColor = colorGrey900(),
-                        disabledLabelColor = colorGrey900(),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    onValueChange = {
-                        if (it.length <= maxLength) {
-                            onTextChangeAction(it)
-                        }
-                    },
-                    visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
-                    shape = RoundedCornerShape(12.dp),
-                    singleLine = true,
-                    trailingIcon = {
-                        IconButton(onClick = { setVisible(visible.not()) }) {
-                            Icon(
-                                imageVector = if (visible) TablerIcons.Eye else TablerIcons.EyeOff,
-                                tint = colorGrey200(),
-                                contentDescription = null
-                            )
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 10.dp)
+                            .padding(start = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        BasicTextField(
+                            value = input,
+                            onValueChange = {
+                                if (it.length <= maxLength) {
+                                    onTextChangeAction(it)
+                                }
+                            },
+                            singleLine = true,
+                            textStyle = TextStyle(
+                                color = colorGrey900(),
+                                fontSize = typography.titleMedium.fontSize,
+                                fontWeight = FontWeight.Normal
+                            ),
+                            cursorBrush = SolidColor(colorGrey400()),
+                            visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
+                            modifier = Modifier
+                                .weight(1f)
+                                .focusRequester(focusRequester)
+                                .onFocusChanged { isFocused.value = it.hasFocus }
+                        )
+
+                        if (input.isNotEmpty()) {
+                            IconButton(onClick = { setVisible(visible.not()) }) {
+                                Icon(
+                                    imageVector = if (visible) TablerIcons.Eye else TablerIcons.EyeOff,
+                                    tint = colorGrey400(),
+                                    contentDescription = "password visibility"
+                                )
+                            }
                         }
                     }
-                )
+                }
             }
         }
     }

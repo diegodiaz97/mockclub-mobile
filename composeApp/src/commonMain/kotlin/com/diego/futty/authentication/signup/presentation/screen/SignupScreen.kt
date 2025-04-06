@@ -18,12 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.diego.futty.authentication.signup.presentation.viewmodel.SignupViewModel
 import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.utils.HideKeyboard
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.input.TextInput
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
-import com.diego.futty.core.presentation.utils.HideKeyboard
 
 @Composable
 fun SignupScreen(viewModel: SignupViewModel) {
@@ -78,20 +78,24 @@ private fun SignupContent(viewModel: SignupViewModel, paddingValues: PaddingValu
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        TextInput.MailInput(
-            viewModel.email.value,
+        TextInput.Input(
+            input = viewModel.email.value,
+            label = "Email",
+            placeholder = "ejemplo@gmail.com",
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updateEmail(it) }
         ).Draw()
 
         TextInput.PasswordInput(
-            viewModel.password.value,
+            input = viewModel.password.value,
+            placeholder = "Ejemplo123",
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updatePassword(it) }
         ).Draw()
 
         TextInput.PasswordInput(
-            viewModel.confirmPassword.value,
+            input = viewModel.confirmPassword.value,
+            placeholder = "Ejemplo123",
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updateConfirmPassword(it) }
         ).Draw()

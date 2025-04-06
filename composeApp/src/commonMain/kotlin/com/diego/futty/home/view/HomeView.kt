@@ -110,7 +110,11 @@ fun HomeView(navigateToLogin: () -> Unit) {
                             appViewModel.updateRoute(HomeRoute.Setup)
                         }
                         SetupView(
-                            onBack = { navController.popBackStack() },
+                            userId = designViewModel.clickedUser.value,
+                            onBack = {
+                                navController.popBackStack()
+                                designViewModel.resetUserId()
+                            },
                             navigateToLogin = navigateToLogin,
                         )
                     }
@@ -148,7 +152,7 @@ fun BottomNavBar(navController: NavController, currentRoute: HomeRoute) {
         ) {
             BottomNavScreen.allScreens.forEach { screen ->
                 Avatar.IconAvatar(
-                    icon = screen.icon,
+                    icon = if (currentRoute == screen.route) screen.selectedIcon else screen.icon,
                     tint = if (currentRoute == screen.route) colorGrey900() else colorGrey500(),
                     background = Color.Transparent,
                     avatarSize = AvatarSize.Big,

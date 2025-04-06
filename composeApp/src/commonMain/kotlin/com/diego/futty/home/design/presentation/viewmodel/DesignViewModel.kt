@@ -3,125 +3,80 @@ package com.diego.futty.home.design.presentation.viewmodel
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.diego.futty.core.presentation.theme.AlertLight
-import com.diego.futty.core.presentation.theme.ErrorLight
-import com.diego.futty.core.presentation.theme.InfoLight
-import com.diego.futty.core.presentation.theme.SuccessLight
-import com.diego.futty.home.design.presentation.component.Chip.ChipModel
-import com.diego.futty.home.design.presentation.component.banner.BannerUIData
+import com.diego.futty.core.domain.onError
+import com.diego.futty.core.domain.onSuccess
+import com.diego.futty.home.design.data.repository.DiscoverRepositoryImpl
+import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.view.HomeRoute
-import compose.icons.TablerIcons
-import compose.icons.tablericons.BallFootball
-import compose.icons.tablericons.BrandPinterest
-import compose.icons.tablericons.Headphones
-import compose.icons.tablericons.Message2
-import compose.icons.tablericons.Palette
-import compose.icons.tablericons.Pizza
-import compose.icons.tablericons.Plane
-import compose.icons.tablericons.School
-import compose.icons.tablericons.Video
-import compose.icons.tablericons.Wallet
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
-class DesignViewModel : DesignViewContract, ViewModel() {
-    private val _buttonEnabled = mutableStateOf(true)
-    override val buttonEnabled: State<Boolean> = _buttonEnabled
+class DesignViewModel(
+    private val discoverRepository: DiscoverRepositoryImpl,
+) : DesignViewContract, ViewModel() {
+    private val _searchText = MutableStateFlow("")
+    override val searchText: StateFlow<String> = _searchText
 
-    private val _buttonText = mutableStateOf("Continuar")
-    override val buttonText: State<String> = _buttonText
+    private val _searchUsers = MutableStateFlow<List<User>>(emptyList())
+    override val searchUsers: StateFlow<List<User>> = _searchUsers
 
-    private val _bottomsheetDismissed = mutableStateOf(true)
-    override val bottomsheetDismissed: State<Boolean> = _bottomsheetDismissed
-
-    private val _chipItems = mutableStateOf(setupChipItems())
-    override val chipItems: State<List<ChipModel>> = _chipItems
-
-    private val _selectedChip = mutableStateOf(0)
-    override val selectedChip: State<Int> = _selectedChip
+    private val _clickedUser = mutableStateOf("")
+    override val clickedUser: State<String> = _clickedUser
 
     private var _navigate: (HomeRoute) -> Unit = {}
 
     fun setup(navController: NavHostController) {
+        debounce()
         _navigate = { navController.navigate(it) }
-    }
-
-    override fun onButtonClicked() {
-        _bottomsheetDismissed.value = false
     }
 
     override fun onProfileClicked() {
         _navigate(HomeRoute.Setup)
     }
 
-    override fun onBottomSheetDismissed() {
-        _bottomsheetDismissed.value = true
+    @OptIn(FlowPreview::class)
+    private fun debounce() {
+        viewModelScope.launch {
+            _searchText.debounce(300) // Espera 300ms después de la última pulsación
+                .filter { it.isNotEmpty() } // No busca si el texto está vacío
+                .collectLatest { query ->
+                    searchUsers(query)
+                }
+        }
     }
 
-    override fun getScrollableBanners() = BannerUIData(
-        title = "Scrollable Banner",
-        description = "Éste banner puede varias cosas en un mismo lugar. Máximo 2 líneas",
-        labelAction = "Ver más",
-        action = { onScrollBannerClicked("accion 1") },
-    )
-
-    override fun onScrollBannerClicked(text: String) {
-        _buttonText.value = text
+    private fun searchUsers(query: String) {
+        viewModelScope.launch {
+            discoverRepository.searchUsers(query)
+                .onSuccess { users ->
+                    _searchUsers.value = users
+                }
+                .onError {
+                    // show error
+                }
+        }
     }
 
-    override fun onChipSelected(index: Int) {
-        _selectedChip.value = index
+    override fun updateSearch(search: String) {
+        _searchText.value = search
+        if (search.isEmpty()) {
+            _searchUsers.value = emptyList()
+        }
     }
 
-    private fun setupChipItems() = listOf(
-        ChipModel(
-            icon = TablerIcons.School,
-            color = AlertLight,
-            text = "Cursos"
-        ),
-        ChipModel(
-            icon = TablerIcons.Pizza,
-            color = InfoLight,
-            text = "Comidas"
-        ),
-        ChipModel(
-            icon = TablerIcons.Video,
-            color = SuccessLight,
-            text = "Cine"
-        ),
-        ChipModel(
-            icon = TablerIcons.Palette,
-            color = ErrorLight,
-            text = "Arte"
-        ),
-        ChipModel(
-            icon = TablerIcons.Message2,
-            color = AlertLight,
-            text = "Idiomas"
-        ),
-        ChipModel(
-            icon = TablerIcons.Headphones,
-            color = InfoLight,
-            text = "Música"
-        ),
-        ChipModel(
-            icon = TablerIcons.BrandPinterest,
-            color = SuccessLight,
-            text = "Decoración"
-        ),
-        ChipModel(
-            icon = TablerIcons.Wallet,
-            color = ErrorLight,
-            text = "Finanzas"
-        ),
-        ChipModel(
-            icon = TablerIcons.BallFootball,
-            color = AlertLight,
-            text = "Deportes"
-        ),
-        ChipModel(
-            icon = TablerIcons.Plane,
-            color = InfoLight,
-            text = "Vacaciones"
-        ),
-    )
+    override fun onUserClicked(user: User) {
+        _clickedUser.value = user.id
+        _navigate(HomeRoute.Setup)
+    }
+
+    override fun resetUserId() {
+        _clickedUser.value = ""
+    }
 }

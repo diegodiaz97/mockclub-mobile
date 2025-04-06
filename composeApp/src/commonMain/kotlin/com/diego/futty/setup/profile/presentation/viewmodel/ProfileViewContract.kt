@@ -22,4 +22,5 @@ interface ProfileViewContract {
     fun launchGallery()
     fun launchCamera()
     fun onEditClicked()
+    val userId: State<String>
 }

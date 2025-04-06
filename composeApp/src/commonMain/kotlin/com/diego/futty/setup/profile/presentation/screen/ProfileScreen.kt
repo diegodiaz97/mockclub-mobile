@@ -1,5 +1,6 @@
 package com.diego.futty.setup.profile.presentation.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -109,7 +110,7 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
         modifier = Modifier
             .fillMaxSize()
             .padding(top = paddingValues.calculateTopPadding()),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         MainInfo(viewModel)
         Desires(viewModel)
@@ -153,7 +154,7 @@ fun Levels() {
 @Composable
 private fun MainInfo(viewModel: ProfileViewModel) {
     val user = viewModel.user.value
-    if (user != null) {
+    AnimatedVisibility(user != null) {
         Row(
             modifier = Modifier.padding(top = 12.dp).padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -166,18 +167,20 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                 Avatar.ProfileAvatar(
                     imageUrl = viewModel.urlImage.value,
                     initials = viewModel.initials.value,
-                    background = user.profileImage?.background?.toColor(),
+                    background = user?.profileImage?.background?.toColor(),
                     avatarSize = AvatarSize.Extra,
                     onClick = { viewModel.showUpdateImage() }
                 ).Draw()
-                Text(
-                    modifier = Modifier
-                        .clickable { viewModel.onEditClicked() },
-                    text = "Editar",
-                    style = typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colorGrey900()
-                )
+                if (viewModel.userId.value.isEmpty()) {
+                    Text(
+                        modifier = Modifier
+                            .clickable { viewModel.onEditClicked() },
+                        text = "Editar",
+                        style = typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colorGrey900()
+                    )
+                }
             }
 
             Column(
@@ -191,14 +194,14 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                 ) {
                     Text(
                         modifier = Modifier.padding(start = 1.dp),
-                        text = "${user.name} ${user.lastName}",
+                        text = "${user?.name} ${user?.lastName}",
                         style = typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         color = colorGrey900()
                     )
                     VerifiedIcon(Modifier.padding(top = 4.dp))
                 }
-                if (user.description != null) {
+                if (user?.description != null) {
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(start = 1.dp),
                         text = user.description,
@@ -220,7 +223,7 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                     )
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "En Futty desde el ${user.creationDate}",
+                        text = "En Futty desde el ${user?.creationDate}",
                         style = typography.titleSmall,
                         fontWeight = FontWeight.Normal,
                         color = colorGrey500()
@@ -228,8 +231,6 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                 }
             }
         }
-    } else {
-        // SHIMMERS
     }
 }
 
@@ -397,7 +398,8 @@ private fun OpenedImage(viewModel: ProfileViewModel) {
                     }
 
                     viewModel.initials.value != null -> {
-                        val color = viewModel.user.value?.profileImage?.background?.toColor() ?: colorGrey900()
+                        val color = viewModel.user.value?.profileImage?.background?.toColor()
+                            ?: colorGrey900()
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -417,28 +419,31 @@ private fun OpenedImage(viewModel: ProfileViewModel) {
                         }
                     }
                 }
-
-                Row(modifier = Modifier.padding(20.dp)) {
-                    SecondaryButton(
+                if (viewModel.userId.value.isEmpty()) {
+                    Column(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 4.dp),
-                        title = "Tomar foto",
-                        onClick = {
-                            viewModel.showUpdateImage()
-                            viewModel.launchCamera()
-                        }
-                    )
-                    SecondaryButton(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 4.dp),
-                        title = "Seleccionar foto",
-                        onClick = {
-                            viewModel.showUpdateImage()
-                            viewModel.launchGallery()
-                        }
-                    )
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        SecondaryButton(
+                            title = "Elegir de la galería",
+                            color = colorGrey900(),
+                            onClick = {
+                                viewModel.showUpdateImage()
+                                viewModel.launchGallery()
+                            }
+                        )
+                        SecondaryButton(
+                            title = "Tomar foto",
+                            color = colorGrey900(),
+                            onClick = {
+                                viewModel.showUpdateImage()
+                                viewModel.launchCamera()
+                            }
+                        )
+                    }
                 }
             }
             Avatar.IconAvatar(
