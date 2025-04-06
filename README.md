@@ -1,3 +1,5 @@
+# IMPORTANT: THIS IS A REPOSITORY TO PRACTICE AND IMPROVING MY MOBILE MULTIPLATFORM SKILLS.
+
 This is a Kotlin Multiplatform project targeting Android, iOS, Desktop.
 
 * `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
