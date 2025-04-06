@@ -13,6 +13,7 @@ import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.core.presentation.theme.getRandomLightColorHex
 import com.diego.futty.core.presentation.utils.RegexUtils
+import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_BASIC
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import com.diego.futty.home.feed.domain.model.ProfileImage
@@ -132,6 +133,7 @@ class SignupViewModel(
                     background = getRandomLightColorHex()
                 ),
                 creationDate = date,
+                userType = USER_TYPE_BASIC,
                 level = 0,
             )
 

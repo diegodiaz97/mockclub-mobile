@@ -21,6 +21,14 @@ class UserPreferences(private val settings: Settings) {
         return settings[USER_EMAIL]
     }
 
+    fun saveUserType(type: String) {
+        settings[USER_TYPE] = type
+    }
+
+    fun getUserType(): String? {
+        return settings[USER_TYPE]
+    }
+
     fun saveDarkMode(enabled: Boolean) {
         settings[DARK_MODE] = enabled
     }
@@ -32,6 +40,7 @@ class UserPreferences(private val settings: Settings) {
     companion object {
         const val USER_ID = "user_id"
         const val USER_EMAIL = "user_email"
+        const val USER_TYPE = "user_type"
         const val DARK_MODE = "dark_mode"
     }
 }

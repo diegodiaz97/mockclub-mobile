@@ -31,7 +31,9 @@ import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey600
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
+import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
+import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.feed.domain.model.ActionableImage
 import com.diego.futty.home.feed.domain.model.Post
 import com.diego.futty.home.feed.domain.model.ProfileImage
@@ -39,7 +41,12 @@ import com.diego.futty.home.feed.domain.model.ProfileImage
 @Composable
 fun Post.Draw() =
     Column(modifier = Modifier.padding(vertical = 12.dp).clickable { onClick(this) }) {
-        PostInformation(user.profileImage, user.name ?: "", date)
+        PostInformation(
+            profileImage = user.profileImage,
+            name = "${user.name} ${user.lastName}",
+            date = date,
+            verified = user.userType == USER_TYPE_PRO
+        )
         if (text != null) {
             Text(
                 modifier = Modifier
@@ -60,8 +67,9 @@ fun Post.Draw() =
 @Composable
 private fun PostInformation(
     profileImage: ProfileImage?,
-    title: String,
-    subtitle: String,
+    name: String,
+    date: String,
+    verified: Boolean,
 ) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -75,16 +83,24 @@ private fun PostInformation(
             onClick = { }
         ).Draw()
         Column(verticalArrangement = Arrangement.SpaceAround) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = name,
+                    style = typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colorGrey900()
+                )
+                if (verified) {
+                    VerifiedIcon(Modifier.padding(top = 4.dp), size = 16.dp)
+                }
+            }
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = title,
-                style = typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = colorGrey900()
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = subtitle,
+                text = date,
                 style = typography.bodySmall,
                 fontWeight = FontWeight.Normal,
                 color = colorGrey600()

@@ -148,8 +148,8 @@ private fun CreateBanner(
         ) {
             Text(
                 text = bannerUIData.title,
-                style = typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
+                style = typography.titleMedium,
+                fontWeight = FontWeight.Bold,
                 color = textColor,
                 maxLines = 1,
             )

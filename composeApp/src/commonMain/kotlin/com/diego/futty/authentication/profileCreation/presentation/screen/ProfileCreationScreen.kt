@@ -53,6 +53,7 @@ import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.HideKeyboard
 import com.diego.futty.core.presentation.utils.PlatformInfo
+import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.banner.Banner
@@ -195,6 +196,9 @@ private fun MainInfo(viewModel: ProfileCreationViewModel) {
                     fontWeight = FontWeight.Bold,
                     color = colorGrey900()
                 )
+                if (viewModel.user.value?.userType == USER_TYPE_PRO) {
+                    VerifiedIcon(Modifier.padding(top = 4.dp))
+                }
                 VerifiedIcon(Modifier.padding(top = 4.dp))
             }
             Text(

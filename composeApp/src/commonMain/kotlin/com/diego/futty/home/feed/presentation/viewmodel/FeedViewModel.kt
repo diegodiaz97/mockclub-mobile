@@ -10,18 +10,13 @@ import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.core.presentation.theme.ErrorLight
-import com.diego.futty.core.presentation.theme.InfoLight
 import com.diego.futty.core.presentation.theme.toHex
+import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_BASIC
 import com.diego.futty.home.feed.domain.model.ActionableImage
 import com.diego.futty.home.feed.domain.model.Post
 import com.diego.futty.home.feed.domain.model.ProfileImage
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.view.HomeRoute
-import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.book_error_2
-import futty.composeapp.generated.resources.compose_multiplatform
-import futty.composeapp.generated.resources.dybala
-import futty.composeapp.generated.resources.girasoles
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
@@ -29,10 +24,9 @@ class FeedViewModel(
     private val preferences: UserPreferences,
 ) : FeedViewContract, ViewModel() {
     private val getImages = listOf(
-        ActionableImage(image = "https://fotos.perfil.com/2025/02/20/trim/720/410/6j6M-000-36y93mz.jpg?webp") { onImageClicked(it) },
         ActionableImage(image = "https://media.vogue.mx/photos/5cdef9dc1f70818ac67f4c53/2:3/w_2240,c_limit/fotografias%20de%20paisaje.jpg") { onImageClicked(it) },
         ActionableImage(image = "https://media.vogue.mx/photos/5cdef7991f7081b6577f4c49/master/w_1600,c_limit/fotografia%20de%20paisaje%202.jpg") { onImageClicked(it) },
-        ActionableImage(image = "https://cdn.pixabay.com/photo/2014/04/03/10/50/adidas-311450_1280.png") { onImageClicked(it) },
+        ActionableImage(image = "https://fotos.perfil.com/2025/02/20/trim/720/410/6j6M-000-36y93mz.jpg?webp") { onImageClicked(it) },
     )
 
     private val _user = mutableStateOf<User?>(null)
@@ -53,10 +47,12 @@ class FeedViewModel(
         User(
             id = "",
             email = "",
-            name = "Carolina Fubel",
+            name = "Carolina",
+            lastName = "Fubel",
             description = "",
             profileImage = ProfileImage(initials = "CF", background = ErrorLight.toHex()),
             creationDate = "",
+            userType = USER_TYPE_BASIC,
             followers = null,
             following = null,
             level = 3,
@@ -73,6 +69,7 @@ class FeedViewModel(
                 background = "0xFF28A745"
             ),
             creationDate = "",
+            userType = USER_TYPE_BASIC,
             followers = null,
             following = null,
             level = 3,
@@ -155,6 +152,7 @@ class FeedViewModel(
                     // show info
                     _user.value = loggedUser
                     _posts.value = getPosts(loggedUser)
+                    preferences.saveUserType(loggedUser.userType)
                 }
                 .onError {
                     // show error

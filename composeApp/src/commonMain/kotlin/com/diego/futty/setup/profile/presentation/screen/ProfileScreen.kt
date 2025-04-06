@@ -57,9 +57,13 @@ import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.colorInfoLight
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.PlatformInfo
+import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_BASIC
+import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
+import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.flowrow.MultipleFlowList
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
@@ -113,8 +117,27 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         MainInfo(viewModel)
+        Upgrade(viewModel)
         Desires(viewModel)
         Levels()
+    }
+}
+
+@Composable
+fun Upgrade(viewModel: ProfileViewModel) {
+    if (viewModel.user.value?.userType == USER_TYPE_BASIC) {
+        ScrollBanner(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            items = listOf(
+                BannerUIData(
+                    title = "Actualiza a PRO",
+                    description = "Descubre las mejores funcionalidades por solo $1 USD.",
+                    labelAction = "Ver más",
+                    illustration = "https://cdn.pixabay.com/photo/2022/09/21/17/02/blue-background-7470781_1280.jpg",
+                    action = { viewModel.onVerifyClicked() },
+                )
+            )
+        )
     }
 }
 
@@ -199,7 +222,9 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                         fontWeight = FontWeight.Bold,
                         color = colorGrey900()
                     )
-                    VerifiedIcon(Modifier.padding(top = 4.dp))
+                    if (user?.userType == USER_TYPE_PRO) {
+                        VerifiedIcon(Modifier.padding(top = 4.dp))
+                    }
                 }
                 if (user?.description != null) {
                     Text(

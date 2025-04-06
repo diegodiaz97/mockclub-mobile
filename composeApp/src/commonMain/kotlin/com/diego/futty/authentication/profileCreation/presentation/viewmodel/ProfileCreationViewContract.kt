@@ -3,9 +3,11 @@ package com.diego.futty.authentication.profileCreation.presentation.viewmodel
 import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.ImageBitmap
 import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.feed.domain.model.User
 
 interface ProfileCreationViewContract {
     val banner: State<Banner?>
+    val user: State<User?>
     val background: State<String>
     val name: State<String>
     val lastName: State<String>

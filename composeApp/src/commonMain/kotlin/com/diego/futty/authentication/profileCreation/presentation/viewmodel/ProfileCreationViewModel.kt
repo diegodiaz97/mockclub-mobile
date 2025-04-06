@@ -61,6 +61,8 @@ class ProfileCreationViewModel(
     override val hideKeyboard: State<Boolean> = _hideKeyboard
 
     private val _user = mutableStateOf<User?>(null)
+    override val user: State<User?> = _user
+
     private val _bitmapImage = mutableStateOf<ImageBitmap?>(null)
     private val _byteArrayImage = mutableStateOf<ByteArray?>(null)
     private var _onClose: () -> Unit = {}

@@ -11,6 +11,7 @@ data class User(
     val description: String? = null,
     val profileImage: ProfileImage,
     val creationDate: String,
+    val userType: String,
     val followers: List<String>? = null, // Followers ID's
     val following: List<String>? = null, // Following ID's
     val level: Int,

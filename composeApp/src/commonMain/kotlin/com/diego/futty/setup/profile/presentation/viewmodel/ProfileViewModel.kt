@@ -172,6 +172,10 @@ class ProfileViewModel(
         _navigate(SetupRoute.ProfileCreation)
     }
 
+    override fun onVerifyClicked() {
+        // Go to upgrade screen
+    }
+
     private fun fetchUserInfo() {
         viewModelScope.launch {
             val user = _userId.value.ifEmpty {

@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
+import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
@@ -47,19 +48,19 @@ fun User.Draw(onClick: (() -> Unit)? = null) = Row(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
-                modifier = Modifier.padding(start = 1.dp),
                 text = "$name $lastName",
                 style = typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = colorGrey900()
             )
-            VerifiedIcon(Modifier.padding(top = 4.dp))
+            if (userType == USER_TYPE_PRO) {
+                VerifiedIcon(Modifier.padding(top = 4.dp), size = 16.dp)
+            }
         }
         Text(
-            modifier = Modifier.fillMaxWidth().padding(start = 1.dp),
             text = description ?: "",
             style = typography.titleMedium,
             fontWeight = FontWeight.SemiBold,

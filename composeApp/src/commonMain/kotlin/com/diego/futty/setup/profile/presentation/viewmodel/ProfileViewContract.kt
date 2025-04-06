@@ -8,6 +8,7 @@ import com.diego.futty.home.feed.domain.model.User
 interface ProfileViewContract {
     val showUpdateImage: State<Boolean>
     val user: State<User?>
+    val userId: State<String>
     val urlImage: State<String?>
     val initials: State<String?>
     val launchGallery: State<Boolean>
@@ -22,5 +23,5 @@ interface ProfileViewContract {
     fun launchGallery()
     fun launchCamera()
     fun onEditClicked()
-    val userId: State<String>
+    fun onVerifyClicked()
 }

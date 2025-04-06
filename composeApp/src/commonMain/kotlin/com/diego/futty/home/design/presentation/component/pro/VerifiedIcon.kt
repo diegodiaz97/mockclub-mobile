@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorInfo
@@ -17,20 +18,20 @@ import compose.icons.Octicons
 import compose.icons.octicons.Verified16
 
 @Composable
-fun VerifiedIcon(modifier: Modifier) {
+fun VerifiedIcon(modifier: Modifier, size: Dp = 20.dp) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
         Box(
             modifier = Modifier
-                .size(20.dp)
+                .size(size)
                 .padding(1.dp)
                 .clip(CircleShape)
                 .background(colorInfo())
         )
         Icon(
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(size),
             imageVector = Octicons.Verified16,
             tint = colorGrey0(),
             contentDescription = null
