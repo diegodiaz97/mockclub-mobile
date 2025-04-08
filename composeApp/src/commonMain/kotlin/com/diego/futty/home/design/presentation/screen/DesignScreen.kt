@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey400
-import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
@@ -30,6 +29,7 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBarActionTyp
 import com.diego.futty.home.design.presentation.component.user.Draw
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
 import compose.icons.TablerIcons
+import compose.icons.tablericons.Menu2
 import compose.icons.tablericons.Search
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -46,10 +46,8 @@ fun DesignScreen(
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp),
                 title = "Descubre",
-                topBarActionType = TopBarActionType.Profile(
-                    initials = "DD",
-                    tint = colorGrey0(),
-                    background = colorGrey900(),
+                topBarActionType = TopBarActionType.Icon(
+                    icon = TablerIcons.Menu2,
                     onClick = { viewModel.onProfileClicked() }
                 )
             )

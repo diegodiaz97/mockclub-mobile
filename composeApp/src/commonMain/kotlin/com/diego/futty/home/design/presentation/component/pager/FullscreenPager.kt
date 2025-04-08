@@ -1,4 +1,4 @@
-package com.diego.futty.home.design.presentation.component.banner
+package com.diego.futty.home.design.presentation.component.pager
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -17,7 +17,6 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,13 +28,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
@@ -44,39 +42,35 @@ import com.diego.futty.core.presentation.theme.Grey0
 import com.diego.futty.core.presentation.theme.Grey900
 import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey0
-import com.diego.futty.core.presentation.theme.colorGrey200
+import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
-import com.diego.futty.home.design.presentation.component.pager.carouselTransition
-import compose.icons.TablerIcons
-import compose.icons.tablericons.ArrowRight
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @Composable
-fun ScrollBanner(
+fun FullScreenPager(
     modifier: Modifier = Modifier,
     items: List<BannerUIData>,
 ) {
     val itemsToShow = items.take(7)
     val state: PagerState = rememberPagerState { itemsToShow.size }
     PageControls(state)
-    Column(modifier = modifier.fillMaxWidth()) {
+    Box(modifier = modifier.fillMaxSize()) {
         HorizontalPager(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
             state = state,
             pageSpacing = 12.dp,
-            pageContent = { page: Int ->
-                CreateBanner(items[page], page, state)
-            },
+            pageContent = { page: Int -> CreateBanner(items[page], page, state) },
         )
         if (itemsToShow.size > 1) {
             DotIndicators(
                 pageCount = itemsToShow.size,
                 pagerState = state,
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 12.dp),
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 12.dp),
             )
         }
     }
@@ -94,13 +88,12 @@ private fun DotIndicators(
     ) {
         repeat(pageCount) { iteration ->
             val color =
-                if (pagerState.currentPage == iteration) colorGrey900() else colorGrey200()
+                if (pagerState.currentPage == iteration) Grey0 else colorGrey500().copy(alpha = 0.5f)
             Box(
-                modifier =
-                    Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(color),
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(color),
             )
         }
     }
@@ -114,8 +107,7 @@ private fun CreateBanner(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(140.dp)
+            .fillMaxSize()
             .background(bannerUIData.color ?: colorGrey0())
             .carouselTransition(page, state)
             .clip(RoundedCornerShape(12.dp))
@@ -130,69 +122,53 @@ private fun CreateBanner(
 
         if (bannerUIData.illustration != null) {
             SubcomposeAsyncImage(
-                modifier = Modifier.clipToBounds().fillMaxSize(),
+                modifier = Modifier.fillMaxHeight(),
                 model = bannerUIData.illustration,
                 contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(
-                    color = Grey900.copy(alpha = 0.5f),
+                    color = Grey900.copy(alpha = 0.7f),
                     blendMode = BlendMode.Darken
                 ),
                 contentDescription = "profile image",
                 loading = {
-                    Shimmer(modifier = Modifier.clipToBounds().fillMaxSize())
+                    Shimmer(modifier = Modifier.fillMaxSize())
                 }
             )
         }
 
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = bannerUIData.title,
-                style = typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = textColor,
-                maxLines = 1,
-            )
-            Text(
-                modifier = Modifier.padding(top = 4.dp, end = 32.dp).weight(1f),
-                text = bannerUIData.description,
-                style = typography.titleMedium,
-                fontWeight = FontWeight.Normal,
+                style = typography.displaySmall,
+                fontWeight = FontWeight.ExtraBold,
                 color = textColor,
                 maxLines = 2,
+            )
+            Text(
+                modifier = Modifier.padding(top = 24.dp).weight(1f),
+                text = bannerUIData.description,
+                style = typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = textColor,
                 overflow = TextOverflow.Ellipsis,
             )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = bannerUIData.labelAction,
-                    style = typography.bodySmall,
-                    fontWeight = FontWeight.Medium,
-                    color = textColor,
-                    maxLines = 1,
-                )
-                Icon(
-                    modifier = Modifier.size(16.dp),
-                    imageVector = TablerIcons.ArrowRight,
-                    tint = textColor,
-                    contentDescription = null
-                )
-            }
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                text = bannerUIData.labelAction,
+                style = typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = textColor,
+                maxLines = 1,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
-
-data class BannerUIData(
-    val title: String,
-    val description: String,
-    val labelAction: String,
-    val illustration: String? = null,
-    val color: Color? = null,
-    val action: (() -> Unit)? = null
-)
 
 @Composable
 private fun PageControls(state: PagerState) {

@@ -28,9 +28,6 @@ import compose.icons.tablericons.Bell
 import compose.icons.tablericons.Bolt
 import compose.icons.tablericons.Download
 import compose.icons.tablericons.QuestionMark
-import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.girasoles
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
@@ -108,12 +105,6 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
             icon = TablerIcons.Download,
             title = "Guardado",
             subtitle = "Mira las publicaciones que has guardado.",
-            onClick = { }
-        ).Draw()
-        Banner.ClickableBanner(
-            image = painterResource(Res.drawable.girasoles),
-            title = "Diego Díaz",
-            subtitle = "hace 4hs",
             onClick = { }
         ).Draw()
     }

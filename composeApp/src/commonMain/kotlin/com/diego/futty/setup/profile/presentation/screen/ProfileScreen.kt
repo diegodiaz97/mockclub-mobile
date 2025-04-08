@@ -125,7 +125,7 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
 
 @Composable
 fun Upgrade(viewModel: ProfileViewModel) {
-    if (viewModel.user.value?.userType == USER_TYPE_BASIC) {
+    if (viewModel.user.value?.userType == USER_TYPE_BASIC && viewModel.userId.value.isEmpty()) {
         ScrollBanner(
             modifier = Modifier.padding(horizontal = 16.dp),
             items = listOf(

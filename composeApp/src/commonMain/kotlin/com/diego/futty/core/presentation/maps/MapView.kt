@@ -1,7 +1,7 @@
 package com.diego.futty.core.presentation.maps
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.DayColorScheme
+import com.diego.futty.core.presentation.theme.colorGrey100
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.core.CameraPosition
@@ -18,7 +19,7 @@ import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun MapView() {
+fun MapView(modifier: Modifier = Modifier) {
     val camera =
         rememberCameraState(
             firstPosition =
@@ -48,7 +49,9 @@ fun MapView() {
     }
 
     MaplibreMap(
-        modifier = Modifier.fillMaxWidth().height(400.dp).clip(RoundedCornerShape(12.dp)),
+        modifier = modifier.fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, colorGrey100(), RoundedCornerShape(12.dp)),
         styleUri = style,
         zoomRange = 1f..20f,
         pitchRange = 8f..20f,
