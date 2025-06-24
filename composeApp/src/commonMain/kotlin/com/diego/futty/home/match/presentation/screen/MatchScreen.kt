@@ -4,14 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.maps.MapView
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.pager.FullScreenPager
@@ -40,13 +38,13 @@ fun MatchScreen(viewModel: MatchViewModel = koinViewModel()) {
             )
         },
         content = { paddingValues ->
-            MatchV2Content(paddingValues)
+            MatchContent(paddingValues)
         },
     )
 }
 
 @Composable
-private fun MatchV2Content(paddingValues: PaddingValues) {
+private fun MatchContent(paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .padding(top = paddingValues.calculateTopPadding())
@@ -54,8 +52,6 @@ private fun MatchV2Content(paddingValues: PaddingValues) {
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        MapView(Modifier.height(200.dp))
-
         FullScreenPager(
             modifier = Modifier.weight(1f).padding(bottom = 8.dp),
             items = listOf(

@@ -63,6 +63,7 @@ class FeedViewModel(
             id = "",
             email = "",
             name = "Bizzarap",
+            lastName = "",
             description = "",
             profileImage = ProfileImage(
                 image = "https://forbes.es/wp-content/uploads/2022/08/Forbes_ListaCreativos_Web_Bizarrap.jpg",

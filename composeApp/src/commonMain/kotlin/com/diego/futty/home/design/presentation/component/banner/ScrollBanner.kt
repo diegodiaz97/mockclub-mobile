@@ -46,7 +46,6 @@ import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey200
 import com.diego.futty.core.presentation.theme.colorGrey900
-import com.diego.futty.home.design.presentation.component.pager.carouselTransition
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowRight
 import kotlinx.coroutines.delay
@@ -213,7 +212,7 @@ private fun PageControls(state: PagerState) {
     }
 }
 
-fun Modifier.carouselTransition(page: Int, pagerState: PagerState) =
+private fun Modifier.carouselTransition(page: Int, pagerState: PagerState) =
     graphicsLayer {
         val pageOffset =
             ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue

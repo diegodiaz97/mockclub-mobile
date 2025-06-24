@@ -189,7 +189,7 @@ private fun PageControls(state: PagerState) {
     }
 }
 
-fun Modifier.carouselTransition(page: Int, pagerState: PagerState) =
+private fun Modifier.carouselTransition(page: Int, pagerState: PagerState) =
     graphicsLayer {
         val pageOffset =
             ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue

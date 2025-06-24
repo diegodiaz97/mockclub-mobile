@@ -199,7 +199,6 @@ private fun MainInfo(viewModel: ProfileCreationViewModel) {
                 if (viewModel.user.value?.userType == USER_TYPE_PRO) {
                     VerifiedIcon(Modifier.padding(top = 4.dp))
                 }
-                VerifiedIcon(Modifier.padding(top = 4.dp))
             }
             Text(
                 modifier = Modifier.fillMaxWidth().padding(start = 1.dp),

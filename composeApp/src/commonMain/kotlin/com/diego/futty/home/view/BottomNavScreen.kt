@@ -5,8 +5,8 @@ import compose.icons.Octicons
 import compose.icons.TablerIcons
 import compose.icons.octicons.Home24
 import compose.icons.octicons.HomeFill24
-import compose.icons.tablericons.Map
 import compose.icons.tablericons.Search
+import compose.icons.tablericons.SquarePlus
 
 sealed class BottomNavScreen(
     val route: HomeRoute,
@@ -15,9 +15,9 @@ sealed class BottomNavScreen(
 ) {
     object Home : BottomNavScreen(HomeRoute.Feed, Octicons.Home24, Octicons.HomeFill24)
     object Design : BottomNavScreen(HomeRoute.Design, TablerIcons.Search, TablerIcons.Search)
-    object Maps : BottomNavScreen(HomeRoute.Match, TablerIcons.Map, TablerIcons.Map)
+    object Create : BottomNavScreen(HomeRoute.Match, TablerIcons.SquarePlus, TablerIcons.SquarePlus)
 
     companion object {
-        val allScreens = listOf(Home, Design, Maps)
+        val allScreens = listOf(Home, Create, Design)
     }
 }

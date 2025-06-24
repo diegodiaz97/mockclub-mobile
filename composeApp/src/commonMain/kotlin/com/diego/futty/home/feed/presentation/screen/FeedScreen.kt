@@ -25,6 +25,8 @@ import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.PlatformInfo
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
+import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import com.diego.futty.home.design.presentation.component.post.Draw
 import com.diego.futty.home.design.presentation.component.post.PostShimmer
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
@@ -79,6 +81,17 @@ private fun FeedContent(viewModel: FeedViewModel, paddingValues: PaddingValues) 
 }
 
 @Composable
+private fun TopBanner() {
+    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Banner.StatusBanner(
+            title = "Dinero en cuenta:",
+            subtitle = "$ 254.300,59",
+            status = BannerStatus.Success
+        ).Draw()
+    }
+}
+
+@Composable
 private fun OpenedImage(viewModel: FeedViewModel) {
     val image = viewModel.openedImage.value?.image
     if (image != null) {
@@ -127,6 +140,7 @@ private fun PostsList(viewModel: FeedViewModel) {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            item { TopBanner() }
             posts.forEachIndexed { index, post ->
                 item {
                     post.Draw()
