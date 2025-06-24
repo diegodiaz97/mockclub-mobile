@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -11,23 +10,29 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.kotlinCocoapods)
 }
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        summary = "Some description for the Shared Module"
+        homepage = "Link to the Shared Module homepage"
+        version = "1.0"
+        ios.deploymentTarget = "15.4"
+        podfile = project.file("../iosApp/Podfile")
+
+        framework {
+            baseName = "composeApp"
             isStatic = true
         }
     }
@@ -86,7 +91,7 @@ kotlin {
                 implementation(libs.xicon.pack.z.tabler)
                 implementation(libs.xicon.pack.z.octicon)
 
-                implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+                implementation(project.dependencies.platform(libs.firebase.bom))
                 implementation(libs.com.google.firebase.firebase.auth)
                 implementation(libs.com.google.firebase.firebase.firestore)
                 implementation(libs.com.google.firebase.firebase.storage)
