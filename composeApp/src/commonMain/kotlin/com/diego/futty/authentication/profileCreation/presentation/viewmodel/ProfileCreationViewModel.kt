@@ -107,7 +107,7 @@ class ProfileCreationViewModel(
 
     private fun fetchUserInfo() {
         viewModelScope.launch {
-            val user = preferences.getUserId() ?: ""
+            val user = preferences.getUserId() ?: return@launch
             profileCreationRepository.fetchProfile(user)
                 .onSuccess { loggedUser ->
                     // show info
