@@ -9,7 +9,7 @@ import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.theme.InfoLight
 import com.diego.futty.core.presentation.theme.NightColorScheme
 import com.diego.futty.core.presentation.theme.SuccessLight
-import com.diego.futty.home.design.presentation.component.Chip.ChipModel
+import com.diego.futty.home.design.presentation.component.chip.ChipModel
 import com.diego.futty.home.design.presentation.component.flowrow.FlowList
 import compose.icons.TablerIcons
 import compose.icons.tablericons.BrandSpotify

@@ -1,4 +1,4 @@
-package com.diego.futty.home.design.presentation.component.Chip
+package com.diego.futty.home.design.presentation.component.chip
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

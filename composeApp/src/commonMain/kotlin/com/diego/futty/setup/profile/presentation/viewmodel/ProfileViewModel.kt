@@ -14,7 +14,7 @@ import com.diego.futty.core.presentation.theme.AlertLight
 import com.diego.futty.core.presentation.theme.ErrorLight
 import com.diego.futty.core.presentation.theme.InfoLight
 import com.diego.futty.core.presentation.theme.SuccessLight
-import com.diego.futty.home.design.presentation.component.Chip.ChipModel
+import com.diego.futty.home.design.presentation.component.chip.ChipModel
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.setup.view.SetupRoute
 import compose.icons.TablerIcons

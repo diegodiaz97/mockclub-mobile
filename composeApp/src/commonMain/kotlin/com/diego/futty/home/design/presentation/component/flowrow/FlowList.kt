@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.diego.futty.home.design.presentation.component.Chip.Chip
-import com.diego.futty.home.design.presentation.component.Chip.ChipModel
+import com.diego.futty.home.design.presentation.component.chip.Chip
+import com.diego.futty.home.design.presentation.component.chip.ChipModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

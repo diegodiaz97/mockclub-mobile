@@ -2,7 +2,7 @@ package com.diego.futty.setup.profile.presentation.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.ImageBitmap
-import com.diego.futty.home.design.presentation.component.Chip.ChipModel
+import com.diego.futty.home.design.presentation.component.chip.ChipModel
 import com.diego.futty.home.feed.domain.model.User
 
 interface ProfileViewContract {
