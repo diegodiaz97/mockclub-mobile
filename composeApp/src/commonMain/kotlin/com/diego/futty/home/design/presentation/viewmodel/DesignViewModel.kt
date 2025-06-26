@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.home.design.data.repository.DiscoverRepositoryImpl
+import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.view.HomeRoute
 import kotlinx.coroutines.FlowPreview
@@ -30,11 +31,24 @@ class DesignViewModel(
     private val _clickedUser = mutableStateOf("")
     override val clickedUser: State<String> = _clickedUser
 
+    private val _modal = mutableStateOf<Modal?>(null)
+    override val modal: State<Modal?> = _modal
+
     private var _navigate: (HomeRoute) -> Unit = {}
 
     fun setup(navController: NavHostController) {
         debounce()
         _navigate = { navController.navigate(it) }
+        _modal.value = Modal.GenericModal(
+            image = "https://framerusercontent.com/images/nrDI4qjkcIIXHS1wDcmvfuW9Q.png",
+            title = "Busca personas",
+            subtitle = "Aquí puedes encontrar a tus amigos o nuevo contenido.",
+            primaryButton = "Entendido",
+            secondaryButton = null,
+            onPrimaryAction = { _modal.value = null },
+            onSecondaryAction = { },
+            onDismiss = { _modal.value = null },
+        )
     }
 
     override fun onProfileClicked() {
@@ -59,7 +73,16 @@ class DesignViewModel(
                     _searchUsers.value = users
                 }
                 .onError {
-                    // show error
+                    _modal.value = Modal.GenericModal(
+                        image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
+                        title = "Algo salió mal",
+                        subtitle = "Intenta de nuevo más tarde.",
+                        primaryButton = "Entendido",
+                        secondaryButton = null,
+                        onPrimaryAction = { _modal.value = null },
+                        onSecondaryAction = { },
+                        onDismiss = { _modal.value = null },
+                    )
                 }
         }
     }

@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.diego.futty.app.presentation.view.HomeView
+import com.diego.futty.home.view.HomeView
 import com.diego.futty.authentication.login.presentation.screen.LoginScreen
 import com.diego.futty.authentication.login.presentation.viewmodel.LoginViewModel
 import com.diego.futty.authentication.profileCreation.presentation.screen.ProfileCreationScreen

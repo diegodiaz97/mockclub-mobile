@@ -39,7 +39,7 @@ fun PrimaryButton(
                     onClick()
                 }
             }
-            .padding(vertical = 16.dp),
+            .padding(vertical = 12.dp),
         text = title,
         style = typography.bodyLarge,
         fontWeight = FontWeight.SemiBold,

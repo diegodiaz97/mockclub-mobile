@@ -1,4 +1,4 @@
-package com.diego.futty.app.presentation.view
+package com.diego.futty.home.view
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -35,9 +35,6 @@ import com.diego.futty.home.feed.presentation.screen.FeedScreen
 import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
 import com.diego.futty.home.match.presentation.screen.MatchScreen
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
-import com.diego.futty.home.view.BottomNavScreen
-import com.diego.futty.home.view.HomeRoute
-import com.diego.futty.home.view.HomeViewModel
 import com.diego.futty.setup.view.SetupView
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -55,9 +52,6 @@ fun HomeView(navigateToLogin: () -> Unit) {
         SetStatusBarColor(Color.Transparent)
         LaunchedEffect(true) {
             appViewModel.setup()
-            designViewModel.setup(navController)
-            feedViewModel.setup(navController)
-            // matchViewModel.setup()
         }
 
         Column {
@@ -86,6 +80,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
                     ) {
                         LaunchedEffect(true) {
                             appViewModel.updateRoute(HomeRoute.Design)
+                            designViewModel.setup(navController)
                         }
                         DesignScreen(viewModel = designViewModel)
                     }
@@ -96,6 +91,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
                     ) {
                         LaunchedEffect(true) {
                             appViewModel.updateRoute(HomeRoute.Match)
+                            // matchViewModel.setup()
                         }
                         MatchScreen(viewModel = matchViewModel)
                     }
@@ -123,6 +119,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
             if (appViewModel.showBottomBar.value) {
                 BottomNavBar(navController, appViewModel.currentRoute.value)
             }
+            designViewModel.modal.value?.Draw()
         }
     }
 }
