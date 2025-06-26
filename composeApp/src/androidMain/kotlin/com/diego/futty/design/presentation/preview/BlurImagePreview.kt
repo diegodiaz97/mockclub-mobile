@@ -7,9 +7,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.home.design.presentation.component.image.BlurredImage
-import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.girasoles
-import org.jetbrains.compose.resources.painterResource
 
 @Preview
 @Composable
@@ -17,27 +14,27 @@ private fun Preview() {
     FuttyTheme {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             BlurredImage(
-                image = painterResource(Res.drawable.girasoles),
+                image = "",
                 blur = 20.dp
             )
             BlurredImage(
-                image = painterResource(Res.drawable.girasoles),
+                image = "",
                 blur = 30.dp
             )
             BlurredImage(
-                image = painterResource(Res.drawable.girasoles),
+                image = "",
                 blur = 40.dp
             )
             BlurredImage(
-                image = painterResource(Res.drawable.girasoles),
+                image = "",
                 blur = 50.dp
             )
             BlurredImage(
-                image = painterResource(Res.drawable.girasoles),
+                image = "",
                 blur = 60.dp
             )
             BlurredImage(
-                image = painterResource(Res.drawable.girasoles),
+                image = "",
                 blur = 70.dp
             )
         }

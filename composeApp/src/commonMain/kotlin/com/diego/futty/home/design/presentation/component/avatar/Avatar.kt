@@ -1,6 +1,5 @@
 package com.diego.futty.home.design.presentation.component.avatar
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
@@ -13,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
 
 sealed interface Avatar {
@@ -79,43 +78,49 @@ sealed interface Avatar {
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
         @Composable
-        override fun Draw() {
-            SubcomposeAsyncImage(
-                modifier = modifier
-                    .clip(CircleShape)
-                    .clickable { onClick?.invoke() }
-                    .background(colorGrey0())
-                    .size(avatarSize.size),
-                model = imageUrl,
-                contentScale = ContentScale.Crop,
-                contentDescription = "profile image",
-                loading = {
-                    Shimmer(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(avatarSize.size)
-                    )
-                }
-            )
-        }
+        override fun Draw() = SubcomposeAsyncImage(
+            modifier = modifier
+                .clip(CircleShape)
+                .clickable { onClick?.invoke() }
+                .background(colorGrey0())
+                .size(avatarSize.size),
+            model = imageUrl,
+            contentScale = ContentScale.Crop,
+            contentDescription = "full image avatar",
+            loading = {
+                Shimmer(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(avatarSize.size)
+                )
+            }
+        )
     }
 
     class ImageAvatar(
         val modifier: Modifier = Modifier,
-        val image: Painter,
+        val imageUrl: String,
         val avatarSize: AvatarSize = AvatarSize.Medium,
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
         @Composable
-        override fun Draw() = Image(
+        override fun Draw() = SubcomposeAsyncImage(
             modifier = modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
                 .background(colorGrey0())
                 .size(avatarSize.size)
                 .padding(avatarSize.padding),
-            painter = image,
-            contentDescription = null
+            model = imageUrl,
+            contentDescription = "image avatar",
+            loading = {
+                Shimmer(
+                    modifier = Modifier
+                        .size(avatarSize.size)
+                        .clip(CircleShape)
+                        .background(colorGrey100())
+                )
+            }
         )
     }
 

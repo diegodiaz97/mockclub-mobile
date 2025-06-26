@@ -16,17 +16,13 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.BrandLinkedin
 import compose.icons.tablericons.BrandPinterest
 import compose.icons.tablericons.BrandSpotify
-import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.book_error_2
-import futty.composeapp.generated.resources.girasoles
-import org.jetbrains.compose.resources.painterResource
 
 @Preview
 @Composable
 private fun ImageAvatarSmallPreview() {
     FuttyTheme {
         Avatar.ImageAvatar(
-            image = painterResource(Res.drawable.book_error_2),
+            imageUrl = "",
             avatarSize = AvatarSize.Small
         ).Draw()
     }
@@ -37,7 +33,7 @@ private fun ImageAvatarSmallPreview() {
 private fun ImageAvatarMediumPreview() {
     FuttyTheme {
         Avatar.ImageAvatar(
-            image = painterResource(Res.drawable.book_error_2),
+            imageUrl = "",
             avatarSize = AvatarSize.Medium
         ).Draw()
     }
@@ -48,7 +44,7 @@ private fun ImageAvatarMediumPreview() {
 private fun ImageAvatarBigPreview() {
     FuttyTheme {
         Avatar.ImageAvatar(
-            image = painterResource(Res.drawable.book_error_2),
+            imageUrl = "",
             avatarSize = AvatarSize.Big
         ).Draw()
     }
