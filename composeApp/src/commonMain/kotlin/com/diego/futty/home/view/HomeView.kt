@@ -21,14 +21,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.diego.futty.core.presentation.theme.FuttyTheme
+import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
-import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
 import com.diego.futty.core.presentation.utils.Transitions
-import com.diego.futty.home.design.presentation.component.avatar.Avatar
-import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
+import com.diego.futty.home.design.presentation.component.bottombar.BottomBarItem
 import com.diego.futty.home.design.presentation.screen.DesignScreen
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
 import com.diego.futty.home.feed.presentation.screen.FeedScreen
@@ -144,18 +143,18 @@ fun BottomNavBar(navController: NavController, currentRoute: HomeRoute) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(colorGrey0())
-                .padding(top = 4.dp, bottom = 20.dp),
+                .padding(bottom = 18.dp),
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
             BottomNavScreen.allScreens.forEach { screen ->
-                Avatar.IconAvatar(
+                BottomBarItem(
                     icon = if (currentRoute == screen.route) screen.selectedIcon else screen.icon,
-                    tint = if (currentRoute == screen.route) colorGrey900() else colorGrey500(),
-                    background = Color.Transparent,
-                    avatarSize = AvatarSize.Big,
+                    tint = if (currentRoute == screen.route) colorError() else colorGrey500(),
+                    color = Color.Transparent,
+                    text = screen.text,
                 ) {
                     navigateTo(navController, currentRoute, screen.route)
-                }.Draw()
+                }
             }
         }
     }

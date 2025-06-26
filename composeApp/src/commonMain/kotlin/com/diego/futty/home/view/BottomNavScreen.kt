@@ -1,23 +1,22 @@
 package com.diego.futty.home.view
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import compose.icons.Octicons
 import compose.icons.TablerIcons
-import compose.icons.octicons.Home24
-import compose.icons.octicons.HomeFill24
+import compose.icons.tablericons.Diamond
+import compose.icons.tablericons.Home
 import compose.icons.tablericons.Search
-import compose.icons.tablericons.SquarePlus
 
 sealed class BottomNavScreen(
+    val text: String,
     val route: HomeRoute,
     val icon: ImageVector,
     val selectedIcon: ImageVector
 ) {
-    object Home : BottomNavScreen(HomeRoute.Feed, Octicons.Home24, Octicons.HomeFill24)
-    object Design : BottomNavScreen(HomeRoute.Design, TablerIcons.Search, TablerIcons.Search)
-    object Create : BottomNavScreen(HomeRoute.Match, TablerIcons.SquarePlus, TablerIcons.SquarePlus)
+    object Home : BottomNavScreen("Inicio", HomeRoute.Feed, TablerIcons.Home, TablerIcons.Home)
+    object Discover : BottomNavScreen("Explorar", HomeRoute.Match, TablerIcons.Diamond, TablerIcons.Diamond)
+    object Search : BottomNavScreen("Buscar", HomeRoute.Design, TablerIcons.Search, TablerIcons.Search)
 
     companion object {
-        val allScreens = listOf(Home, Create, Design)
+        val allScreens = listOf(Home, Discover, Search)
     }
 }
