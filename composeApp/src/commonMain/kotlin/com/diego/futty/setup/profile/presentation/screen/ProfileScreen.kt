@@ -18,8 +18,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -62,8 +64,8 @@ import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
-import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.flowrow.MultipleFlowList
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
@@ -113,7 +115,8 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = paddingValues.calculateTopPadding()),
+            .padding(top = paddingValues.calculateTopPadding())
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         MainInfo(viewModel)
@@ -125,19 +128,40 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
 
 @Composable
 fun Upgrade(viewModel: ProfileViewModel) {
-    if (viewModel.user.value?.userType == USER_TYPE_BASIC && viewModel.userId.value.isEmpty()) {
-        ScrollBanner(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            items = listOf(
+    Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+        if (viewModel.user.value?.userType == USER_TYPE_BASIC && viewModel.userId.value.isEmpty()) {
+            Banner.FullImageBanner(
                 BannerUIData(
                     title = "Actualiza a PRO",
                     description = "Descubre las mejores funcionalidades por solo $1 USD.",
-                    labelAction = "Ver más",
+                    label = "Ver más",
                     illustration = "https://cdn.pixabay.com/photo/2022/09/21/17/02/blue-background-7470781_1280.jpg",
                     action = { viewModel.onVerifyClicked() },
-                )
-            )
-        )
+                ),
+                page = 0,
+                state = rememberPagerState { 1 },
+            ).Draw()
+        }
+        Banner.DisplayBanner(
+            BannerUIData(
+                title = "Actualiza a PRO",
+                description = "Descubre las mejores funcionalidades por solo $1 USD.",
+                illustration = "https://cdn.pixabay.com/photo/2022/09/21/17/02/blue-background-7470781_1280.jpg",
+                action = {  },
+            ),
+            page = 0,
+            state = rememberPagerState { 1 },
+        ).Draw()
+        Banner.DisplayBanner(
+            BannerUIData(
+                title = "Busca personas",
+                description = "Aquí puedes encontrar a tus amigos o nuevo contenido.",
+                illustration = "https://framerusercontent.com/images/nrDI4qjkcIIXHS1wDcmvfuW9Q.png",
+                action = {  },
+            ),
+            page = 0,
+            state = rememberPagerState { 1 },
+        ).Draw()
     }
 }
 
@@ -364,13 +388,16 @@ private fun ImageHandler(viewModel: ProfileViewModel) {
         launchSetting = false
     }
     if (permissionRationalDialog) { // ERROR NO ACEPTO PERMISOS
-        Banner.ClickableBanner(
-            title = "Algo salió mal",
-            subtitle = "Éste banner te avisará cuando algo salió mal.",
-            onClick = {
-                permissionRationalDialog = false
-                launchSetting = true
-            }
+        Banner.StatusBanner(
+            bannerUIData = BannerUIData(
+                title = "Algo salió mal",
+                description = "Brinda servicios de  Configuración del dispositivo.",
+                status = BannerStatus.Error,
+                action = {
+                    permissionRationalDialog = false
+                    launchSetting = true
+                }
+            ),
         ).Draw()
     }
     if (imageBitmap != null) {

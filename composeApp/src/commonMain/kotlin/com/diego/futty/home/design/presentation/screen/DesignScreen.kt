@@ -21,6 +21,7 @@ import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey400
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
+import com.diego.futty.home.design.presentation.component.banner.BannerType
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
 import com.diego.futty.home.design.presentation.component.input.TextInput
@@ -97,33 +98,34 @@ fun SearchInput(viewModel: DesignViewModel) {
 @Composable
 fun MainBanner() {
     ScrollBanner(
+        bannerType = BannerType.FullImage,
         items = listOf(
             BannerUIData(
                 title = "Memes",
                 description = "Mira las mejores imágenes estilo Ghibli!",
                 illustration = "https://www.portafolio.co/files/article_new_multimedia/uploads/2025/03/31/67eac96494a70.jpeg",
-                labelAction = "Ver más",
+                label = "Ver más",
                 action = { },
             ),
             BannerUIData(
                 title = "Música",
                 description = "Nuevos detalles de la muerte de John Lennon.",
                 illustration = "https://d3b5jqy5xuub7g.cloudfront.net/wp-content/uploads/2025/03/estudio-ghibili.jpg",
-                labelAction = "Ver más",
+                label = "Ver más",
                 action = { },
             ),
             BannerUIData(
                 title = "Deportes",
                 description = "Fotos inéditas de aquel maravilloso 18 de Diciembre.",
                 illustration = "https://cdn.eldestapeweb.com/eldestape/032025/1743453153943.webp?cw=1500&ch=1000&extw=jpeg",
-                labelAction = "Ver más",
+                label = "Ver más",
                 action = { },
             ),
             BannerUIData(
                 title = "Internacional",
                 description = "Estas son las últimas noticias al rededor del mundo.",
                 illustration = "https://i0.wp.com/www.lineadecontraste.com/wp-content/uploads/2025/03/WhatsApp-Image-2025-03-31-at-7.42.56-PM.jpeg?w=1200&ssl=1",
-                labelAction = "Ver más",
+                label = "Ver más",
                 action = { },
             ),
         ),

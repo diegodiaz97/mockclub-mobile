@@ -155,17 +155,19 @@ private fun CreateBanner(
                 color = textColor,
                 overflow = TextOverflow.Ellipsis,
             )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-                text = bannerUIData.labelAction,
-                style = typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = textColor,
-                maxLines = 1,
-                textAlign = TextAlign.Center
-            )
+            if (bannerUIData.label != null) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp),
+                    text = bannerUIData.label,
+                    style = typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = textColor,
+                    maxLines = 1,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }

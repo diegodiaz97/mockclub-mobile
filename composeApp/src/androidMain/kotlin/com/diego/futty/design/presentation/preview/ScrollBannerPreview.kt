@@ -6,6 +6,7 @@ import com.diego.futty.core.presentation.theme.colorAlert
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorInfo
 import com.diego.futty.core.presentation.theme.colorSuccess
+import com.diego.futty.home.design.presentation.component.banner.BannerType
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
 
@@ -14,6 +15,7 @@ import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
 @Composable
 fun BannerPreview() {
     ScrollBanner(
+        bannerType = BannerType.FullImage,
         items =
             listOf(
                 getBannerUIData().copy(color = colorInfo()),
@@ -29,5 +31,5 @@ fun BannerPreview() {
 private fun getBannerUIData() = BannerUIData(
     title = "Title",
     description = "Unica tarjeta de crédito con el 99% de aprobación. Máximo 2 líneas",
-    labelAction = "Tres palabras máximo",
+    label = "Tres palabras máximo",
 )

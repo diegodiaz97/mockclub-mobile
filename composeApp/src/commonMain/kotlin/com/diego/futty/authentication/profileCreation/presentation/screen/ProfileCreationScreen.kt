@@ -57,6 +57,8 @@ import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.input.TextInput
@@ -291,13 +293,16 @@ private fun ImageHandler(viewModel: ProfileCreationViewModel) {
         launchSetting = false
     }
     if (permissionRationalDialog) { // ERROR NO ACEPTO PERMISOS
-        Banner.ClickableBanner(
-            title = "Algo salió mal",
-            subtitle = "Éste banner te avisará cuando algo salió mal.",
-            onClick = {
-                permissionRationalDialog = false
-                launchSetting = true
-            }
+        Banner.StatusBanner(
+            bannerUIData = BannerUIData(
+                title = "Algo salió mal",
+                description = "Brinda servicios de  Configuración del dispositivo.",
+                status = BannerStatus.Error,
+                action = {
+                    permissionRationalDialog = false
+                    launchSetting = true
+                }
+            ),
         ).Draw()
     }
     if (imageBitmap != null) {

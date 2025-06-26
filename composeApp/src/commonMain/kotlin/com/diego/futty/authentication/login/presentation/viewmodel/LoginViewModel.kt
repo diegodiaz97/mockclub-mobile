@@ -12,6 +12,7 @@ import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.core.presentation.utils.RegexUtils
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
@@ -61,17 +62,21 @@ class LoginViewModel(
     override fun onLoginClicked() {
         if (isValidEmail().not()) {
             _banner.value = Banner.StatusBanner(
-                title = "Email incorrecto",
-                subtitle = "Por favor verifica que tenga un formato válido.",
-                status = BannerStatus.Error
+                BannerUIData(
+                    title = "Email incorrecto",
+                    description = "Por favor verifica que tenga un formato válido.",
+                    status = BannerStatus.Error
+                )
             )
             return
         }
         if (isValidPassword().not()) {
             _banner.value = Banner.StatusBanner(
-                title = "Contraseña incorrecta",
-                subtitle = "Por favor verifica que tenga un formato válido.",
-                status = BannerStatus.Error
+                BannerUIData(
+                    title = "Contraseña incorrecta",
+                    description = "Por favor verifica que tenga un formato válido.",
+                    status = BannerStatus.Error
+                )
             )
             return
         }
@@ -104,17 +109,21 @@ class LoginViewModel(
             loginRepository.loginWithEmail(_email.value, _password.value)
                 .onSuccess {
                     _banner.value = Banner.StatusBanner(
-                        title = "¡Listo!",
-                        subtitle = "Inicio de sesión exitosos",
-                        status = BannerStatus.Success
+                        BannerUIData(
+                            title = "¡Listo!",
+                            description = "Inicio de sesión exitosos",
+                            status = BannerStatus.Success
+                        )
                     )
                     _onLogin()
                 }
                 .onError {
                     _banner.value = Banner.StatusBanner(
-                        title = "Algo salió mal",
-                        subtitle = "No se pudo iniciar sesión.",
-                        status = BannerStatus.Error
+                        BannerUIData(
+                            title = "Algo salió mal",
+                            description = "No se pudo iniciar sesión.",
+                            status = BannerStatus.Error
+                        )
                     )
                 }
         }

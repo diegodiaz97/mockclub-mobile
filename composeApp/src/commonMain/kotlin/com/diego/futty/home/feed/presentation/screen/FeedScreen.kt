@@ -19,14 +19,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
+import com.diego.futty.core.presentation.theme.Grey0
 import com.diego.futty.core.presentation.theme.Shimmer
+import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorInfoLight
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.PlatformInfo
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
-import com.diego.futty.home.design.presentation.component.banner.Banner
-import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
+import com.diego.futty.home.design.presentation.component.banner.BannerType
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
+import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
 import com.diego.futty.home.design.presentation.component.post.Draw
 import com.diego.futty.home.design.presentation.component.post.PostShimmer
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
@@ -36,6 +41,9 @@ import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
 import compose.icons.TablerIcons
+import compose.icons.tablericons.Focus
+import compose.icons.tablericons.Plus
+import compose.icons.tablericons.Shirt
 import compose.icons.tablericons.X
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -69,26 +77,49 @@ fun FeedScreen(
 
 @Composable
 private fun FeedContent(viewModel: FeedViewModel, paddingValues: PaddingValues) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = paddingValues.calculateTopPadding()),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        PostsList(viewModel)
-        Spacer(modifier = Modifier.height(8.dp))
+    Box {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = paddingValues.calculateTopPadding()),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PostsList(viewModel)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        Avatar.IconAvatar(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 16.dp, end = 20.dp),
+            avatarSize = AvatarSize.Big,
+            icon = TablerIcons.Plus,
+            background = colorError(),
+            tint = Grey0,
+            onClick = { }
+        ).Draw()
     }
 }
 
 @Composable
 private fun TopBanner() {
-    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Banner.StatusBanner(
-            title = "Dinero en cuenta:",
-            subtitle = "$ 254.300,59",
-            status = BannerStatus.Success
-        ).Draw()
-    }
+    ScrollBanner(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        bannerType = BannerType.Display,
+        items = listOf(
+            BannerUIData(
+                title = "Explorar",
+                color = colorInfoLight(),
+                description = "Usa la sección de Explorar para inspirarte.",
+                icon = TablerIcons.Focus,
+            ),
+            BannerUIData(
+                title = "Crear",
+                color = colorInfoLight(),
+                description = "¿Ya creaste tu primer mockup? Únete a miles de diseñadores.",
+                icon = TablerIcons.Shirt,
+            ),
+        )
+    )
 }
 
 @Composable

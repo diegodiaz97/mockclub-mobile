@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
@@ -16,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.banner.Banner
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
@@ -77,35 +80,64 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Banner.ClickableBanner(
-            icon = TablerIcons.Bell,
-            title = "Notificaciones",
-            subtitle = "Configuración de notificaciones.",
-            onClick = { }
+        Banner.DisplayBanner(
+            bannerUIData = BannerUIData(
+                title = "Notificaciones",
+                description = "Configuración de notificaciones.",
+                icon = TablerIcons.Bell,
+                size = AvatarSize.Small,
+                action = { }
+            ),
+            page = 0,
+            state = rememberPagerState { 1 },
         ).Draw()
-        Banner.ClickableBanner(
-            icon = Octicons.Verified16,
-            title = "Verificar",
-            subtitle = "Obten el verificado, justo a un gran conjunto de beneficios.",
-            onClick = { }
+
+        Banner.DisplayBanner(
+            bannerUIData = BannerUIData(
+                title = "Verificar",
+                description = "Obten el verificado, justo a un gran conjunto de beneficios.",
+                icon = Octicons.Verified16,
+                size = AvatarSize.Small,
+                action = { }
+            ),
+            page = 0,
+            state = rememberPagerState { 1 },
         ).Draw()
-        Banner.ClickableBanner(
-            icon = TablerIcons.Bolt,
-            title = "Publicidad",
-            subtitle = "¡Publicita lo que quieras con nosotros!",
-            onClick = { }
+
+        Banner.DisplayBanner(
+            bannerUIData = BannerUIData(
+                title = "Publicidad",
+                description = "¡Publicita lo que quieras con nosotros!",
+                icon = TablerIcons.Bolt,
+                size = AvatarSize.Small,
+                action = { }
+            ),
+            page = 0,
+            state = rememberPagerState { 1 },
         ).Draw()
-        Banner.ClickableBanner(
-            icon = TablerIcons.QuestionMark,
-            title = "Ayuda",
-            subtitle = "Resuelve tus dudas.",
-            onClick = { }
+
+        Banner.DisplayBanner(
+            bannerUIData = BannerUIData(
+                title = "Ayuda",
+                description = "Resuelve tus dudas.",
+                icon = TablerIcons.QuestionMark,
+                size = AvatarSize.Small,
+                action = { }
+            ),
+            page = 0,
+            state = rememberPagerState { 1 },
         ).Draw()
-        Banner.ClickableBanner(
-            icon = TablerIcons.Download,
-            title = "Guardado",
-            subtitle = "Mira las publicaciones que has guardado.",
-            onClick = { }
+
+        Banner.DisplayBanner(
+            bannerUIData = BannerUIData(
+                title = "Guardado",
+                description = "Mira las publicaciones que has guardado.",
+                icon = TablerIcons.Download,
+                size = AvatarSize.Small,
+                action = { }
+            ),
+            page = 0,
+            state = rememberPagerState { 1 },
         ).Draw()
     }
 }

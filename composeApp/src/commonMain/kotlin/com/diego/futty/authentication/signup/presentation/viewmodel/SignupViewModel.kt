@@ -16,6 +16,7 @@ import com.diego.futty.core.presentation.utils.RegexUtils
 import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_BASIC
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.feed.domain.model.ProfileImage
 import com.diego.futty.home.feed.domain.model.User
 import kotlinx.coroutines.launch
@@ -82,17 +83,21 @@ class SignupViewModel(
     override fun onSignupClicked() {
         if (isValidEmail().not()) {
             _banner.value = Banner.StatusBanner(
-                title = "Email incorrecto",
-                subtitle = "Por favor verifica que tenga un formato válido.",
-                status = BannerStatus.Error
+                BannerUIData(
+                    title = "Email incorrecto",
+                    description = "Por favor verifica que tenga un formato válido.",
+                    status = BannerStatus.Error
+                )
             )
             return
         }
         if (isValidPassword().not()) {
             _banner.value = Banner.StatusBanner(
-                title = "Contraseña incorrecta",
-                subtitle = "Por favor verifica que tenga un formato válido.",
-                status = BannerStatus.Error
+                BannerUIData(
+                    title = "Contraseña incorrecta",
+                    description = "Por favor verifica que tenga un formato válido.",
+                    status = BannerStatus.Error
+                )
             )
             return
         }
@@ -112,9 +117,11 @@ class SignupViewModel(
                 }
                 .onError {
                     _banner.value = Banner.StatusBanner(
-                        title = "Algo salió mal",
-                        subtitle = "No pudimos authenticar el usuario en FirebaseAuth. (${it.name})",
-                        status = BannerStatus.Error
+                        BannerUIData(
+                            title = "Algo salió mal",
+                            description = "No pudimos authenticar el usuario en FirebaseAuth. (${it.name})",
+                            status = BannerStatus.Error
+                        )
                     )
                 }
         }
@@ -143,9 +150,11 @@ class SignupViewModel(
                 }
                 .onError {
                     _banner.value = Banner.StatusBanner(
-                        title = "Algo salió mal",
-                        subtitle = "No pudimos crear el usuario en Firestore. (${it.name})",
-                        status = BannerStatus.Error
+                        BannerUIData(
+                            title = "Algo salió mal",
+                            description = "No pudimos crear el usuario en Firestore. (${it.name})",
+                            status = BannerStatus.Error
+                        )
                     )
                 }
         }

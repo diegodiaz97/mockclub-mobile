@@ -14,6 +14,7 @@ import com.diego.futty.core.presentation.theme.DayColorScheme
 import com.diego.futty.core.presentation.theme.NightColorScheme
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.setup.settings.domain.repository.SettingsRepository
 import com.diego.futty.setup.view.SetupRoute
 import compose.icons.TablerIcons
@@ -78,9 +79,11 @@ class SettingsViewModel(
                 .onSuccess { _navigateToLogin() }
                 .onError {
                     _banner.value = Banner.StatusBanner(
-                        title = "No se pudo cerrar sesión",
-                        subtitle = "Intenta más tarde.",
-                        status = BannerStatus.Error
+                        BannerUIData(
+                            title = "No se pudo cerrar sesión",
+                            description = "Intenta más tarde.",
+                            status = BannerStatus.Error
+                        )
                     )
                 }
         }

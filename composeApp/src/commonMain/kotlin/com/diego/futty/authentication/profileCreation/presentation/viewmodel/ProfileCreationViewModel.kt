@@ -13,6 +13,7 @@ import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
+import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.feed.domain.model.User
 import kotlinx.coroutines.launch
 
@@ -154,9 +155,11 @@ class ProfileCreationViewModel(
                 }
                 .onError {
                     _banner.value = Banner.StatusBanner(
-                        title = "Algo salió mal",
-                        subtitle = "No pudimos actualizar el usuario en Firestore. (${it.name})",
-                        status = BannerStatus.Error
+                        BannerUIData(
+                            title = "Algo salió mal",
+                            description = "No pudimos actualizar el usuario en Firestore. (${it.name})",
+                            status = BannerStatus.Error
+                        )
                     )
                 }
         }
