@@ -31,20 +31,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.core.presentation.theme.Grey0
 import com.diego.futty.core.presentation.theme.Grey900
-import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
+import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -121,18 +119,14 @@ private fun CreateBanner(
             }
 
         if (bannerUIData.illustration != null) {
-            SubcomposeAsyncImage(
+            AsyncImage(
                 modifier = Modifier.fillMaxHeight(),
-                model = bannerUIData.illustration,
-                contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(
-                    color = Grey900.copy(alpha = 0.7f),
+                    color = Grey900.copy(alpha = 0.4f),
                     blendMode = BlendMode.Darken
                 ),
-                contentDescription = "profile image",
-                loading = {
-                    Shimmer(modifier = Modifier.fillMaxSize())
-                }
+                contentDescription = "fullscreen pager: page ${page}",
+                image = bannerUIData.illustration
             )
         }
 

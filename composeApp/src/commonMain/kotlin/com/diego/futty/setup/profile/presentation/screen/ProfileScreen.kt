@@ -429,23 +429,17 @@ private fun OpenedImage(viewModel: ProfileViewModel) {
             ) {
                 when {
                     viewModel.urlImage.value?.isNotEmpty() == true -> {
-                        SubcomposeAsyncImage(
+                        AsyncImage(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 24.dp)
                                 .aspectRatio(1f)
                                 .clip(CircleShape),
-                            model = viewModel.urlImage.value,
-                            contentScale = ContentScale.Crop,
+                            shimmerModifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .clip(CircleShape),
                             contentDescription = "profile image",
-                            loading = {
-                                Shimmer(
-                                    modifier = Modifier
-                                        .padding(horizontal = 24.dp)
-                                        .clip(CircleShape)
-                                        .align(Alignment.Center)
-                                )
-                            }
+                            image = viewModel.urlImage.value
                         )
                     }
 

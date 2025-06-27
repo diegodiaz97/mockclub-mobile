@@ -18,14 +18,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
-import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey800
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
+import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import compose.icons.TablerIcons
 import compose.icons.tablericons.X
 
@@ -60,21 +59,17 @@ sealed interface Modal {
                         onClick = { onDismiss() }
                     ).Draw()
 
-                    SubcomposeAsyncImage(
+                    AsyncImage(
                         modifier = Modifier
                             .fillMaxWidth()
                             .size(100.dp),
-                        model = image,
+                        shimmerModifier = Modifier
+                            .size(60.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colorGrey100()),
                         contentScale = ContentScale.Fit,
                         contentDescription = "modal image",
-                        loading = {
-                            Shimmer(
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(colorGrey100())
-                            )
-                        }
+                        image = image
                     )
 
                     Text(

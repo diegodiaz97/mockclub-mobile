@@ -13,16 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
+import com.diego.futty.home.design.presentation.component.image.AsyncImage
 
 sealed interface Avatar {
     @Composable
@@ -78,22 +77,17 @@ sealed interface Avatar {
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
         @Composable
-        override fun Draw() = SubcomposeAsyncImage(
+        override fun Draw() = AsyncImage(
             modifier = modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
                 .background(colorGrey0())
                 .size(avatarSize.size),
-            model = imageUrl,
-            contentScale = ContentScale.Crop,
+            shimmerModifier = modifier
+                .clip(CircleShape)
+                .size(avatarSize.size),
             contentDescription = "full image avatar",
-            loading = {
-                Shimmer(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(avatarSize.size)
-                )
-            }
+            image = imageUrl
         )
     }
 
@@ -104,23 +98,19 @@ sealed interface Avatar {
         val onClick: (() -> Unit)? = null,
     ) : Avatar {
         @Composable
-        override fun Draw() = SubcomposeAsyncImage(
+        override fun Draw() = AsyncImage(
             modifier = modifier
                 .clip(CircleShape)
                 .clickable { onClick?.invoke() }
                 .background(colorGrey0())
                 .size(avatarSize.size)
                 .padding(avatarSize.padding),
-            model = imageUrl,
+            shimmerModifier = modifier
+                .size(avatarSize.size)
+                .clip(CircleShape)
+                .background(colorGrey100()),
             contentDescription = "image avatar",
-            loading = {
-                Shimmer(
-                    modifier = Modifier
-                        .size(avatarSize.size)
-                        .clip(CircleShape)
-                        .background(colorGrey100())
-                )
-            }
+            image = imageUrl
         )
     }
 

@@ -18,9 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.core.presentation.theme.Grey0
-import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
@@ -32,6 +30,7 @@ import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.banner.BannerType
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.banner.ScrollBanner
+import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import com.diego.futty.home.design.presentation.component.post.Draw
 import com.diego.futty.home.design.presentation.component.post.PostShimmer
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
@@ -142,14 +141,12 @@ private fun OpenedImage(viewModel: FeedViewModel) {
             dragHandle = {},
         ) {
             Box(Modifier.fillMaxSize()) {
-                SubcomposeAsyncImage(
+                AsyncImage(
                     modifier = Modifier.fillMaxSize().align(Alignment.Center),
-                    model = image,
-                    contentDescription = "profile image",
-                    loading = {
-                        Shimmer(modifier = Modifier.fillMaxSize().align(Alignment.Center))
-                    }
+                    contentDescription = "opened image",
+                    image = image
                 )
+
                 Avatar.IconAvatar(
                     modifier = Modifier
                         .padding(top = if (PlatformInfo.isAndroid) 12.dp else 60.dp, end = 16.dp)

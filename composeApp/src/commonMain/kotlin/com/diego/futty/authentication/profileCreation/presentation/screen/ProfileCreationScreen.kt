@@ -33,11 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.authentication.profileCreation.presentation.viewmodel.ProfileCreationViewModel
 import com.diego.futty.core.presentation.photos.PermissionCallback
 import com.diego.futty.core.presentation.photos.PermissionStatus
@@ -45,7 +43,6 @@ import com.diego.futty.core.presentation.photos.PermissionType
 import com.diego.futty.core.presentation.photos.createPermissionsManager
 import com.diego.futty.core.presentation.photos.rememberCameraManager
 import com.diego.futty.core.presentation.photos.rememberGalleryManager
-import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
@@ -61,6 +58,7 @@ import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
+import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import com.diego.futty.home.design.presentation.component.input.TextInput
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
@@ -334,23 +332,17 @@ private fun OpenedImage(viewModel: ProfileCreationViewModel) {
             ) {
                 when {
                     viewModel.urlImage.value?.isNotEmpty() == true -> {
-                        SubcomposeAsyncImage(
+                        AsyncImage(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 24.dp)
                                 .aspectRatio(1f)
                                 .clip(CircleShape),
-                            model = viewModel.urlImage.value,
-                            contentScale = ContentScale.Crop,
+                            shimmerModifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .clip(CircleShape),
                             contentDescription = "profile image",
-                            loading = {
-                                Shimmer(
-                                    modifier = Modifier
-                                        .padding(horizontal = 24.dp)
-                                        .clip(CircleShape)
-                                        .align(Alignment.Center)
-                                )
-                            }
+                            image = viewModel.urlImage.value
                         )
                     }
 

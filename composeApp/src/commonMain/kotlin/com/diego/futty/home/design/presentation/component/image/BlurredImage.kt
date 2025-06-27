@@ -11,11 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
-import com.diego.futty.core.presentation.theme.Shimmer
+import com.diego.futty.core.presentation.theme.Grey900
 import com.diego.futty.core.presentation.theme.colorGrey100
 
 @Composable
@@ -25,22 +25,21 @@ fun BlurredImage(
     content: (@Composable (Modifier) -> Unit)? = null,
 ) = Box(Modifier) {
     Box(Modifier.fillMaxWidth()) {
-        SubcomposeAsyncImage(
+        AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
                 .blur(blur),
-            model = image,
-            contentScale = ContentScale.Crop,
+            shimmerModifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(colorGrey100()),
+            colorFilter = ColorFilter.tint(
+                color = Grey900.copy(alpha = 0.4f),
+                blendMode = BlendMode.Darken
+            ),
             contentDescription = "blurred image",
-            loading = {
-                Shimmer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(colorGrey100())
-                )
-            }
+            image = image
         )
     }
     if (content != null) {

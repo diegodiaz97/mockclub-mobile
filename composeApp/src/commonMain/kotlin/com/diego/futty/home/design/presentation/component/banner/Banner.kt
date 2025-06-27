@@ -27,14 +27,11 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.core.presentation.theme.Grey0
 import com.diego.futty.core.presentation.theme.Grey900
-import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorAlertLight
 import com.diego.futty.core.presentation.theme.colorErrorLight
 import com.diego.futty.core.presentation.theme.colorGrey0
@@ -46,6 +43,7 @@ import com.diego.futty.core.presentation.theme.colorInfoLight
 import com.diego.futty.core.presentation.theme.colorSuccessLight
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
+import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowRight
 import compose.icons.tablericons.ChevronRight
@@ -134,18 +132,14 @@ sealed interface Banner {
                     }
 
                 if (bannerUIData.illustration != null) {
-                    SubcomposeAsyncImage(
+                    AsyncImage(
                         modifier = Modifier.clipToBounds().fillMaxSize(),
-                        model = bannerUIData.illustration,
-                        contentScale = ContentScale.Crop,
                         colorFilter = ColorFilter.tint(
                             color = Grey900.copy(alpha = 0.4f),
                             blendMode = BlendMode.Darken
                         ),
                         contentDescription = "profile image",
-                        loading = {
-                            Shimmer(modifier = Modifier.clipToBounds().fillMaxSize())
-                        }
+                        image = bannerUIData.illustration
                     )
                 }
 

@@ -22,10 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey600
@@ -33,6 +31,7 @@ import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
+import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.feed.domain.model.ActionableImage
 import com.diego.futty.home.feed.domain.model.Post
@@ -123,24 +122,14 @@ private fun PostImage(
             item { Spacer(Modifier.width(8.dp)) }
             images.forEach { image ->
                 item {
-                    SubcomposeAsyncImage(
+                    AsyncImage(
                         modifier = Modifier
                             .size(260.dp)
                             .clickable { image.onClick(image) }
                             .clip(RoundedCornerShape(12.dp))
                             .background(colorGrey100()),
-                        model = image.image,
-                        contentScale = ContentScale.Crop,
-                        contentDescription = "profile image",
-                        loading = {
-                            Shimmer(
-                                modifier = Modifier
-                                    .size(260.dp)
-                                    .clickable { image.onClick(image) }
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(colorGrey100())
-                            )
-                        }
+                        contentDescription = "post list image",
+                        image = image.image
                     )
                 }
             }
@@ -148,26 +137,15 @@ private fun PostImage(
         }
     } else {
         val image = images.last()
-        SubcomposeAsyncImage(
+        AsyncImage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
                 .clickable { image.onClick(image) }
                 .clip(RoundedCornerShape(12.dp))
                 .background(colorGrey100()),
-            model = image.image,
-            contentScale = ContentScale.Crop,
-            contentDescription = "profile image",
-            loading = {
-                Shimmer(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp)
-                        .clickable { image.onClick(image) }
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(colorGrey100()),
-                )
-            }
+            contentDescription = "post single image",
+            image = image.image
         )
     }
 }
