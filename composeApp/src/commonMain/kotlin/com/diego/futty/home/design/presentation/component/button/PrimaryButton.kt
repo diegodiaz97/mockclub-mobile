@@ -9,18 +9,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey200
 import com.diego.futty.core.presentation.theme.colorGrey600
-import com.diego.futty.core.presentation.theme.colorInfo
 
 @Composable
 fun PrimaryButton(
     modifier: Modifier = Modifier,
     title: String,
+    color: Color = colorError(),
     isEnabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -29,7 +31,7 @@ fun PrimaryButton(
             .clip(RoundedCornerShape(12.dp))
             .background(
                 if (isEnabled) {
-                    colorInfo()
+                    color
                 } else {
                     colorGrey200()
                 }

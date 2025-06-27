@@ -14,8 +14,10 @@ import com.diego.futty.core.presentation.theme.AlertLight
 import com.diego.futty.core.presentation.theme.ErrorLight
 import com.diego.futty.core.presentation.theme.InfoLight
 import com.diego.futty.core.presentation.theme.SuccessLight
+import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.design.presentation.component.chip.ChipModel
 import com.diego.futty.home.feed.domain.model.User
+import com.diego.futty.setup.profile.domain.repository.ProfileRepository
 import com.diego.futty.setup.view.SetupRoute
 import compose.icons.TablerIcons
 import compose.icons.tablericons.BallFootball
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val profileCreationRepository: ProfileCreationRepository,
+    private val profileRepository: ProfileRepository,
     private val preferences: UserPreferences,
 ) : ProfileViewContract, ViewModel() {
 
@@ -115,6 +118,24 @@ class ProfileViewModel(
     private val _selectedChips = mutableStateOf<List<ChipModel>>(emptyList())
     override val selectedChips: State<List<ChipModel>> = _selectedChips
 
+    private val _postsCant = mutableStateOf<Int?>(0) // set to default = null when i have real posts
+    override val postsCant: State<Int?> = _postsCant
+
+    private val _followersCant = mutableStateOf<Int?>(null)
+    override val followersCant: State<Int?> = _followersCant
+
+    private val _followsCant = mutableStateOf<Int?>(null)
+    override val followsCant: State<Int?> = _followsCant
+
+    private val _showFollowButton = mutableStateOf(false)
+    override val showFollowButton: State<Boolean> = _showFollowButton
+
+    private val _followingUser = mutableStateOf(false)
+    override val followingUser: State<Boolean> = _followingUser
+
+    private val _modal = mutableStateOf<Modal?>(null)
+    override val modal: State<Modal?> = _modal
+
     private val _bitmapImage = mutableStateOf<ImageBitmap?>(null)
     private val _byteArrayImage = mutableStateOf<ByteArray?>(null)
     private var _navigate: (SetupRoute) -> Unit = {}
@@ -130,6 +151,7 @@ class ProfileViewModel(
         _navigate = { navController.navigate(it) }
         _back = onBack
         fetchUserInfo()
+        setupFollowers()
     }
 
     override fun onSettingsClicked() {
@@ -178,15 +200,13 @@ class ProfileViewModel(
 
     private fun fetchUserInfo() {
         viewModelScope.launch {
-            val user = _userId.value.ifEmpty {
-                preferences.getUserId() ?: ""
-            }
+            val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
             profileCreationRepository.fetchProfile(user)
                 .onSuccess { loggedUser ->
                     // show info
                     _user.value = loggedUser
-                    _urlImage.value = loggedUser.profileImage?.image
-                    _initials.value = loggedUser.profileImage?.initials
+                    _urlImage.value = loggedUser.profileImage.image
+                    _initials.value = loggedUser.profileImage.initials
                 }
                 .onError {
                     // show error
@@ -203,6 +223,138 @@ class ProfileViewModel(
                 .onError {
                     _initials.value = _user.value?.profileImage?.initials
                     // show error
+                }
+        }
+    }
+
+    private fun setupFollowers() {
+        val user = _userId.value
+        countFollowers()
+        countFollows()
+        if (user.isNotEmpty()) {
+            areYouFollowing(user)
+        }
+    }
+
+    override fun onFollowOrUnfollowClicked() {
+        val otherUser = _userId.value
+        if (_followingUser.value) {
+            unfollowUser(otherUser)
+        } else {
+            followUser(otherUser)
+        }
+    }
+
+    private fun followUser(followingId: String) {
+        val user = preferences.getUserId() ?: return
+        viewModelScope.launch {
+            profileRepository.followUser(followerId = user, followingId = followingId)
+                .onSuccess {
+                    _followersCant.value = _followersCant.value?.plus(1)
+                    _followingUser.value = true
+                }
+                .onError {
+                    _modal.value = Modal.GenericModal(
+                        image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
+                        title = "Algo salió mal",
+                        subtitle = it.name,//"Intenta de nuevo más tarde.",
+                        primaryButton = "Entendido",
+                        secondaryButton = null,
+                        onPrimaryAction = { _modal.value = null },
+                        onSecondaryAction = { },
+                        onDismiss = { _modal.value = null },
+                    )
+                }
+        }
+    }
+
+    private fun unfollowUser(followingId: String) {
+        val user = preferences.getUserId() ?: return
+        viewModelScope.launch {
+            profileRepository.unfollowUser(followerId = user, followingId = followingId)
+                .onSuccess {
+                    _followersCant.value = _followersCant.value?.minus(1)
+                    _followingUser.value = false
+                }
+                .onError {
+                    _modal.value = Modal.GenericModal(
+                        image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
+                        title = "Algo salió mal",
+                        subtitle = it.name,//"Intenta de nuevo más tarde.",
+                        primaryButton = "Entendido",
+                        secondaryButton = null,
+                        onPrimaryAction = { _modal.value = null },
+                        onSecondaryAction = { },
+                        onDismiss = { _modal.value = null },
+                    )
+                }
+        }
+    }
+
+    private fun areYouFollowing(followingId: String) {
+        val user = preferences.getUserId() ?: return
+        viewModelScope.launch {
+            profileRepository.areYouFollowing(followerId = user, followingId = followingId)
+                .onSuccess { following ->
+                    _followingUser.value = following
+                    _showFollowButton.value = true
+                }
+                .onError {
+                    // SHOW ERROR
+                }
+        }
+    }
+
+    override fun obtainFollowers() {
+        val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
+        viewModelScope.launch {
+            profileRepository.obtainFollowers(userId = user)
+                .onSuccess {
+                    // _urlImage.value = url
+                    // UPDATE FOLLOWING USER PROFILE UI
+                }
+                .onError {
+                    // SHOW ERROR
+                }
+        }
+    }
+
+    override fun obtainFollows() {
+        val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
+        viewModelScope.launch {
+            profileRepository.obtainFollows(userId = user)
+                .onSuccess {
+                    // _urlImage.value = url
+                    // UPDATE FOLLOWING USER PROFILE UI
+                }
+                .onError {
+                    // SHOW ERROR
+                }
+        }
+    }
+
+    private fun countFollowers() {
+        val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
+        viewModelScope.launch {
+            profileRepository.countFollowers(userId = user)
+                .onSuccess {
+                    _followersCant.value = it
+                }
+                .onError {
+                    // SHOW ERROR
+                }
+        }
+    }
+
+    private fun countFollows() {
+        val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
+        viewModelScope.launch {
+            profileRepository.countFollows(userId = user)
+                .onSuccess {
+                    _followsCant.value = it
+                }
+                .onError {
+                    // SHOW ERROR
                 }
         }
     }

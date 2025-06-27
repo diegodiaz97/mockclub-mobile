@@ -49,6 +49,10 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import com.diego.futty.setup.profile.data.repository.ProfileRepositoryImpl
+import com.diego.futty.setup.profile.domain.repository.ProfileRepository
+import com.diego.futty.setup.profile.data.network.RemoteProfileDataSource
+import com.diego.futty.setup.profile.data.network.KtorRemoteProfileDataSource
 
 expect val platformModule: Module
 
@@ -90,11 +94,16 @@ val sharedModule = module {
     viewModelOf(::DesignViewModel)
     viewModelOf(::FeedViewModel)
 
+    // Profile
+    singleOf(::KtorRemoteProfileDataSource).bind<RemoteProfileDataSource>()
+    singleOf(::ProfileRepositoryImpl).bind<ProfileRepository>()
+
+    viewModelOf(::ProfileViewModel)
+
     // Setup
     singleOf(::KtorRemoteLogoutDataSource).bind<RemoteLogoutDataSource>()
     singleOf(::SettingsRepositoryImpl).bind<SettingsRepository>()
 
     viewModelOf(::SetupViewModel)
-    viewModelOf(::ProfileViewModel)
     viewModelOf(::SettingsViewModel)
 }

@@ -37,25 +37,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
 import com.diego.futty.core.presentation.photos.PermissionCallback
 import com.diego.futty.core.presentation.photos.PermissionStatus
 import com.diego.futty.core.presentation.photos.PermissionType
 import com.diego.futty.core.presentation.photos.createPermissionsManager
 import com.diego.futty.core.presentation.photos.rememberCameraManager
 import com.diego.futty.core.presentation.photos.rememberGalleryManager
-import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorAlertLight
+import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorErrorLight
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey700
 import com.diego.futty.core.presentation.theme.colorGrey900
+import com.diego.futty.core.presentation.theme.colorInfo
 import com.diego.futty.core.presentation.theme.colorInfoLight
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.PlatformInfo
@@ -66,8 +65,11 @@ import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
+import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
+import com.diego.futty.home.design.presentation.component.card.SimpleInfoCard
 import com.diego.futty.home.design.presentation.component.flowrow.MultipleFlowList
+import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.design.presentation.component.progressbar.CircularProgressBar
 import com.diego.futty.home.design.presentation.component.progressbar.LinearProgressBar
@@ -120,21 +122,51 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         MainInfo(viewModel)
+        SecondaryInfo(viewModel)
         Upgrade(viewModel)
         Desires(viewModel)
         Levels()
+        viewModel.modal.value?.Draw()
+    }
+}
+
+@Composable
+private fun SecondaryInfo(viewModel: ProfileViewModel) {
+    Row(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        SimpleInfoCard(
+            modifier = Modifier.weight(1f),
+            title = "Publicaciones",
+            description = viewModel.postsCant.value?.toString() ?: "",
+        )
+        SimpleInfoCard(
+            modifier = Modifier.weight(1f),
+            title = "Siguiendo",
+            description = viewModel.followsCant.value?.toString() ?: "",
+        )
+        SimpleInfoCard(
+            modifier = Modifier.weight(1f),
+            title = "Seguidores",
+            description = viewModel.followersCant.value?.toString() ?: "",
+        )
     }
 }
 
 @Composable
 fun Upgrade(viewModel: ProfileViewModel) {
-    Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+    Column(
+        Modifier.padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
         if (viewModel.user.value?.userType == USER_TYPE_BASIC && viewModel.userId.value.isEmpty()) {
             Banner.FullImageBanner(
                 BannerUIData(
-                    title = "Actualiza a PRO",
+                    title = "Todavía no tienes PRO",
                     description = "Descubre las mejores funcionalidades por solo $1 USD.",
-                    label = "Ver más",
+                    label = "Conoce MockClubPRO",
                     illustration = "https://cdn.pixabay.com/photo/2022/09/21/17/02/blue-background-7470781_1280.jpg",
                     action = { viewModel.onVerifyClicked() },
                 ),
@@ -142,26 +174,23 @@ fun Upgrade(viewModel: ProfileViewModel) {
                 state = rememberPagerState { 1 },
             ).Draw()
         }
-        Banner.DisplayBanner(
-            BannerUIData(
-                title = "Actualiza a PRO",
-                description = "Descubre las mejores funcionalidades por solo $1 USD.",
-                illustration = "https://cdn.pixabay.com/photo/2022/09/21/17/02/blue-background-7470781_1280.jpg",
-                action = {  },
-            ),
-            page = 0,
-            state = rememberPagerState { 1 },
-        ).Draw()
-        Banner.DisplayBanner(
-            BannerUIData(
-                title = "Busca personas",
-                description = "Aquí puedes encontrar a tus amigos o nuevo contenido.",
-                illustration = "https://framerusercontent.com/images/nrDI4qjkcIIXHS1wDcmvfuW9Q.png",
-                action = {  },
-            ),
-            page = 0,
-            state = rememberPagerState { 1 },
-        ).Draw()
+
+        AnimatedVisibility(viewModel.showFollowButton.value) {
+            PrimaryButton(
+                modifier = Modifier.fillMaxWidth(),
+                color = if (viewModel.followingUser.value) {
+                    colorError()
+                } else {
+                    colorInfo()
+                },
+                title = if (viewModel.followingUser.value) {
+                    "Dejar de seguir"
+                } else {
+                    "Seguir"
+                },
+                onClick = { viewModel.onFollowOrUnfollowClicked() }
+            )
+        }
     }
 }
 
@@ -272,7 +301,7 @@ private fun MainInfo(viewModel: ProfileViewModel) {
                     )
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "En Futty desde el ${user?.creationDate}",
+                        text = "En MockClub desde el ${user?.creationDate}",
                         style = typography.titleSmall,
                         fontWeight = FontWeight.Normal,
                         color = colorGrey500()
