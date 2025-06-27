@@ -58,7 +58,7 @@ fun FeedScreen(
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp),
-                title = "Futty",
+                title = "MockClub",
                 topBarActionType = TopBarActionType.Profile(
                     imageUrl = viewModel.user.value?.profileImage?.image,
                     initials = viewModel.user.value?.profileImage?.initials,
