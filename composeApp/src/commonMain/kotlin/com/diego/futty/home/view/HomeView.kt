@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,9 @@ import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
 import com.diego.futty.home.match.presentation.screen.MatchScreen
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
 import com.diego.futty.setup.view.SetupView
+import com.svenjacobs.reveal.RevealCanvas
+import com.svenjacobs.reveal.rememberRevealCanvasState
+import com.svenjacobs.reveal.rememberRevealState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -48,77 +52,123 @@ fun HomeView(navigateToLogin: () -> Unit) {
     val navController = rememberNavController()
 
     FuttyTheme(appViewModel.palette.value) {
-        SetStatusBarColor(Color.Transparent)
-        LaunchedEffect(true) {
-            appViewModel.setup()
+        val revealCanvasState = rememberRevealCanvasState()
+        val revealState = rememberRevealState()
+        val scope = rememberCoroutineScope()
+
+        RevealCanvas(
+            modifier = Modifier,
+            revealCanvasState = revealCanvasState,
+        ) {
+            SetStatusBarColor(Color.Transparent)
+            LaunchedEffect(true) { appViewModel.setup() }
+
+            Column {
+                NavHost(
+                    modifier = Modifier.weight(1f),
+                    navController = navController,
+                    startDestination = HomeRoute.HomeGraph
+                ) {
+                    navigation<HomeRoute.HomeGraph>(
+                        startDestination = appViewModel.currentRoute.value
+                    ) {
+                        composable<HomeRoute.Feed>(
+                            enterTransition = { EnterTransition.None }, // Sin animación de entrada
+                            exitTransition = { ExitTransition.None },    // Sin animación de salida
+                        ) {
+                            LaunchedEffect(true) {
+                                appViewModel.updateRoute(HomeRoute.Feed)
+                                feedViewModel.setup(navController)
+                            }
+                            FeedScreen(
+                                revealCanvasState = revealCanvasState,
+                                scope = scope,
+                                revealState = revealState,
+                                viewModel = feedViewModel
+                            )
+                        }
+
+                        composable<HomeRoute.Design>(
+                            enterTransition = { EnterTransition.None }, // Sin animación de entrada
+                            exitTransition = { ExitTransition.None },    // Sin animación de salida
+                        ) {
+                            LaunchedEffect(true) {
+                                appViewModel.updateRoute(HomeRoute.Design)
+                                designViewModel.setup(navController)
+                            }
+                            DesignScreen(viewModel = designViewModel)
+                        }
+
+                        composable<HomeRoute.Match>(
+                            enterTransition = { EnterTransition.None }, // Sin animación de entrada
+                            exitTransition = { ExitTransition.None },    // Sin animación de salida
+                        ) {
+                            LaunchedEffect(true) {
+                                appViewModel.updateRoute(HomeRoute.Match)
+                                // matchViewModel.setup()
+                            }
+                            MatchScreen(viewModel = matchViewModel)
+                        }
+
+                        composable<HomeRoute.Setup>(
+                            enterTransition = Transitions.RightScreenEnter,
+                            exitTransition = Transitions.LeftScreenExit,
+                            popEnterTransition = Transitions.RightScreenPopEnter,
+                            popExitTransition = Transitions.LeftScreenPopExit
+                        ) {
+                            LaunchedEffect(true) {
+                                appViewModel.updateRoute(HomeRoute.Setup)
+                            }
+                            SetupView(
+                                userId = designViewModel.clickedUser.value,
+                                onBack = {
+                                    navController.popBackStack()
+                                    designViewModel.resetUserId()
+                                },
+                                navigateToLogin = navigateToLogin,
+                            )
+                        }
+                    }
+                }
+
+                BottomNavBar(appViewModel, navController)
+                designViewModel.modal.value?.Draw()
+            }
         }
+    }
+}
+
+@Composable
+private fun BottomNavBar(appViewModel: HomeViewModel, navController: NavController) {
+    if (appViewModel.showBottomBar.value) {
+        val currentRoute = appViewModel.currentRoute.value
 
         Column {
-            NavHost(
-                modifier = Modifier.weight(1f),
-                navController = navController,
-                startDestination = HomeRoute.HomeGraph
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth().height(1.dp),
+                color = colorGrey100(),
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colorGrey0())
+                    .padding(bottom = 18.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
             ) {
-                navigation<HomeRoute.HomeGraph>(
-                    startDestination = appViewModel.currentRoute.value
-                ) {
-                    composable<HomeRoute.Feed>(
-                        enterTransition = { EnterTransition.None }, // Sin animación de entrada
-                        exitTransition = { ExitTransition.None },    // Sin animación de salida
+                BottomNavScreen.allScreens.forEach { screen ->
+                    BottomBarItem(
+                        icon = if (currentRoute == screen.route) screen.selectedIcon else screen.icon,
+                        tint = if (currentRoute == screen.route) colorError() else colorGrey500(),
+                        color = Color.Transparent,
+                        text = screen.text,
                     ) {
-                        LaunchedEffect(true) {
-                            appViewModel.updateRoute(HomeRoute.Feed)
-                            feedViewModel.setup(navController)
+                        if (appViewModel.canUseBottomBar.value) {
+                            navigateTo(navController, currentRoute, screen.route)
                         }
-                        FeedScreen(viewModel = feedViewModel)
-                    }
-
-                    composable<HomeRoute.Design>(
-                        enterTransition = { EnterTransition.None }, // Sin animación de entrada
-                        exitTransition = { ExitTransition.None },    // Sin animación de salida
-                    ) {
-                        LaunchedEffect(true) {
-                            appViewModel.updateRoute(HomeRoute.Design)
-                            designViewModel.setup(navController)
-                        }
-                        DesignScreen(viewModel = designViewModel)
-                    }
-
-                    composable<HomeRoute.Match>(
-                        enterTransition = { EnterTransition.None }, // Sin animación de entrada
-                        exitTransition = { ExitTransition.None },    // Sin animación de salida
-                    ) {
-                        LaunchedEffect(true) {
-                            appViewModel.updateRoute(HomeRoute.Match)
-                            // matchViewModel.setup()
-                        }
-                        MatchScreen(viewModel = matchViewModel)
-                    }
-
-                    composable<HomeRoute.Setup>(
-                        enterTransition = Transitions.RightScreenEnter,
-                        exitTransition = Transitions.LeftScreenExit,
-                        popEnterTransition = Transitions.RightScreenPopEnter,
-                        popExitTransition = Transitions.LeftScreenPopExit
-                    ) {
-                        LaunchedEffect(true) {
-                            appViewModel.updateRoute(HomeRoute.Setup)
-                        }
-                        SetupView(
-                            userId = designViewModel.clickedUser.value,
-                            onBack = {
-                                navController.popBackStack()
-                                designViewModel.resetUserId()
-                            },
-                            navigateToLogin = navigateToLogin,
-                        )
                     }
                 }
             }
-            if (appViewModel.showBottomBar.value) {
-                BottomNavBar(navController, appViewModel.currentRoute.value)
-            }
-            designViewModel.modal.value?.Draw()
         }
     }
 }
@@ -127,35 +177,6 @@ private fun navigateTo(navController: NavController, current: HomeRoute, destina
     if (current != destination) {
         navController.navigate(destination) {
             popUpTo(current) { inclusive = true }
-        }
-    }
-}
-
-@Composable
-fun BottomNavBar(navController: NavController, currentRoute: HomeRoute) {
-    Column {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth().height(1.dp),
-            color = colorGrey100(),
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(colorGrey0())
-                .padding(bottom = 18.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-        ) {
-            BottomNavScreen.allScreens.forEach { screen ->
-                BottomBarItem(
-                    icon = if (currentRoute == screen.route) screen.selectedIcon else screen.icon,
-                    tint = if (currentRoute == screen.route) colorError() else colorGrey500(),
-                    color = Color.Transparent,
-                    text = screen.text,
-                ) {
-                    navigateTo(navController, currentRoute, screen.route)
-                }
-            }
         }
     }
 }

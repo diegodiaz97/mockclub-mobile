@@ -37,11 +37,20 @@ class UserPreferences(private val settings: Settings) {
         return settings[DARK_MODE]
     }
 
+    fun saveOnboarding(done: Boolean) {
+        settings[ONBOARDING] = done
+    }
+
+    fun getOnboarding(): Boolean? {
+        return settings[ONBOARDING]
+    }
+
     companion object {
         const val USER_ID = "user_id"
         const val USER_EMAIL = "user_email"
         const val USER_TYPE = "user_type"
         const val DARK_MODE = "dark_mode"
+        const val ONBOARDING = "onboarding"
     }
 }
 

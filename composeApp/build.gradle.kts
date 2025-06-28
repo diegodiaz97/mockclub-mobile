@@ -77,6 +77,8 @@ kotlin {
                 implementation(libs.flexible.bottomsheet.material3)
                 implementation(libs.multiplatform.settings)
                 implementation(libs.maplibre.compose)
+                implementation(libs.reveal.core)
+                implementation(libs.reveal.shapes)
             }
         }
 

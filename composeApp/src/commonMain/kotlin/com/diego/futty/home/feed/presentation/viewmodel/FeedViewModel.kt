@@ -12,11 +12,16 @@ import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.core.presentation.theme.ErrorLight
 import com.diego.futty.core.presentation.theme.toHex
 import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_BASIC
+import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.feed.domain.model.ActionableImage
 import com.diego.futty.home.feed.domain.model.Post
 import com.diego.futty.home.feed.domain.model.ProfileImage
 import com.diego.futty.home.feed.domain.model.User
+import com.diego.futty.home.feed.presentation.component.Keys
+import com.diego.futty.home.feed.presentation.component.tryShowReveal
 import com.diego.futty.home.view.HomeRoute
+import com.svenjacobs.reveal.RevealState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
@@ -40,6 +45,9 @@ class FeedViewModel(
 
     private val _openedImage = mutableStateOf<ActionableImage?>(null)
     override val openedImage: State<ActionableImage?> = _openedImage
+
+    private val _modal = mutableStateOf<Modal?>(null)
+    override val modal: State<Modal?> = _modal
 
     private var _navigate: (HomeRoute) -> Unit = {}
 
@@ -93,7 +101,7 @@ class FeedViewModel(
             user = user,
             date = "22 de enero a las 14:43",
             text = "Fotonnnn",
-            images = getImages.subList(0,1),
+            images = getImages.subList(0, 1),
             onClick = {},
         ),
         Post(
@@ -101,7 +109,7 @@ class FeedViewModel(
             user = getUsers[0],
             date = "23 de enero a las 18:43",
             text = "Hoy vi unos girasoles muy amarilloss",
-            images = getImages.subList(1,2),
+            images = getImages.subList(1, 2),
             onClick = {},
         ),
         Post(
@@ -123,6 +131,15 @@ class FeedViewModel(
     fun setup(navController: NavHostController) {
         fetchUserInfo()
         _navigate = { navController.navigate(it) }
+    }
+
+    override fun startReveal(revealState: RevealState) {
+        viewModelScope.launch {
+            if (revealState.isVisible || preferences.getOnboarding() == true) return@launch
+            delay(380)
+            revealState.tryShowReveal(Keys.Profile)
+            preferences.saveOnboarding(done = true)
+        }
     }
 
     override fun onProfileClicked() {
@@ -150,13 +167,21 @@ class FeedViewModel(
             val user = preferences.getUserId() ?: return@launch
             profileCreationRepository.fetchProfile(user)
                 .onSuccess { loggedUser ->
-                    // show info
                     _user.value = loggedUser
                     _posts.value = getPosts(loggedUser)
                     preferences.saveUserType(loggedUser.userType)
                 }
                 .onError {
-                    // show error
+                    _modal.value = Modal.GenericModal(
+                        image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
+                        title = "Algo salió mal",
+                        subtitle = "Intenta de nuevo más tarde.",
+                        primaryButton = "Entendido",
+                        secondaryButton = null,
+                        onPrimaryAction = { _modal.value = null },
+                        onSecondaryAction = { },
+                        onDismiss = { _modal.value = null },
+                    )
                 }
         }
     }

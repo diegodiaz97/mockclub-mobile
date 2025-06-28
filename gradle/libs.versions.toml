@@ -29,6 +29,7 @@ koin = "4.0.0"
 ktor = "3.0.0"
 coil3 = "3.0.0-rc02"
 ksp = "2.0.20-1.0.24"
+reveal = "3.1.1"
 sqlite = "2.5.0-alpha11"
 room = "2.7.0-alpha11"
 xicon_pack_z = "1.1.1"
@@ -87,6 +88,8 @@ coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+reveal-core = { module = "com.svenjacobs.reveal:reveal-core", version.ref = "reveal" }
+reveal-shapes = { module = "com.svenjacobs.reveal:reveal-shapes", version.ref = "reveal" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 xicon_pack_z_tabler = { module = "br.com.devsrsouza.compose.icons:tabler-icons", version.ref = "xicon_pack_z" }
 xicon_pack_z_octicon = { module = "br.com.devsrsouza.compose.icons:octicons", version.ref = "xicon_pack_z" }

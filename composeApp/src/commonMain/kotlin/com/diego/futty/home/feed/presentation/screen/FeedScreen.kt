@@ -14,9 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.Grey0
 import com.diego.futty.core.presentation.theme.colorError
@@ -35,47 +37,84 @@ import com.diego.futty.home.design.presentation.component.post.Draw
 import com.diego.futty.home.design.presentation.component.post.PostShimmer
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
+import com.diego.futty.home.feed.presentation.component.Keys
+import com.diego.futty.home.feed.presentation.component.RevealOverlayContent
+import com.diego.futty.home.feed.presentation.component.showNextReveal
+import com.diego.futty.home.feed.presentation.component.tryShowReveal
 import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
+import com.svenjacobs.reveal.Reveal
+import com.svenjacobs.reveal.RevealCanvasState
+import com.svenjacobs.reveal.RevealShape
+import com.svenjacobs.reveal.RevealState
+import com.svenjacobs.reveal.revealable
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Focus
 import compose.icons.tablericons.Plus
 import compose.icons.tablericons.Shirt
 import compose.icons.tablericons.X
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun FeedScreen(
+    revealCanvasState: RevealCanvasState,
+    scope: CoroutineScope,
+    revealState: RevealState,
     viewModel: FeedViewModel = koinViewModel()
 ) {
-    Scaffold(
-        containerColor = colorGrey0(),
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopBar(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp),
-                title = "MockClub",
-                topBarActionType = TopBarActionType.Profile(
-                    imageUrl = viewModel.user.value?.profileImage?.image,
-                    initials = viewModel.user.value?.profileImage?.initials,
-                    background = viewModel.user.value?.profileImage?.background?.toColor(),
-                    onClick = { viewModel.onProfileClicked() }
+    LaunchedEffect(viewModel) { viewModel.startReveal(revealState) }
+
+    Reveal(
+        modifier = Modifier,
+        revealCanvasState = revealCanvasState,
+        revealState = revealState,
+        overlayContent = { key -> RevealOverlayContent(key) },
+        onOverlayClick = { key -> scope.launch { showNextReveal(revealState, key) } },
+        onRevealableClick = { },
+    ) {
+        Scaffold(
+            containerColor = colorGrey0(),
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopBar(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp)
+                        .revealable(
+                            key = Keys.Profile,
+                            state = revealState,
+                            shape = RevealShape.RoundRect(16.dp),
+                            onClick = { scope.launch { revealState.tryShowReveal(Keys.Explore) } }
+                        ),
+                    title = "MockClub",
+                    topBarActionType = TopBarActionType.Profile(
+                        imageUrl = viewModel.user.value?.profileImage?.image,
+                        initials = viewModel.user.value?.profileImage?.initials,
+                        background = viewModel.user.value?.profileImage?.background?.toColor(),
+                        onClick = { viewModel.onProfileClicked() }
+                    )
                 )
-            )
-        },
-        content = { paddingValues ->
-            FeedContent(viewModel, paddingValues)
-        },
-    )
-    OpenedImage(viewModel)
+            },
+            content = { paddingValues ->
+                FeedContent(viewModel, paddingValues, scope, revealState)
+            },
+        )
+        OpenedImage(viewModel)
+        viewModel.modal.value?.Draw()
+    }
 }
 
 @Composable
-private fun FeedContent(viewModel: FeedViewModel, paddingValues: PaddingValues) {
+private fun FeedContent(
+    viewModel: FeedViewModel,
+    paddingValues: PaddingValues,
+    scope: CoroutineScope,
+    revealState: RevealState,
+) {
     Box {
         Column(
             modifier = Modifier
@@ -83,13 +122,19 @@ private fun FeedContent(viewModel: FeedViewModel, paddingValues: PaddingValues) 
                 .padding(top = paddingValues.calculateTopPadding()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            PostsList(viewModel)
+            PostsList(viewModel, scope, revealState)
             Spacer(modifier = Modifier.height(8.dp))
         }
         Avatar.IconAvatar(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = 16.dp, end = 20.dp),
+                .padding(bottom = 16.dp, end = 20.dp)
+                .revealable(
+                    key = Keys.Post,
+                    state = revealState,
+                    shape = RevealShape.Circle,
+                    onClick = { scope.launch { revealState.hide() } }
+                ),
             avatarSize = AvatarSize.Big,
             icon = TablerIcons.Plus,
             background = colorError(),
@@ -100,9 +145,19 @@ private fun FeedContent(viewModel: FeedViewModel, paddingValues: PaddingValues) 
 }
 
 @Composable
-private fun TopBanner() {
+private fun TopBanner(
+    scope: CoroutineScope,
+    revealState: RevealState
+) {
     ScrollBanner(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .revealable(
+                key = Keys.Explore,
+                state = revealState,
+                shape = RevealShape.RoundRect(16.dp),
+                onClick = { scope.launch { revealState.tryShowReveal(Keys.Post) } }
+            ),
         bannerType = BannerType.Display,
         items = listOf(
             BannerUIData(
@@ -143,6 +198,7 @@ private fun OpenedImage(viewModel: FeedViewModel) {
             Box(Modifier.fillMaxSize()) {
                 AsyncImage(
                     modifier = Modifier.fillMaxSize().align(Alignment.Center),
+                    contentScale = ContentScale.Fit,
                     contentDescription = "opened image",
                     image = image
                 )
@@ -161,14 +217,18 @@ private fun OpenedImage(viewModel: FeedViewModel) {
 }
 
 @Composable
-private fun PostsList(viewModel: FeedViewModel) {
+private fun PostsList(
+    viewModel: FeedViewModel,
+    scope: CoroutineScope,
+    revealState: RevealState,
+) {
     val posts = viewModel.posts.value
     if (posts != null) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item { TopBanner() }
+            item { TopBanner(scope, revealState) }
             posts.forEachIndexed { index, post ->
                 item {
                     post.Draw()

@@ -257,7 +257,7 @@ class ProfileViewModel(
                     _modal.value = Modal.GenericModal(
                         image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
                         title = "Algo salió mal",
-                        subtitle = it.name,//"Intenta de nuevo más tarde.",
+                        subtitle = "Intenta de nuevo más tarde.",
                         primaryButton = "Entendido",
                         secondaryButton = null,
                         onPrimaryAction = { _modal.value = null },
@@ -280,7 +280,7 @@ class ProfileViewModel(
                     _modal.value = Modal.GenericModal(
                         image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
                         title = "Algo salió mal",
-                        subtitle = it.name,//"Intenta de nuevo más tarde.",
+                        subtitle = "Intenta de nuevo más tarde.",
                         primaryButton = "Entendido",
                         secondaryButton = null,
                         onPrimaryAction = { _modal.value = null },

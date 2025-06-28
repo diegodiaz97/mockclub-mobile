@@ -7,5 +7,6 @@ interface HomeViewContract {
     val palette: State<ColorScheme>
     val currentRoute: State<HomeRoute>
     val showBottomBar: State<Boolean>
+    val canUseBottomBar: State<Boolean>
     fun updateRoute(newRoute: HomeRoute)
 }
