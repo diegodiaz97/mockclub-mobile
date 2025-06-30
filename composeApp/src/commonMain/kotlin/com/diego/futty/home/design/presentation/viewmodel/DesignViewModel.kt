@@ -73,14 +73,8 @@ class DesignViewModel(
                     _searchUsers.value = users
                 }
                 .onError {
-                    _modal.value = Modal.GenericModal(
-                        image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
-                        title = "Algo salió mal",
-                        subtitle = "Intenta de nuevo más tarde.",
-                        primaryButton = "Entendido",
-                        secondaryButton = null,
+                    _modal.value = Modal.GenericErrorModal(
                         onPrimaryAction = { _modal.value = null },
-                        onSecondaryAction = { },
                         onDismiss = { _modal.value = null },
                     )
                 }

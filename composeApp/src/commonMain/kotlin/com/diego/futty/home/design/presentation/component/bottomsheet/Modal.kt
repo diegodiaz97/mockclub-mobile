@@ -111,4 +111,24 @@ sealed interface Modal {
             }
         }
     }
+
+    class GenericErrorModal(
+        val onPrimaryAction: () -> Unit,
+        val onDismiss: () -> Unit,
+    ) : Modal {
+        @Composable
+        override fun Draw() {
+            GenericModal(
+                image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
+                title = "Algo salió mal",
+                subtitle = "Intenta de nuevo más tarde.",
+                primaryButton = "Entendido",
+                secondaryButton = null,
+                onPrimaryAction = { onPrimaryAction() },
+                onSecondaryAction = { },
+                onDismiss = { onDismiss() },
+            ).Draw()
+        }
+
+    }
 }
