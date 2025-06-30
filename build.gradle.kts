@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.room) apply false
     alias(libs.plugins.googleServices) apply false
     alias(libs.plugins.kotlinCocoapods) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
 }

@@ -156,6 +156,9 @@ private fun Posts(
         onPostClicked = { post ->
             viewModel.onPostClicked(post)
         },
+        onImageClicked = { image ->
+            viewModel.onImageClicked(image)
+        },
         onScrolled = {
             viewModel.fetchFeed()
         }

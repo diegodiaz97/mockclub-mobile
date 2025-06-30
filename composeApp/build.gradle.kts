@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -11,6 +10,7 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.kotlinCocoapods)
+    id("com.google.firebase.crashlytics")
 }
 
 kotlin {
@@ -30,14 +30,14 @@ kotlin {
         version = "1.0"
         ios.deploymentTarget = "15.4"
         podfile = project.file("../iosApp/Podfile")
+        pod("GoogleSignIn")
+        pod("MapLibre", "6.9.0")
 
         framework {
             baseName = "composeApp"
             isStatic = true
         }
     }
-
-    jvm("desktop")
 
     room {
         schemaDirectory("$projectDir/schemas")
@@ -80,6 +80,7 @@ kotlin {
                 implementation(libs.reveal.core)
                 implementation(libs.reveal.shapes)
                 implementation("dev.materii.pullrefresh:pullrefresh:1.3.0")
+                implementation("io.github.tweener:passage:1.4.0")
             }
         }
 
@@ -99,17 +100,9 @@ kotlin {
                 implementation(libs.com.google.firebase.firebase.firestore)
                 implementation(libs.com.google.firebase.firebase.storage)
                 implementation(libs.com.google.firebase.firebase.messaging)
+                implementation(libs.firebase.crashlytics)
+                implementation(libs.firebase.analytics)
                 implementation(libs.accompanist.permissions)
-            }
-        }
-
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-                implementation(libs.kotlinx.coroutines.swing)
-                implementation(libs.ktor.client.okhttp)
-                implementation(libs.xicon.pack.z.tabler)
-                implementation(libs.xicon.pack.z.octicon)
             }
         }
 
@@ -154,16 +147,4 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.diego.futty.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.diego.futty"
-            packageVersion = "1.0.0"
-        }
-    }
 }

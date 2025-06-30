@@ -25,7 +25,7 @@ fun PostsList(
     topListComponents: @Composable () -> Unit = { },
     bottomListComponents: @Composable () -> Unit = { },
     onPostClicked: (PostWithUser) -> Unit,
-    onImageClicked: (() -> Unit)? = null,
+    onImageClicked: ((image: String) -> Unit)? = null,
     onScrolled: () -> Unit,
 ) {
     LazyColumn(
@@ -42,9 +42,9 @@ fun PostsList(
                         hasDislike = false,
                         onLiked = {},
                         onDisliked = {},
-                        onImageClick = {
+                        onImageClick = { image ->
                             if (onImageClicked != null) {
-                                onImageClicked()
+                                onImageClicked(image)
                             } else {
                                 onPostClicked(post)
                             }

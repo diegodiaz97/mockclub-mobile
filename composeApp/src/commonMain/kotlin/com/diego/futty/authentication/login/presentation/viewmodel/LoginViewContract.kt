@@ -16,6 +16,5 @@ interface LoginViewContract {
     fun onRecoveryClicked()
     fun onLoginWithGoogleClicked()
     fun onLoginWithAppleClicked()
-    fun onLoginWithBiometricsClicked()
     fun hideKeyboard()
 }

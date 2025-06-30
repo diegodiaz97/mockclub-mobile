@@ -16,7 +16,7 @@ import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
 ) : LoginViewContract, ViewModel() {
     private val _email = mutableStateOf("")
     override val email: State<String> = _email
@@ -93,15 +93,53 @@ class LoginViewModel(
     }
 
     override fun onLoginWithGoogleClicked() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            loginRepository.loginWithGoogle()
+                .onSuccess {
+                    _banner.value = Banner.StatusBanner(
+                        BannerUIData(
+                            title = "¡Listo!",
+                            description = "Inicio de sesión con Google exitosos",
+                            status = BannerStatus.Success
+                        )
+                    )
+                    _onLogin()
+                }
+                .onError {
+                    _banner.value = Banner.StatusBanner(
+                        BannerUIData(
+                            title = "Algo salió mal",
+                            description = "No se pudo iniciar sesión con Google.",
+                            status = BannerStatus.Error
+                        )
+                    )
+                }
+        }
     }
 
     override fun onLoginWithAppleClicked() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onLoginWithBiometricsClicked() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            loginRepository.loginWithApple()
+                .onSuccess {
+                    _banner.value = Banner.StatusBanner(
+                        BannerUIData(
+                            title = "¡Listo!",
+                            description = "Inicio de sesión con Apple exitosos",
+                            status = BannerStatus.Success
+                        )
+                    )
+                    _onLogin()
+                }
+                .onError {
+                    _banner.value = Banner.StatusBanner(
+                        BannerUIData(
+                            title = "No se pudo acceder con Apple",
+                            description = "Por el momento no se puede hasta que sea miembro de Apple Developer",
+                            status = BannerStatus.Error
+                        )
+                    )
+                }
+        }
     }
 
     private fun loginWithMail() {

@@ -175,7 +175,10 @@ private fun PostFooter(
     onLiked: () -> Unit,
     onDisliked: () -> Unit,
 ) {
-    Row {
+    Row(
+        modifier = Modifier.padding(top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp).weight(1f),
             verticalAlignment = Alignment.CenterVertically,
@@ -227,33 +230,33 @@ private fun PostFooter(
         }
         Row(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(6.dp))
                 .background(colorGrey500())
-                .padding(horizontal = 6.dp, vertical = 4.dp),
+                .padding(horizontal = 2.dp, vertical = 1.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
         )
         {
             Text(
+                modifier = Modifier.padding(start = 4.dp),
                 text = post.team,
-                style = typography.bodySmall,
-                fontWeight = FontWeight.SemiBold,
+                style = typography.labelSmall,
+                fontWeight = FontWeight.Bold,
                 color = colorGrey100()
             )
             Text(
                 text = " x ",
-                style = typography.bodySmall,
+                style = typography.labelSmall,
                 fontWeight = FontWeight.Normal,
                 color = colorGrey200()
             )
-            Text(
+            Text(modifier = Modifier.padding(end = 4.dp),
                 text = post.brand,
-                style = typography.bodySmall,
-                fontWeight = FontWeight.SemiBold,
+                style = typography.labelSmall,
+                fontWeight = FontWeight.Bold,
                 color = colorGrey100()
             )
-            Spacer(Modifier.height(4.dp))
         }
     }
 }

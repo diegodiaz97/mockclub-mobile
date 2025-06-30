@@ -1,6 +1,6 @@
 [versions]
 accompanistPermissions = "0.34.0"
-agp = "8.5.2"
+agp = "8.6.1"
 android-compileSdk = "35"
 android-minSdk = "24"
 android-targetSdk = "35"
@@ -19,7 +19,7 @@ firebaseMessaging = "24.1.0"
 flexibleBottomsheetMaterial3 = "0.1.5"
 google_services_version = "4.4.2"
 junit = "4.13.2"
-kotlin = "2.1.0"
+kotlin = "2.2.0"
 kotlinx-coroutines = "1.9.0"
 kotlinxDatetime = "0.6.0"
 multiplatformSettings = "1.0.0"
@@ -28,7 +28,7 @@ kotlinSerialization = "1.7.3"
 koin = "4.0.0"
 ktor = "3.0.0"
 coil3 = "3.0.0-rc02"
-ksp = "2.0.20-1.0.24"
+ksp = "2.2.0-2.0.2"
 reveal = "3.1.1"
 sqlite = "2.5.0-alpha11"
 room = "2.7.0-alpha11"
@@ -36,7 +36,9 @@ xicon_pack_z = "1.1.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 maplibre-compose = { module = "dev.sargunv.maplibre-compose:maplibre-compose", version = "0.6.0" }
 com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-auth" }
 com-google-firebase-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
@@ -95,6 +97,7 @@ xicon_pack_z_tabler = { module = "br.com.devsrsouza.compose.icons:tabler-icons",
 xicon_pack_z_octicon = { module = "br.com.devsrsouza.compose.icons:octicons", version.ref = "xicon_pack_z" }
 
 [plugins]
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.4" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "google_services_version" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
