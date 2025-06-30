@@ -10,10 +10,8 @@ data class User(
     val lastName: String? = null,
     val description: String? = null,
     val profileImage: ProfileImage,
-    val creationDate: String,
+    val creationDate: Long,
     val userType: String,
-    val followers: List<String>? = null, // Followers ID's
-    val following: List<String>? = null, // Following ID's
     val level: Int,
     val country: String? = null,
     val desires: List<String>? = null,
