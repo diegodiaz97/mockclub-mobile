@@ -1,6 +1,7 @@
 package com.diego.futty.home.design.presentation.component.input
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +47,7 @@ sealed interface TextInput {
         val modifier: Modifier = Modifier.fillMaxWidth(),
         val input: String,
         val label: String? = null,
+        val maxLength: Int? = null,
         val placeholder: String = "",
         val onTextChangeAction: (String) -> Unit,
         val onFocusChanged: () -> Unit,
@@ -74,11 +76,11 @@ sealed interface TextInput {
                         .fillMaxWidth()
                         .height(46.dp)
                         .clip(RoundedCornerShape(12.dp))
-                       /* .border(
-                            width = 1.dp,
-                            color = colorGrey300(),
-                            shape = RoundedCornerShape(12.dp)
-                        )*/
+                        /* .border(
+                             width = 1.dp,
+                             color = colorGrey300(),
+                             shape = RoundedCornerShape(12.dp)
+                         )*/
                         .background(colorGrey100())
                         .focusRequester(focusRequester)
                         .onFocusChanged { isFocused.value = it.hasFocus },
@@ -126,6 +128,80 @@ sealed interface TextInput {
                                 )
                             }
                         }
+                    }
+                }
+
+                if (maxLength != null) {
+                    Text(
+                        text = "${input.length}/$maxLength",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        textAlign = TextAlign.End,
+                        style = typography.titleSmall,
+                        fontWeight = FontWeight.Normal,
+                        color = colorGrey900()
+                    )
+                }
+            }
+        }
+    }
+
+    class FullScreenInput(
+        val modifier: Modifier = Modifier.fillMaxWidth(),
+        val input: String,
+        val placeholder: String = "",
+        val onTextChangeAction: (String) -> Unit,
+        val onFocusChanged: () -> Unit,
+    ) : TextInput {
+        @Composable
+        override fun Draw() {
+            val focusRequester = remember { FocusRequester() }
+            val isFocused = remember { mutableStateOf(true) }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { isFocused.value = it.hasFocus },
+                contentAlignment = Alignment.CenterStart
+            ) {
+                if (input.isEmpty()) {
+                    Text(
+                        text = placeholder,
+                        style = typography.titleLarge,
+                        fontWeight = FontWeight.Normal,
+                        color = colorGrey400()
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    BasicTextField(
+                        value = input,
+                        onValueChange = { onTextChangeAction(it) },
+                        textStyle = TextStyle(
+                            color = colorGrey900(),
+                            fontSize = typography.titleLarge.fontSize,
+                            fontWeight = FontWeight.Normal
+                        ),
+                        cursorBrush = SolidColor(colorGrey400()),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 4.dp)
+                            .focusRequester(focusRequester)
+                            .onFocusChanged { isFocused.value = it.hasFocus }
+                    )
+
+                    if (input.isNotEmpty()) {
+                        Icon(
+                            modifier = Modifier.clickable { onTextChangeAction("") },
+                            imageVector = TablerIcons.X,
+                            tint = colorGrey400(),
+                            contentDescription = "Borrar texto"
+                        )
                     }
                 }
             }

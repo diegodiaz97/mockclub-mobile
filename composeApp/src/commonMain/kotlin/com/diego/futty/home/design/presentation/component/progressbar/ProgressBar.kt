@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
@@ -64,12 +65,13 @@ fun CircularProgressBar(
     modifier: Modifier = Modifier,
     progress: Float,
     text: String = "",
+    size: CircularProgressSize = CircularProgressSize.Medium,
     color: Color = colorSuccessLight()
 ) {
     var progressIndicator by remember { mutableStateOf(0F) }
     val progressAnimDuration = 1_500
     val progressAnimation by animateFloatAsState(
-        targetValue = progressIndicator,
+        targetValue = progress,//progressIndicator,
         animationSpec = tween(durationMillis = progressAnimDuration, easing = FastOutSlowInEasing),
     )
     LaunchedEffect(true) {
@@ -78,21 +80,30 @@ fun CircularProgressBar(
 
     Box {
         CircularProgressIndicator(
-            modifier = modifier.size(90.dp),
+            modifier = modifier.size(size.size),
             progress = { progressAnimation }, /* 0.0f a 1.0f*/
             color = color,
             trackColor = colorGrey100(),
             gapSize = (-15).dp,
             strokeCap = StrokeCap.Round,
-            strokeWidth = 12.dp,
+            strokeWidth = size.stroke,
         )
         Text(
             modifier = modifier.align(Alignment.Center),
             text = text,
-            style = typography.bodyLarge,
+            style = when (size) {
+                CircularProgressSize.Small -> typography.labelSmall
+                CircularProgressSize.Medium -> typography.bodyMedium
+            },
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
             color = colorGrey900()
         )
     }
 }
+
+enum class CircularProgressSize(val size: Dp, val stroke: Dp) {
+    Small(size = 46.dp, stroke = 8.dp),
+    Medium(size = 90.dp, stroke = 12.dp)
+}
+

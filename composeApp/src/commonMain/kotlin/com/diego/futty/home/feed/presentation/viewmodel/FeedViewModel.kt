@@ -9,16 +9,12 @@ import com.diego.futty.authentication.profileCreation.domain.repository.ProfileC
 import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
-import com.diego.futty.core.presentation.theme.ErrorLight
-import com.diego.futty.core.presentation.theme.toHex
-import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_BASIC
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
-import com.diego.futty.home.feed.domain.model.ActionableImage
-import com.diego.futty.home.feed.domain.model.Post
-import com.diego.futty.home.feed.domain.model.ProfileImage
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.feed.presentation.component.Keys
 import com.diego.futty.home.feed.presentation.component.tryShowReveal
+import com.diego.futty.home.post.domain.model.PostWithUser
+import com.diego.futty.home.post.domain.repository.PostRepository
 import com.diego.futty.home.view.HomeRoute
 import com.svenjacobs.reveal.RevealState
 import kotlinx.coroutines.delay
@@ -26,110 +22,53 @@ import kotlinx.coroutines.launch
 
 class FeedViewModel(
     private val profileCreationRepository: ProfileCreationRepository,
+    private val postRepository: PostRepository,
     private val preferences: UserPreferences,
 ) : FeedViewContract, ViewModel() {
-    private val getImages = listOf(
-        ActionableImage(image = "https://media.vogue.mx/photos/5cdef9dc1f70818ac67f4c53/2:3/w_2240,c_limit/fotografias%20de%20paisaje.jpg") { onImageClicked(it) },
-        ActionableImage(image = "https://media.vogue.mx/photos/5cdef7991f7081b6577f4c49/master/w_1600,c_limit/fotografia%20de%20paisaje%202.jpg") { onImageClicked(it) },
-        ActionableImage(image = "https://fotos.perfil.com/2025/02/20/trim/720/410/6j6M-000-36y93mz.jpg?webp") { onImageClicked(it) },
-    )
 
     private val _user = mutableStateOf<User?>(null)
     override val user: State<User?> = _user
 
-    private val _posts = mutableStateOf<List<Post>?>(null)
-    override val posts: State<List<Post>?> = _posts
+    private val _posts = mutableStateOf<List<PostWithUser>?>(null)
+    override val posts: State<List<PostWithUser>?> = _posts
 
-    private val _openedPost = mutableStateOf<Post?>(null)
-    override val openedPost: State<Post?> = _openedPost
+    private val _openedPost = mutableStateOf<PostWithUser?>(null)
+    override val openedPost: State<PostWithUser?> = _openedPost
 
-    private val _openedImage = mutableStateOf<ActionableImage?>(null)
-    override val openedImage: State<ActionableImage?> = _openedImage
+    private val _openedImage = mutableStateOf<String?>(null)
+    override val openedImage: State<String?> = _openedImage
+
+    private val _isRefreshing = mutableStateOf(false)
+    override val isRefreshing: State<Boolean> = _isRefreshing
 
     private val _modal = mutableStateOf<Modal?>(null)
     override val modal: State<Modal?> = _modal
 
+    private val _showPostCreation = mutableStateOf(false)
+    override val showPostCreation: State<Boolean> = _showPostCreation
+
+    private val _postMaxLength = mutableStateOf(100)
+    override val postMaxLength: State<Int> = _postMaxLength
+
+    private val _text = mutableStateOf("")
+    override val text: State<String> = _text
+
+    private val _team = mutableStateOf("")
+    override val team: State<String> = _team
+
+    private val _brand = mutableStateOf("")
+    override val brand: State<String> = _brand
+
+    private val _images = mutableStateOf<List<ByteArray>>(emptyList())
+    override val images: State<List<ByteArray>> = _images
+
+    private var _lastTimestamp: Long? = null
+    private var _endReached = false
     private var _navigate: (HomeRoute) -> Unit = {}
-
-    private val getUsers = listOf(
-        User(
-            id = "",
-            email = "",
-            name = "Carolina",
-            lastName = "Fubel",
-            description = "",
-            profileImage = ProfileImage(initials = "CF", background = ErrorLight.toHex()),
-            creationDate = "",
-            userType = USER_TYPE_BASIC,
-            followers = null,
-            following = null,
-            level = 3,
-            country = "Argentina",
-            desires = null,
-        ),
-        User(
-            id = "",
-            email = "",
-            name = "Bizzarap",
-            lastName = "",
-            description = "",
-            profileImage = ProfileImage(
-                image = "https://forbes.es/wp-content/uploads/2022/08/Forbes_ListaCreativos_Web_Bizarrap.jpg",
-                background = "0xFF28A745"
-            ),
-            creationDate = "",
-            userType = USER_TYPE_BASIC,
-            followers = null,
-            following = null,
-            level = 3,
-            country = "Argentina",
-            desires = null,
-        )
-    )
-
-    private fun getPosts(user: User) = listOf(
-        Post(
-            id = "",
-            user = user,
-            date = "25 de enero a las 12:32",
-            text = "Estoy aprendiendo Jetpack Compose \uD83D\uDEAC \uD83D\uDE0E",
-            images = getImages,
-            onClick = { },
-        ),
-        Post(
-            id = "",
-            user = user,
-            date = "22 de enero a las 14:43",
-            text = "Fotonnnn",
-            images = getImages.subList(0, 1),
-            onClick = {},
-        ),
-        Post(
-            id = "",
-            user = getUsers[0],
-            date = "23 de enero a las 18:43",
-            text = "Hoy vi unos girasoles muy amarilloss",
-            images = getImages.subList(1, 2),
-            onClick = {},
-        ),
-        Post(
-            id = "",
-            user = getUsers[0],
-            date = "22 de enero a las 13:21",
-            text = "Que ganas de comer helado",
-            onClick = {},
-        ),
-        Post(
-            id = "",
-            user = getUsers[1],
-            date = "18 de enero a las 18:12",
-            text = "Ojalá Paredes le haga un gol a Brasil \uD83C\uDDE6\uD83C\uDDF7 ⚔\uFE0F \uD83C\uDDE7\uD83C\uDDF7",
-            onClick = {},
-        )
-    )
 
     fun setup(navController: NavHostController) {
         fetchUserInfo()
+        fetchFeed()
         _navigate = { navController.navigate(it) }
     }
 
@@ -146,15 +85,15 @@ class FeedViewModel(
         _navigate(HomeRoute.Setup)
     }
 
-    override fun onImageClicked(actionableImage: ActionableImage) {
-        _openedImage.value = actionableImage
+    override fun onImageClicked(image: String) {
+        _openedImage.value = image
     }
 
     override fun onImageClosed() {
         _openedImage.value = null
     }
 
-    override fun onPostClicked(post: Post) {
+    override fun onPostClicked(post: PostWithUser) {
         _openedPost.value = post
     }
 
@@ -168,21 +107,96 @@ class FeedViewModel(
             profileCreationRepository.fetchProfile(user)
                 .onSuccess { loggedUser ->
                     _user.value = loggedUser
-                    _posts.value = getPosts(loggedUser)
                     preferences.saveUserType(loggedUser.userType)
                 }
                 .onError {
-                    _modal.value = Modal.GenericModal(
-                        image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
-                        title = "Algo salió mal",
-                        subtitle = "Intenta de nuevo más tarde.",
-                        primaryButton = "Entendido",
-                        secondaryButton = null,
+                    _modal.value = Modal.GenericErrorModal(
                         onPrimaryAction = { _modal.value = null },
-                        onSecondaryAction = { },
                         onDismiss = { _modal.value = null },
                     )
                 }
         }
+    }
+
+    override fun fetchFeed() {
+        viewModelScope.launch {
+            postRepository.getFeed(15, _lastTimestamp)
+                .onSuccess { newPosts ->
+                    if (newPosts.isEmpty()) {
+                        if (_posts.value == null) {
+                            _posts.value = newPosts
+                        }
+                        _endReached = true
+                    } else {
+                        _lastTimestamp = newPosts.lastOrNull()?.post?.timestamp
+                        if (_posts.value == null) {
+                            _posts.value = newPosts
+                        } else {
+                            _posts.value = _posts.value?.plus(newPosts)
+                        }
+                    }
+                }
+                .onError {
+                    _modal.value = Modal.GenericErrorModal(
+                        onPrimaryAction = { _modal.value = null },
+                        onDismiss = { _modal.value = null },
+                    )
+                }
+        }
+    }
+
+    override fun createPost() {
+        if (text.value.isEmpty() || team.value.isEmpty() || brand.value.isEmpty()) {
+            _modal.value = Modal.GenericErrorModal(
+                onPrimaryAction = { _modal.value = null },
+                onDismiss = { _modal.value = null },
+            )
+            return
+        }
+        viewModelScope.launch {
+            postRepository.createPost(
+                text = _text.value,
+                images = images.value,
+                team = _team.value,
+                brand = _brand.value,
+            ).onSuccess {
+                onFeedRefreshed()
+            }.onError {
+                _modal.value = Modal.GenericErrorModal(
+                    onPrimaryAction = { _modal.value = null },
+                    onDismiss = { _modal.value = null },
+                )
+            }
+        }
+    }
+
+    override fun showPostCreation() {
+        _showPostCreation.value = true
+    }
+
+    override fun dismissPostCreation() {
+        _showPostCreation.value = false
+    }
+
+    override fun updateText(newText: String) {
+        if (newText.length <= _postMaxLength.value) {
+            _text.value = newText
+        }
+    }
+
+    override fun updateTeam(newTeam: String) {
+        _team.value = newTeam
+    }
+
+    override fun updateBrand(newBrand: String) {
+        _brand.value = newBrand
+    }
+
+    override fun onFeedRefreshed() {
+        _endReached = false
+        _lastTimestamp = null
+        _showPostCreation.value = false
+        _posts.value = null
+        fetchFeed()
     }
 }

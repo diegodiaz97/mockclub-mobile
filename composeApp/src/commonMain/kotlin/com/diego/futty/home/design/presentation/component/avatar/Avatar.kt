@@ -154,6 +154,7 @@ sealed interface Avatar {
                 .padding(top = avatarSize.padding),
             text = initials,
             style = when (avatarSize) {
+                AvatarSize.Atomic -> typography.titleSmall
                 AvatarSize.Small -> typography.titleSmall
                 AvatarSize.Medium -> typography.bodyMedium
                 AvatarSize.Big -> typography.headlineSmall
@@ -167,6 +168,7 @@ sealed interface Avatar {
 }
 
 enum class AvatarSize(val size: Dp, val padding: Dp) {
+    Atomic(size = 22.dp, padding = 2.dp),
     Small(size = 28.dp, padding = 3.dp),
     Medium(size = 36.dp, padding = 8.dp),
     Big(size = 50.dp, padding = 10.dp),

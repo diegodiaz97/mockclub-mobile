@@ -21,9 +21,6 @@ import com.diego.futty.home.feed.domain.model.ProfileImage
 import com.diego.futty.home.feed.domain.model.User
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 
 class SignupViewModel(
     private val signupRepository: SignupRepository,
@@ -129,17 +126,13 @@ class SignupViewModel(
 
     private fun createUser() {
         viewModelScope.launch {
-
-            val today = Clock.System.todayIn(TimeZone.currentSystemDefault()).toString()
-            val date = today.formatFullMonth()
-
             val user = User(
                 id = preferences.getUserId() ?: "",
                 email = preferences.getUserEmail() ?: "",
                 profileImage = ProfileImage(
                     background = getRandomLightColorHex()
                 ),
-                creationDate = date,
+                creationDate = Clock.System.now().toEpochMilliseconds(),
                 userType = USER_TYPE_BASIC,
                 level = 0,
             )
@@ -158,19 +151,6 @@ class SignupViewModel(
                     )
                 }
         }
-    }
-
-    private fun String.formatFullMonth(): String {
-        val localDate = LocalDate.parse(this)
-
-        val meses = listOf(
-            "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
-            "agosto", "septiembre", "octubre", "noviembre", "diciembre"
-        )
-
-        val monthName = meses[localDate.monthNumber - 1]
-
-        return "${localDate.dayOfMonth} de $monthName de ${localDate.year}"
     }
 
     private fun validateButtonEnabled() {

@@ -25,50 +25,64 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.Shimmer
+import com.diego.futty.core.presentation.theme.colorError
+import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey200
+import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey600
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
+import com.diego.futty.core.presentation.utils.getTimeAgoLabel
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
+import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
-import com.diego.futty.home.feed.domain.model.ActionableImage
-import com.diego.futty.home.feed.domain.model.Post
-import com.diego.futty.home.feed.domain.model.ProfileImage
+import com.diego.futty.home.feed.domain.model.User
+import com.diego.futty.home.post.domain.model.Post
+import com.diego.futty.home.post.domain.model.PostWithUser
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Heart
+import compose.icons.tablericons.HeartBroken
+import compose.icons.tablericons.Message
 
 @Composable
-fun Post.Draw() =
-    Column(modifier = Modifier.padding(vertical = 12.dp).clickable { onClick(this) }) {
+fun PostWithUser.Draw(
+    hasLike: Boolean,
+    hasDislike: Boolean,
+    onLiked: () -> Unit,
+    onDisliked: () -> Unit,
+    onImageClick: (image: String) -> Unit,
+    onClick: () -> Unit,
+) =
+    Column(modifier = Modifier.padding(vertical = 12.dp).clickable { onClick() }) {
         PostInformation(
-            profileImage = user.profileImage,
-            name = "${user.name} ${user.lastName}",
-            date = date,
-            verified = user.userType == USER_TYPE_PRO
+            post = post,
+            user = user,
         )
-        if (text != null) {
+        if (post.text.isNotEmpty()) {
             Text(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 8.dp)
                     .fillMaxWidth(),
-                text = text,
+                text = post.text,
                 style = typography.bodyLarge,
                 fontWeight = FontWeight.Normal,
                 color = colorGrey900(),
             )
         }
-        if (images != null) {
-            PostImage(images)
+        if (post.imageUrls.isNotEmpty()) {
+            PostImage(post.imageUrls, onImageClick)
         }
+        PostFooter(post, hasLike, hasDislike, onLiked, onDisliked)
     }
 
 @Composable
 private fun PostInformation(
-    profileImage: ProfileImage?,
-    name: String,
-    date: String,
-    verified: Boolean,
+    post: Post,
+    user: User?,
 ) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -76,30 +90,32 @@ private fun PostInformation(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Avatar.ProfileAvatar(
-            imageUrl = profileImage?.image, // if (image != null) painterResource(image) else null,
-            initials = profileImage?.initials,
-            background = profileImage?.background?.toColor(),
+            imageUrl = user?.profileImage?.image,
+            initials = user?.profileImage?.initials,
+            background = user?.profileImage?.background?.toColor(),
             onClick = { }
         ).Draw()
-        Column(verticalArrangement = Arrangement.SpaceAround) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = name,
+                    text = "${user?.name} ${user?.lastName}",
                     style = typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = colorGrey900()
                 )
-                if (verified) {
+                if (user?.userType == USER_TYPE_PRO) {
                     VerifiedIcon(Modifier.padding(top = 4.dp), size = 16.dp)
                 }
             }
             Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = date,
+                text = post.timestamp.getTimeAgoLabel(),
                 style = typography.bodySmall,
                 fontWeight = FontWeight.Normal,
                 color = colorGrey600()
@@ -111,7 +127,8 @@ private fun PostInformation(
 
 @Composable
 private fun PostImage(
-    images: List<ActionableImage>,
+    images: List<String>,
+    onImageClick: (image: String) -> Unit,
 ) {
     if (images.size > 1) {
         LazyRow(
@@ -120,16 +137,16 @@ private fun PostImage(
             verticalAlignment = Alignment.CenterVertically
         ) {
             item { Spacer(Modifier.width(8.dp)) }
-            images.forEach { image ->
+            images.forEachIndexed { index, image ->
                 item {
                     AsyncImage(
                         modifier = Modifier
                             .size(260.dp)
-                            .clickable { image.onClick(image) }
+                            .clickable { onImageClick(image) }
                             .clip(RoundedCornerShape(12.dp))
                             .background(colorGrey100()),
                         contentDescription = "post list image",
-                        image = image.image
+                        image = image
                     )
                 }
             }
@@ -141,12 +158,103 @@ private fun PostImage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
-                .clickable { image.onClick(image) }
+                .clickable { onImageClick(image) }
                 .clip(RoundedCornerShape(12.dp))
                 .background(colorGrey100()),
             contentDescription = "post single image",
-            image = image.image
+            image = image
         )
+    }
+}
+
+@Composable
+private fun PostFooter(
+    post: Post,
+    hasLike: Boolean,
+    hasDislike: Boolean,
+    onLiked: () -> Unit,
+    onDisliked: () -> Unit,
+) {
+    Row {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp).weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+        )
+        {
+            Avatar.IconAvatar(
+                icon = TablerIcons.Heart,
+                tint = if (hasLike) colorError() else colorGrey500(),
+                background = colorGrey0(),
+                avatarSize = AvatarSize.Atomic,
+                onClick = { onLiked() }
+            ).Draw()
+            Text(
+                text = post.likesCount.toString(),
+                style = typography.bodySmall,
+                fontWeight = FontWeight.Normal,
+                color = if (hasLike) colorError() else colorGrey500(),
+            )
+            Spacer(Modifier.width(8.dp))
+
+            Avatar.IconAvatar(
+                icon = TablerIcons.HeartBroken,
+                tint = if (hasDislike) colorError() else colorGrey500(),
+                background = colorGrey0(),
+                avatarSize = AvatarSize.Atomic,
+                onClick = { onDisliked() }
+            ).Draw()
+            Text(
+                text = post.dislikesCount.toString(),
+                style = typography.bodySmall,
+                fontWeight = FontWeight.Normal,
+                color = if (hasDislike) colorError() else colorGrey500(),
+            )
+            Spacer(Modifier.width(8.dp))
+
+            Avatar.IconAvatar(
+                icon = TablerIcons.Message,
+                tint = colorGrey500(),
+                background = colorGrey0(),
+                avatarSize = AvatarSize.Atomic,
+                onClick = { }
+            ).Draw()
+            Text(
+                text = post.commentsCount.toString(),
+                style = typography.bodySmall,
+                fontWeight = FontWeight.Normal,
+                color = colorGrey500()
+            )
+        }
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(colorGrey500())
+                .padding(horizontal = 6.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End,
+        )
+        {
+            Text(
+                text = post.team,
+                style = typography.bodySmall,
+                fontWeight = FontWeight.SemiBold,
+                color = colorGrey100()
+            )
+            Text(
+                text = " x ",
+                style = typography.bodySmall,
+                fontWeight = FontWeight.Normal,
+                color = colorGrey200()
+            )
+            Text(
+                text = post.brand,
+                style = typography.bodySmall,
+                fontWeight = FontWeight.SemiBold,
+                color = colorGrey100()
+            )
+            Spacer(Modifier.height(4.dp))
+        }
     }
 }
 

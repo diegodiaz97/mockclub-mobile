@@ -36,7 +36,15 @@ import com.diego.futty.home.match.data.network.RemoteLiveScoresDataSource
 import com.diego.futty.home.match.data.repository.LiveScoresRepositoryImpl
 import com.diego.futty.home.match.domain.LiveScoresRepository
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
+import com.diego.futty.home.post.data.network.KtorRemotePostDataSource
+import com.diego.futty.home.post.data.network.RemotePostDataSource
+import com.diego.futty.home.post.data.repository.PostRepositoryImpl
+import com.diego.futty.home.post.domain.repository.PostRepository
 import com.diego.futty.home.view.HomeViewModel
+import com.diego.futty.setup.profile.data.network.KtorRemoteProfileDataSource
+import com.diego.futty.setup.profile.data.network.RemoteProfileDataSource
+import com.diego.futty.setup.profile.data.repository.ProfileRepositoryImpl
+import com.diego.futty.setup.profile.domain.repository.ProfileRepository
 import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
 import com.diego.futty.setup.settings.data.network.KtorRemoteLogoutDataSource
 import com.diego.futty.setup.settings.data.network.RemoteLogoutDataSource
@@ -49,10 +57,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import com.diego.futty.setup.profile.data.repository.ProfileRepositoryImpl
-import com.diego.futty.setup.profile.domain.repository.ProfileRepository
-import com.diego.futty.setup.profile.data.network.RemoteProfileDataSource
-import com.diego.futty.setup.profile.data.network.KtorRemoteProfileDataSource
 
 expect val platformModule: Module
 
@@ -93,6 +97,11 @@ val sharedModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::DesignViewModel)
     viewModelOf(::FeedViewModel)
+
+    // Post
+    singleOf(::KtorRemotePostDataSource).bind<RemotePostDataSource>()
+    singleOf(::PostRepositoryImpl).bind<PostRepository>()
+    //viewModelOf(::HomeViewModel)
 
     // Profile
     singleOf(::KtorRemoteProfileDataSource).bind<RemoteProfileDataSource>()

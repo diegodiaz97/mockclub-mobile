@@ -1,6 +1,5 @@
 package com.diego.futty.authentication.profileCreation.domain.repository
 
-import androidx.compose.ui.graphics.ImageBitmap
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
 import com.diego.futty.home.feed.domain.model.User

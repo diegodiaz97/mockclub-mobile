@@ -79,6 +79,7 @@ kotlin {
                 implementation(libs.maplibre.compose)
                 implementation(libs.reveal.core)
                 implementation(libs.reveal.shapes)
+                implementation("dev.materii.pullrefresh:pullrefresh:1.3.0")
             }
         }
 

@@ -17,6 +17,8 @@ import com.diego.futty.core.presentation.theme.SuccessLight
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.design.presentation.component.chip.ChipModel
 import com.diego.futty.home.feed.domain.model.User
+import com.diego.futty.home.post.domain.model.PostWithUser
+import com.diego.futty.home.post.domain.repository.PostRepository
 import com.diego.futty.setup.profile.domain.repository.ProfileRepository
 import com.diego.futty.setup.view.SetupRoute
 import compose.icons.TablerIcons
@@ -35,6 +37,7 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val profileCreationRepository: ProfileCreationRepository,
     private val profileRepository: ProfileRepository,
+    private val postRepository: PostRepository,
     private val preferences: UserPreferences,
 ) : ProfileViewContract, ViewModel() {
 
@@ -118,7 +121,10 @@ class ProfileViewModel(
     private val _selectedChips = mutableStateOf<List<ChipModel>>(emptyList())
     override val selectedChips: State<List<ChipModel>> = _selectedChips
 
-    private val _postsCant = mutableStateOf<Int?>(0) // set to default = null when i have real posts
+    private val _posts = mutableStateOf<List<PostWithUser>?>(null)
+    override val posts: State<List<PostWithUser>?> = _posts
+
+    private val _postsCant = mutableStateOf<Int?>(null)
     override val postsCant: State<Int?> = _postsCant
 
     private val _followersCant = mutableStateOf<Int?>(null)
@@ -133,9 +139,17 @@ class ProfileViewModel(
     private val _followingUser = mutableStateOf(false)
     override val followingUser: State<Boolean> = _followingUser
 
+    private val _openedPost = mutableStateOf<PostWithUser?>(null)
+    override val openedPost: State<PostWithUser?> = _openedPost
+
+    private val _isRefreshing = mutableStateOf(false)
+    override val isRefreshing: State<Boolean> = _isRefreshing
+
     private val _modal = mutableStateOf<Modal?>(null)
     override val modal: State<Modal?> = _modal
 
+    private var _lastTimestamp: Long? = null
+    private var _endReached = false
     private val _bitmapImage = mutableStateOf<ImageBitmap?>(null)
     private val _byteArrayImage = mutableStateOf<ByteArray?>(null)
     private var _navigate: (SetupRoute) -> Unit = {}
@@ -151,6 +165,7 @@ class ProfileViewModel(
         _navigate = { navController.navigate(it) }
         _back = onBack
         fetchUserInfo()
+        fetchOwnFeed()
         setupFollowers()
     }
 
@@ -227,8 +242,65 @@ class ProfileViewModel(
         }
     }
 
+    override fun fetchOwnFeed() {
+        viewModelScope.launch {
+            val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
+            postRepository.getPostsByUser(user, 15, _lastTimestamp)
+                .onSuccess { newPosts ->
+                    if (newPosts.isEmpty()) {
+                        if (_posts.value == null) {
+                            _posts.value = newPosts
+                        }
+                        _endReached = true
+                    } else {
+                        _lastTimestamp = newPosts.lastOrNull()?.post?.timestamp
+                        if (_posts.value == null) {
+                            _posts.value = newPosts
+                        } else {
+                            _posts.value = _posts.value?.plus(newPosts)
+                        }
+                    }
+                }
+                .onError {
+                    _modal.value = Modal.GenericErrorModal(
+                        onPrimaryAction = { _modal.value = null },
+                        onDismiss = { _modal.value = null },
+                    )
+                }
+        }
+    }
+
+    private fun countPosts() {
+        val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
+        viewModelScope.launch {
+            postRepository.countPosts(userId = user)
+                .onSuccess {
+                    _postsCant.value = it
+                }
+                .onError {
+                    // SHOW ERROR
+                }
+        }
+    }
+
+    override fun onPostClicked(post: PostWithUser) {
+        _openedPost.value = post
+    }
+
+    override fun onPostClosed() {
+        _openedPost.value = null
+    }
+
+    override fun onFeedRefreshed() {
+        _endReached = false
+        _lastTimestamp = null
+        _posts.value = null
+        fetchOwnFeed()
+    }
+
     private fun setupFollowers() {
         val user = _userId.value
+        countPosts()
         countFollowers()
         countFollows()
         if (user.isNotEmpty()) {
@@ -254,14 +326,8 @@ class ProfileViewModel(
                     _followingUser.value = true
                 }
                 .onError {
-                    _modal.value = Modal.GenericModal(
-                        image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
-                        title = "Algo salió mal",
-                        subtitle = "Intenta de nuevo más tarde.",
-                        primaryButton = "Entendido",
-                        secondaryButton = null,
+                    _modal.value = Modal.GenericErrorModal(
                         onPrimaryAction = { _modal.value = null },
-                        onSecondaryAction = { },
                         onDismiss = { _modal.value = null },
                     )
                 }
@@ -277,14 +343,8 @@ class ProfileViewModel(
                     _followingUser.value = false
                 }
                 .onError {
-                    _modal.value = Modal.GenericModal(
-                        image = "https://cdn3d.iconscout.com/3d/free/thumb/free-warning-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--alert-error-danger-sign-user-interface-pack-illustrations-4715732.png",
-                        title = "Algo salió mal",
-                        subtitle = "Intenta de nuevo más tarde.",
-                        primaryButton = "Entendido",
-                        secondaryButton = null,
+                    _modal.value = Modal.GenericErrorModal(
                         onPrimaryAction = { _modal.value = null },
-                        onSecondaryAction = { },
                         onDismiss = { _modal.value = null },
                     )
                 }
