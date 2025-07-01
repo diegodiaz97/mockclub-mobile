@@ -98,4 +98,8 @@ fastlane/test_output
 
 iOSInjectionProject/
 
+# CocoaPods
+iosApp/Pods/
+iosApp/Podfile.lock
+
 # End of https://www.toptal.com/developers/gitignore/api/swift
