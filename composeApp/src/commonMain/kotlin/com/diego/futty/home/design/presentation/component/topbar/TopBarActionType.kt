@@ -24,6 +24,8 @@ import com.diego.futty.home.design.presentation.component.avatar.Avatar
 sealed class TopBarActionType {
     class Button(
         private val text: String,
+        private val textColor: Color? = null,
+        private val background: Color? = null,
         private val onClick: () -> Unit
     ) : TopBarActionType() {
         @Composable
@@ -32,9 +34,9 @@ sealed class TopBarActionType {
                 modifier = Modifier
                     .clip(CircleShape)
                     .clickable { onClick() }
-                    .background(colorGrey100())
+                    .background(background ?: colorGrey100())
                     .padding(horizontal = 12.dp, vertical = 8.dp),
-                color = colorGrey900(),
+                color = textColor ?: colorGrey900(),
                 style = typography.labelLarge,
                 text = text
             )

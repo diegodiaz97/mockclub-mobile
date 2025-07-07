@@ -3,6 +3,7 @@ package com.diego.futty.home.design.presentation.component.topbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,22 +35,15 @@ fun TopBar(
     onBack: (() -> Unit)? = null,
     topBarActionType: TopBarActionType = TopBarActionType.None,
 ) {
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .background(colorGrey0())
             .padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        contentAlignment = Alignment.Center
     ) {
-        if (onBack != null) {
-            TopBarIcon(TablerIcons.ArrowLeft, onBack)
-        } else {
-            Spacer(Modifier.width(36.dp))
-        }
-
         Text(
-            modifier = Modifier.weight(1f).padding(bottom = 2.dp),
+            modifier = Modifier.padding(bottom = 2.dp),
             text = title,
             textAlign = TextAlign.Center,
             style = typography.titleMedium,
@@ -57,7 +51,19 @@ fun TopBar(
             color = colorGrey900()
         )
 
-        topBarActionType.Draw()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (onBack != null) {
+                TopBarIcon(TablerIcons.ArrowLeft, onBack)
+            } else {
+                Spacer(Modifier.width(36.dp))
+            }
+
+            topBarActionType.Draw()
+        }
     }
 }
 
