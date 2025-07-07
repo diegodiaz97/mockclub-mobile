@@ -9,11 +9,9 @@ interface SignupViewContract {
     val confirmPassword: State<String>
     val banner: State<Banner?>
     val canCreateAccount: State<Boolean>
-    val hideKeyboard: State<Boolean>
     fun updateEmail(email: String)
     fun updatePassword(password: String)
     fun updateConfirmPassword(password: String)
     fun onSignupClicked()
     fun onBackClicked()
-    fun hideKeyboard()
 }

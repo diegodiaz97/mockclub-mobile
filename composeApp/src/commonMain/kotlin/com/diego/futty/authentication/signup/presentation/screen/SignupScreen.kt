@@ -1,7 +1,6 @@
 package com.diego.futty.authentication.signup.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.diego.futty.authentication.signup.presentation.viewmodel.SignupViewModel
 import com.diego.futty.core.presentation.theme.colorGrey0
-import com.diego.futty.core.presentation.utils.HideKeyboard
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.input.TextInput
@@ -29,7 +27,7 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBarActionTyp
 fun SignupScreen(viewModel: SignupViewModel) {
     Scaffold(
         containerColor = colorGrey0(),
-        modifier = Modifier.fillMaxSize().clickable { viewModel.hideKeyboard() },
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopBar(
                 modifier = Modifier
@@ -72,7 +70,6 @@ private fun SignupContent(viewModel: SignupViewModel, paddingValues: PaddingValu
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .clickable { viewModel.hideKeyboard() }
             .padding(top = paddingValues.calculateTopPadding())
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
@@ -81,28 +78,25 @@ private fun SignupContent(viewModel: SignupViewModel, paddingValues: PaddingValu
         TextInput.Input(
             input = viewModel.email.value,
             label = "Email",
-            onFocusChanged = { viewModel.hideKeyboard() },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateEmail(it) }
         ).Draw()
 
         TextInput.PasswordInput(
             input = viewModel.password.value,
-            onFocusChanged = { viewModel.hideKeyboard() },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updatePassword(it) }
         ).Draw()
 
         TextInput.PasswordInput(
             input = viewModel.confirmPassword.value,
             label = "Repetir contraseña",
-            onFocusChanged = { viewModel.hideKeyboard() },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateConfirmPassword(it) }
         ).Draw()
 
         AnimatedVisibility(viewModel.banner.value != null) {
             viewModel.banner.value?.Draw()
         }
-    }
-    if (viewModel.hideKeyboard.value) {
-        HideKeyboard()
     }
 }

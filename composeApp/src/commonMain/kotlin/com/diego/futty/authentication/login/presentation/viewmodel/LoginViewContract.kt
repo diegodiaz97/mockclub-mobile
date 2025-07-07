@@ -8,12 +8,10 @@ interface LoginViewContract {
     val password: State<String>
     val banner: State<Banner?>
     val canLogin: State<Boolean>
-    val hideKeyboard: State<Boolean>
     fun onBackClicked()
     fun updateEmail(email: String)
     fun updatePassword(password: String)
     fun onLoginClicked()
     fun onSignupClicked()
     fun onRecoveryClicked()
-    fun hideKeyboard()
 }

@@ -30,9 +30,6 @@ class LoginViewModel(
     private val _canLogin = mutableStateOf(false)
     override val canLogin: State<Boolean> = _canLogin
 
-    private val _hideKeyboard = mutableStateOf(true)
-    override val hideKeyboard: State<Boolean> = _hideKeyboard
-
     private var _navigate: (AuthenticationRoute) -> Unit = {}
     private var _back: () -> Unit = {}
     private var _onLogin: () -> Unit = {}
@@ -49,10 +46,6 @@ class LoginViewModel(
 
     override fun onBackClicked() {
         _back()
-    }
-
-    override fun hideKeyboard() {
-        _hideKeyboard.value = _hideKeyboard.value.not()
     }
 
     override fun updateEmail(email: String) {

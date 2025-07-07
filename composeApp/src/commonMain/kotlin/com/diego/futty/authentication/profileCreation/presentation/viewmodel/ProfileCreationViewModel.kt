@@ -58,9 +58,6 @@ class ProfileCreationViewModel(
     private val _canContinue = mutableStateOf(true)
     override val canContinue: State<Boolean> = _canContinue
 
-    private val _hideKeyboard = mutableStateOf(true)
-    override val hideKeyboard: State<Boolean> = _hideKeyboard
-
     private val _user = mutableStateOf<User?>(null)
     override val user: State<User?> = _user
 
@@ -81,10 +78,6 @@ class ProfileCreationViewModel(
                 else -> navController.popBackStack()
             }
         }
-    }
-
-    override fun hideKeyboard() {
-        _hideKeyboard.value = _hideKeyboard.value.not()
     }
 
     override fun updateName(name: String) {

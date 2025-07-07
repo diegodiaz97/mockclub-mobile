@@ -43,9 +43,6 @@ class SignupViewModel(
     private val _canCreateAccount = mutableStateOf(false)
     override val canCreateAccount: State<Boolean> = _canCreateAccount
 
-    private val _hideKeyboard = mutableStateOf(true)
-    override val hideKeyboard: State<Boolean> = _hideKeyboard
-
     private var _navigate: () -> Unit = {}
     private var _back: () -> Unit = {}
 
@@ -56,10 +53,6 @@ class SignupViewModel(
             }
         }
         _back = { navController.popBackStack() }
-    }
-
-    override fun hideKeyboard() {
-        _hideKeyboard.value = _hideKeyboard.value.not()
     }
 
     override fun updateEmail(email: String) {

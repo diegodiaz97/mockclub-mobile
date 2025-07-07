@@ -2,7 +2,6 @@ package com.diego.futty.authentication.profileCreation.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -48,7 +47,6 @@ import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
-import com.diego.futty.core.presentation.utils.HideKeyboard
 import com.diego.futty.core.presentation.utils.PlatformInfo
 import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
@@ -76,7 +74,7 @@ import kotlinx.coroutines.withContext
 fun ProfileCreationScreen(viewModel: ProfileCreationViewModel) {
     Scaffold(
         containerColor = colorGrey0(),
-        modifier = Modifier.fillMaxSize().clickable { viewModel.hideKeyboard() },
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopBar(
                 modifier = Modifier
@@ -117,7 +115,6 @@ private fun ProfileCreationContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .clickable { viewModel.hideKeyboard() }
             .padding(top = paddingValues.calculateTopPadding())
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
@@ -130,7 +127,7 @@ private fun ProfileCreationContent(
             input = viewModel.name.value,
             label = "Nombre",
             placeholder = viewModel.name.value,
-            onFocusChanged = { viewModel.hideKeyboard() },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateName(it) }
         ).Draw()
 
@@ -138,7 +135,7 @@ private fun ProfileCreationContent(
             input = viewModel.lastName.value,
             label = "Apellido",
             placeholder = viewModel.lastName.value,
-            onFocusChanged = { viewModel.hideKeyboard() },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateLastName(it) }
         ).Draw()
 
@@ -146,7 +143,7 @@ private fun ProfileCreationContent(
             input = viewModel.description.value,
             label = "Descripción (opcional)",
             placeholder = viewModel.description.value,
-            onFocusChanged = { viewModel.hideKeyboard() },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateDescription(it) }
         ).Draw()
 
@@ -154,17 +151,13 @@ private fun ProfileCreationContent(
             input = viewModel.country.value,
             label = "Nacionalidad",
             placeholder = viewModel.country.value,
-            onFocusChanged = { viewModel.hideKeyboard() },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateCountry(it) }
         ).Draw()
 
         AnimatedVisibility(viewModel.banner.value != null) {
             viewModel.banner.value?.Draw()
         }
-    }
-
-    if (viewModel.hideKeyboard.value) {
-        HideKeyboard()
     }
 }
 

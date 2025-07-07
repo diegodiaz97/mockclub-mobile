@@ -84,7 +84,7 @@ fun SearchInput(viewModel: DesignViewModel) {
             modifier = Modifier.weight(1f),
             input = viewModel.searchText.collectAsState().value,
             placeholder = "Buscar",
-            onFocusChanged = { /*viewModel.hideKeyboard()*/ },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateSearch(it) }
         ).Draw()
         Avatar.IconAvatar(

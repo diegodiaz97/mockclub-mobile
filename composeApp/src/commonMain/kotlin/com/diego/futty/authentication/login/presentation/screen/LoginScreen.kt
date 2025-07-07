@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.diego.futty.authentication.login.presentation.viewmodel.LoginViewModel
 import com.diego.futty.core.presentation.theme.colorGrey0
-import com.diego.futty.core.presentation.utils.HideKeyboard
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.input.TextInput
@@ -29,7 +28,7 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBarActionTyp
 fun LoginScreen(viewModel: LoginViewModel) {
     Scaffold(
         containerColor = colorGrey0(),
-        modifier = Modifier.fillMaxSize().clickable { viewModel.hideKeyboard() },
+        modifier = Modifier.fillMaxSize().clickable { },
         topBar = {
             TopBar(
                 modifier = Modifier
@@ -73,7 +72,6 @@ private fun LoginContent(viewModel: LoginViewModel, paddingValues: PaddingValues
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .clickable { viewModel.hideKeyboard() }
             .padding(top = paddingValues.calculateTopPadding())
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
@@ -82,21 +80,18 @@ private fun LoginContent(viewModel: LoginViewModel, paddingValues: PaddingValues
         TextInput.Input(
             input = viewModel.email.value,
             label = "Email",
-            onFocusChanged = { viewModel.hideKeyboard() },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateEmail(it) }
         ).Draw()
 
         TextInput.PasswordInput(
             input = viewModel.password.value,
-            onFocusChanged = { viewModel.hideKeyboard() },
+            onFocusChanged = { },
             onTextChangeAction = { viewModel.updatePassword(it) }
         ).Draw()
 
         AnimatedVisibility(viewModel.banner.value != null) {
             viewModel.banner.value?.Draw()
         }
-    }
-    if (viewModel.hideKeyboard.value) {
-        HideKeyboard()
     }
 }
