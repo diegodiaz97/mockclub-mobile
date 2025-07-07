@@ -24,7 +24,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -49,6 +51,7 @@ sealed interface TextInput {
         val label: String? = null,
         val maxLength: Int? = null,
         val placeholder: String = "",
+        val background: Color? = null,
         val onTextChangeAction: (String) -> Unit,
         val onFocusChanged: () -> Unit,
     ) : TextInput {
@@ -81,7 +84,7 @@ sealed interface TextInput {
                              color = colorGrey300(),
                              shape = RoundedCornerShape(12.dp)
                          )*/
-                        .background(colorGrey100())
+                        .background(background ?: colorGrey100())
                         .focusRequester(focusRequester)
                         .onFocusChanged { isFocused.value = it.hasFocus },
                     contentAlignment = Alignment.CenterStart
@@ -152,19 +155,14 @@ sealed interface TextInput {
         val input: String,
         val placeholder: String = "",
         val onTextChangeAction: (String) -> Unit,
-        val onFocusChanged: () -> Unit,
     ) : TextInput {
         @Composable
         override fun Draw() {
             val focusRequester = remember { FocusRequester() }
-            val isFocused = remember { mutableStateOf(true) }
 
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester)
-                    .onFocusChanged { isFocused.value = it.hasFocus },
-                contentAlignment = Alignment.CenterStart
+                modifier = modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopStart
             ) {
                 if (input.isEmpty()) {
                     Text(
@@ -192,7 +190,6 @@ sealed interface TextInput {
                             .weight(1f)
                             .padding(end = 4.dp)
                             .focusRequester(focusRequester)
-                            .onFocusChanged { isFocused.value = it.hasFocus }
                     )
 
                     if (input.isNotEmpty()) {
@@ -210,6 +207,7 @@ sealed interface TextInput {
 
     class PasswordInput(
         val input: String,
+        val label: String? = null,
         val onTextChangeAction: (String) -> Unit,
         val placeholder: String = "",
         val onFocusChanged: () -> Unit,
@@ -224,7 +222,7 @@ sealed interface TextInput {
 
             Column(modifier = Modifier) {
                 Text(
-                    text = "Contraseña",
+                    text = label ?: "Contraseña",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 4.dp),
