@@ -71,6 +71,78 @@ fun CircularProgressBar(
     var progressIndicator by remember { mutableStateOf(0F) }
     val progressAnimDuration = 1_500
     val progressAnimation by animateFloatAsState(
+        targetValue = progressIndicator,
+        animationSpec = tween(durationMillis = progressAnimDuration, easing = FastOutSlowInEasing),
+    )
+    LaunchedEffect(true) {
+        progressIndicator = progress
+    }
+
+    Box {
+        CircularProgressIndicator(
+            modifier = modifier.size(size.size),
+            progress = { progressAnimation }, /* 0.0f a 1.0f*/
+            color = color,
+            trackColor = colorGrey100(),
+            gapSize = (-15).dp,
+            strokeCap = StrokeCap.Round,
+            strokeWidth = size.stroke,
+        )
+        Text(
+            modifier = modifier.align(Alignment.Center),
+            text = text,
+            style = when (size) {
+                CircularProgressSize.Small -> typography.labelSmall
+                CircularProgressSize.Medium -> typography.labelSmall
+                CircularProgressSize.Big -> typography.bodyMedium
+            },
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+            color = colorGrey900()
+        )
+    }
+}
+
+@Composable
+fun DynamicLinearProgressBar(
+    modifier: Modifier = Modifier,
+    progress: Float,
+    color: Color = colorSuccessLight()
+) {
+    var progressIndicator by remember { mutableStateOf(0F) }
+    val progressAnimDuration = 1_500
+    val progressAnimation by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(durationMillis = progressAnimDuration, easing = FastOutSlowInEasing),
+    )
+    LaunchedEffect(true) {
+        progressIndicator = progress
+    }
+
+    LinearProgressIndicator(
+        modifier = modifier
+            .clip(RoundedCornerShape(4.dp))
+            .height(6.dp)
+            .fillMaxSize(),
+        progress = { progressAnimation }, /* 0.0f a 1.0f*/
+        color = color,
+        trackColor = colorGrey100(),
+        gapSize = (-15).dp,
+        strokeCap = StrokeCap.Round
+    ) { }
+}
+
+@Composable
+fun DynamicCircularProgressBar(
+    modifier: Modifier = Modifier,
+    progress: Float,
+    text: String = "",
+    size: CircularProgressSize = CircularProgressSize.Medium,
+    color: Color = colorSuccessLight()
+) {
+    var progressIndicator by remember { mutableStateOf(0F) }
+    val progressAnimDuration = 1_500
+    val progressAnimation by animateFloatAsState(
         targetValue = progress,//progressIndicator,
         animationSpec = tween(durationMillis = progressAnimDuration, easing = FastOutSlowInEasing),
     )
@@ -93,7 +165,8 @@ fun CircularProgressBar(
             text = text,
             style = when (size) {
                 CircularProgressSize.Small -> typography.labelSmall
-                CircularProgressSize.Medium -> typography.bodyMedium
+                CircularProgressSize.Medium -> typography.labelSmall
+                CircularProgressSize.Big -> typography.bodyMedium
             },
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
@@ -103,7 +176,8 @@ fun CircularProgressBar(
 }
 
 enum class CircularProgressSize(val size: Dp, val stroke: Dp) {
-    Small(size = 46.dp, stroke = 8.dp),
-    Medium(size = 90.dp, stroke = 12.dp)
+    Small(size = 28.dp, stroke = 4.dp),
+    Medium(size = 46.dp, stroke = 8.dp),
+    Big(size = 90.dp, stroke = 12.dp)
 }
 

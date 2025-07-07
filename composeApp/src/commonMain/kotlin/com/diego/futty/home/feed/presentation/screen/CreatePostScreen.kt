@@ -66,8 +66,8 @@ import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.chip.Chip
 import com.diego.futty.home.design.presentation.component.input.TextInput
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
-import com.diego.futty.home.design.presentation.component.progressbar.CircularProgressBar
 import com.diego.futty.home.design.presentation.component.progressbar.CircularProgressSize
+import com.diego.futty.home.design.presentation.component.progressbar.DynamicCircularProgressBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.home.feed.domain.model.User
@@ -295,7 +295,7 @@ private fun PostFooter(viewModel: PostViewModel) {
             val progress =
                 viewModel.text.value.length.toFloat() / viewModel.postMaxLength.value.toFloat()
 
-            CircularProgressBar(
+            DynamicCircularProgressBar(
                 progress = progress,
                 size = CircularProgressSize.Small,
                 text = difference.toInt().toString(),
@@ -472,7 +472,7 @@ fun AddTags(
                 input = newTag,
                 placeholder = "Agregar tag (máximo 12 caracteres)",
                 background = colorGrey0(),
-                onFocusChanged = { /*viewModel.hideKeyboard()*/ },
+                onFocusChanged = { },
                 onTextChangeAction = {
                     if (it.length <= 12) {
                         newTag = it.lowercase().trim()
