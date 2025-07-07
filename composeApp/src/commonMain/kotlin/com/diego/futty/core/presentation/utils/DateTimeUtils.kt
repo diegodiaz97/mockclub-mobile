@@ -1,10 +1,11 @@
 package com.diego.futty.core.presentation.utils
 
+import com.diego.futty.core.data.local.UserPreferences
+import com.diego.futty.core.data.local.provideSettings
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toLocalDateTime
 
 fun Long.getFullMonthLabel(): String {
@@ -24,32 +25,30 @@ fun Long.getTimeLabel(): String {
 }
 
 fun Long.getTimeAgoLabel(): String {
-    val now = Clock.System.now()
-    val past = Instant.fromEpochMilliseconds(this)
+    val preferences = UserPreferences(provideSettings())
+    val delta = preferences.getServerTimeDelta()
+    val nowMillis = Clock.System.now().toEpochMilliseconds() + (delta ?: 0L)
 
-    val nowDateTime = now.toLocalDateTime(TimeZone.currentSystemDefault())
-    val pastDateTime = past.toLocalDateTime(TimeZone.currentSystemDefault())
+    val pastInstant = Instant.fromEpochMilliseconds(this)
+    val nowInstant =  Instant.fromEpochMilliseconds(nowMillis)
 
-    val totalMinutes = (now.epochSeconds - past.epochSeconds) / 60
-    val totalHours = totalMinutes / 60
-    val totalDays = pastDateTime.date.daysUntil(nowDateTime.date)
-    val totalMonths = nowDateTime.date.monthNumber - pastDateTime.date.monthNumber +
-            (nowDateTime.date.year - pastDateTime.date.year) * 12
-    val totalYears = nowDateTime.date.year - pastDateTime.date.year
+    val duration = nowInstant - pastInstant
+    val minutes = duration.inWholeMinutes
+    val hours = duration.inWholeHours
+    val days = duration.inWholeDays
 
     return when {
-        totalMinutes < 1 -> "Hace menos de un minuto"
-        totalMinutes < 60 -> "Hace $totalMinutes ${if (totalMinutes == 1L) "minuto" else "minutos"}"
-        totalHours < 24 -> "Hace $totalHours ${if (totalHours == 1L) "hora" else "horas"}"
-        totalDays == 1 -> "Ayer a las ${
-            pastDateTime.time.hour.toString().padStart(2, '0')
-        }:${pastDateTime.time.minute.toString().padStart(2, '0')}"
-
-        totalDays in 2..6 -> "Hace $totalDays días"
-        totalDays in 7..27 -> "Hace ${totalDays / 7} semanas"
-        totalMonths in 1..11 -> "Hace $totalMonths ${if (totalMonths == 1) "mes" else "meses"}"
-        totalYears >= 1 -> "Hace $totalYears ${if (totalYears == 1) "año" else "años"}"
-        else -> "Hace un momento"
+        minutes < 1 -> "Hace menos de un minuto"
+        minutes < 60 -> "Hace $minutes ${if (minutes == 1L) "minuto" else "minutos"}"
+        hours < 24 -> "Hace $hours ${if (hours == 1L) "hora" else "horas"}"
+        days == 1L -> {
+            val time = pastInstant.toLocalDateTime(TimeZone.currentSystemDefault()).time
+            "Ayer a las ${time.hour.toString().padStart(2, '0')}:${time.minute.toString().padStart(2, '0')}"
+        }
+        days < 7 -> "Hace $days días"
+        days < 30 -> "Hace ${days / 7} semanas"
+        days < 365 -> "Hace ${days / 30} meses"
+        else -> "Hace ${days / 365} años"
     }
 }
 
