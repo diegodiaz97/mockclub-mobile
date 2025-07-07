@@ -28,6 +28,8 @@ fun FuttyTheme(
 }
 
 internal val DayColorScheme = lightColorScheme(
+    primary = Primary,
+    secondary = Secondary,
     surface = Success,
     surfaceContainer = SuccessLight,
     onSurface = SuccessDark,
@@ -57,6 +59,8 @@ internal val DayColorScheme = lightColorScheme(
 )
 
 internal val NightColorScheme = darkColorScheme(
+    primary = NightPrimary,
+    secondary = NightSecondary,
     surface = NightSuccess,
     surfaceContainer = NightSuccessLight,
     onSurface = NightSuccessDark,

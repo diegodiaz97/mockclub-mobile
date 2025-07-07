@@ -3,6 +3,9 @@ package com.diego.futty.core.presentation.theme
 import androidx.compose.ui.graphics.Color
 // Light theme
 
+val Primary = Color(0XFFB2456E)
+val Secondary = Color(0XFF499C9F)
+
 val Success = Color(0xFF28A745)
 val SuccessLight = Color(0xFF71D88A)
 val SuccessDark = Color(0xFF1E7E34)
@@ -19,19 +22,10 @@ val Info = Color(0xFF17A2B8)
 val InfoLight = Color(0xFF69D2E7)
 val InfoDark = Color(0xFF0C5460)
 
-
-val Grey0 = Color(0xFFFFFFFF)
-val Grey100 = Color(0xFFF5F5F5)
-val Grey200 = Color(0xFFE0E0E0)
-val Grey300 = Color(0xFFBFBFBF)
-val Grey400 = Color(0xFF999999)
-val Grey500 = Color(0xFF666666)
-val Grey600 = Color(0xFF4D4D4D)
-val Grey700 = Color(0xFF333333)
-val Grey800 = Color(0xFF1A1A1A)
-val Grey900 = Color(0xFF000000)
-
 // Dark theme
+
+val NightPrimary = Color(0XFFD8779D)
+val NightSecondary = Color(0XFF75C7C9)
 
 val NightSuccess = Color(0xFF20C977)
 val NightSuccessLight = Color(0xFF4DD89A)
@@ -48,3 +42,16 @@ val NightAlertDark = Color(0xFF8C6D00)
 val NightInfo = Color(0xFF1294B8)
 val NightInfoLight = Color(0xFF5BC2DA)
 val NightInfoDark = Color(0xFF0A4E5D)
+
+// Grey scale
+
+val Grey0 = Color(0xFFFFFFFF)
+val Grey100 = Color(0xFFF5F5F5)
+val Grey200 = Color(0xFFE0E0E0)
+val Grey300 = Color(0xFFBFBFBF)
+val Grey400 = Color(0xFF999999)
+val Grey500 = Color(0xFF666666)
+val Grey600 = Color(0xFF4D4D4D)
+val Grey700 = Color(0xFF333333)
+val Grey800 = Color(0xFF1A1A1A)
+val Grey900 = Color(0xFF000000)

@@ -3,8 +3,13 @@ package com.diego.futty.core.presentation.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import kotlin.random.Random
+
+@Composable
+internal fun colorPrimary() = MaterialTheme.colorScheme.primary
+
+@Composable
+internal fun colorSecondary() = MaterialTheme.colorScheme.secondary
 
 @Composable
 internal fun colorSuccess() = MaterialTheme.colorScheme.surface
@@ -72,24 +77,6 @@ internal fun colorGrey800() = MaterialTheme.colorScheme.onErrorContainer
 @Composable
 internal fun colorGrey900() = MaterialTheme.colorScheme.outline
 
-fun Color.toHex(includeAlpha: Boolean = false): String {
-    val colorInt = this.toArgb()
-    val alpha = (colorInt shr 24) and 0xFF
-    val red = (colorInt shr 16) and 0xFF
-    val green = (colorInt shr 8) and 0xFF
-    val blue = colorInt and 0xFF
-
-    return buildString {
-        append("#")
-        if (includeAlpha) {
-            append(alpha.toString(16).padStart(2, '0'))
-        }
-        append(red.toString(16).padStart(2, '0'))
-        append(green.toString(16).padStart(2, '0'))
-        append(blue.toString(16).padStart(2, '0'))
-    }.uppercase()
-}
-
 @Composable
 fun String.toColor(): Color {
     val hex = this.trim().removePrefix("#").removePrefix("0x")
@@ -112,14 +99,6 @@ fun String.toColor(): Color {
 
 fun getRandomLightColorHex(): String {
     val colors = listOf("0xFF71D88A", "0xFFF28B92", "0xFFFFE17A", "0xFF69D2E7")
-    val index = Random.nextInt(4)
-
-    return colors[index]
-}
-
-@Composable
-fun GetRandomLightColor(): Color {
-    val colors = listOf(colorSuccessLight(), colorErrorLight(), colorAlertLight(), colorInfoLight())
     val index = Random.nextInt(4)
 
     return colors[index]

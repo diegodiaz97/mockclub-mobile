@@ -27,6 +27,8 @@ fun Chip(
     icon: ImageVector? = null,
     text: String,
     color: Color,
+    unselectedColor: Color? = null,
+    selectedTextColor: Color? = null,
     isSelected: Boolean,
     onClick: () -> Unit,
 ) = Row(
@@ -34,7 +36,13 @@ fun Chip(
         .padding(horizontal = 4.dp)
         .clip(RoundedCornerShape(8.dp))
         .clickable { onClick.invoke() }
-        .background(if (isSelected) color else colorGrey100())
+        .background(
+            if (isSelected) {
+                color
+            } else {
+                unselectedColor ?: colorGrey100()
+            }
+        )
         .padding(horizontal = 12.dp, vertical = 6.dp),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -51,6 +59,10 @@ fun Chip(
         text = text,
         style = typography.bodySmall,
         fontWeight = FontWeight.SemiBold,
-        color = if (isSelected) Grey900 else colorGrey900(),
+        color = if (isSelected) {
+            selectedTextColor ?: Grey900
+        } else {
+            colorGrey900()
+        },
     )
 }
