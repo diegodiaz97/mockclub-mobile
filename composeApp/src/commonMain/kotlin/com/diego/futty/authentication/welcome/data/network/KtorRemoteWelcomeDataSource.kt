@@ -10,6 +10,10 @@ import com.tweener.passage.model.EmailPasswordGatekeeperConfiguration
 import com.tweener.passage.model.GoogleGatekeeperAndroidConfiguration
 import com.tweener.passage.model.GoogleGatekeeperConfiguration
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.FieldValue
+import dev.gitlive.firebase.firestore.Timestamp
+import dev.gitlive.firebase.firestore.toMilliseconds
+import kotlinx.datetime.Clock
 
 class KtorRemoteWelcomeDataSource(
     private val firebaseManager: FirebaseManager,
@@ -29,6 +33,17 @@ class KtorRemoteWelcomeDataSource(
         } catch (e: Exception) {
             DataResult.Success(AuthState.LoggedOut)
         }
+    }
+
+    override suspend fun initializeServerTime() {
+        firebaseManager.firestore.collection("server-time").document("now")
+            .set(mapOf("timestamp" to FieldValue.serverTimestamp))
+
+        val snapshot = firebaseManager.firestore.collection("server-time").document("now").get()
+        val now = snapshot.get("timestamp") as? Timestamp
+        val nowMillis = now?.toMilliseconds()?.toLong()
+        val deltaMillis = nowMillis?.minus(Clock.System.now().toEpochMilliseconds())
+        preferences.saveServerTimeDelta(deltaMillis ?: 0)
     }
 
     private fun initializePassage() {

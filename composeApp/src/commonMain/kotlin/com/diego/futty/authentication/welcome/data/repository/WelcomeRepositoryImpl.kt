@@ -12,4 +12,8 @@ class WelcomeRepositoryImpl(
     override suspend fun checkUserSession(): DataResult<AuthState, DataError.Remote> {
         return remoteWelcomeDataSource.checkUserSession()
     }
+
+    override suspend fun initializeServerTime() {
+        return remoteWelcomeDataSource.initializeServerTime()
+    }
 }

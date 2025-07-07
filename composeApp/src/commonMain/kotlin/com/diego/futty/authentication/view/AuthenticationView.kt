@@ -11,12 +11,12 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.diego.futty.home.view.HomeView
 import com.diego.futty.authentication.login.presentation.screen.LoginScreen
+import com.diego.futty.authentication.login.presentation.screen.WelcomeScreen
 import com.diego.futty.authentication.login.presentation.viewmodel.LoginViewModel
 import com.diego.futty.authentication.profileCreation.presentation.screen.ProfileCreationScreen
 import com.diego.futty.authentication.profileCreation.presentation.viewmodel.ProfileCreationViewModel
 import com.diego.futty.authentication.signup.presentation.screen.SignupScreen
 import com.diego.futty.authentication.signup.presentation.viewmodel.SignupViewModel
-import com.diego.futty.authentication.welcome.presentation.screen.WelcomeScreen
 import com.diego.futty.authentication.welcome.presentation.viewmodel.WelcomeViewModel
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
@@ -61,7 +61,7 @@ fun AuthenticationView() {
                         LaunchedEffect(true) {
                             authenticationViewModel.updateRoute(AuthenticationRoute.Welcome)
                         }
-                        WelcomeScreen()
+                        WelcomeScreen(welcomeViewModel)
                     }
 
                     composable<AuthenticationRoute.Login>(

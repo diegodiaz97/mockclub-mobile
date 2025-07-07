@@ -6,4 +6,5 @@ import com.diego.futty.core.domain.DataResult
 
 interface RemoteWelcomeDataSource {
     suspend fun checkUserSession(): DataResult<AuthState, DataError.Remote>
+    suspend fun initializeServerTime()
 }

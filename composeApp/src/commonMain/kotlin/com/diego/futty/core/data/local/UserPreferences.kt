@@ -45,12 +45,21 @@ class UserPreferences(private val settings: Settings) {
         return settings[ONBOARDING]
     }
 
+    fun saveServerTimeDelta(time: Long) {
+        settings[SERVER_TIME_DELTA] = time
+    }
+
+    fun getServerTimeDelta() : Long? {
+        return settings[SERVER_TIME_DELTA]
+    }
+
     companion object {
         const val USER_ID = "user_id"
         const val USER_EMAIL = "user_email"
         const val USER_TYPE = "user_type"
         const val DARK_MODE = "dark_mode"
         const val ONBOARDING = "onboarding"
+        const val SERVER_TIME_DELTA = "server_time_delta"
     }
 }
 
