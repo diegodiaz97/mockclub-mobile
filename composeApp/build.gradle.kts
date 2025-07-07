@@ -1,16 +1,22 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    // Kotlin / Multiplatform
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
+    // Android
     alias(libs.plugins.androidApplication)
+    // JetBrains Compose
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.jetbrains.kotlin.serialization)
+    // KSP / Room
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    // Firebase
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.firebase.crashlytics)
+    // Cocoapods (iOS)
     alias(libs.plugins.kotlinCocoapods)
-    id("com.google.firebase.crashlytics")
 }
 
 kotlin {
@@ -46,55 +52,68 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                // Jetpack Compose
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
                 implementation(compose.ui)
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
-                implementation(libs.androidx.lifecycle.viewmodel)
-                implementation(libs.androidx.lifecycle.runtime.compose)
-
-                implementation(libs.androidx.lifecycle.viewmodel)
-                implementation(libs.androidx.lifecycle.runtime.compose)
                 implementation(libs.jetbrains.compose.navigation)
-                implementation(libs.kotlinx.serialization.json)
-                implementation(libs.androidx.room.runtime)
-                implementation(libs.sqlite.bundled)
+                // AndroidX Lifecycle
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtime.compose)
+                // Koin
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
-                api(libs.koin.core)
-
-                implementation(libs.bundles.ktor)
-                implementation(libs.bundles.coil)
-                implementation(libs.xicon.pack.z.tabler)
-                implementation(libs.xicon.pack.z.octicon)
+                implementation(libs.koin.core)
+                // Kotlinx
+                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlinx.datetime)
+                // Firebase
                 implementation(libs.firebase.firestore)
                 implementation(libs.firebase.auth)
                 implementation(libs.firebase.storage)
                 implementation(libs.firebase.messaging)
-                implementation(libs.flexible.bottomsheet.material3)
+                // Room / DB
+                implementation(libs.androidx.room.runtime)
+                implementation(libs.sqlite.bundled)
                 implementation(libs.multiplatform.settings)
-                implementation(libs.maplibre.compose)
+                // Ktor
+                implementation(libs.bundles.ktor)
+                // Coil
+                implementation(libs.bundles.coil)
+                // UI / Icons / Extras
+                implementation(libs.xicon.pack.z.tabler)
+                implementation(libs.xicon.pack.z.octicon)
+                implementation(libs.xicon.pack.z.font.awesome)
                 implementation(libs.reveal.core)
                 implementation(libs.reveal.shapes)
-                implementation("dev.materii.pullrefresh:pullrefresh:1.3.0")
-                implementation("io.github.tweener:passage:1.4.0")
+                implementation(libs.flexible.bottomsheet.material3)
+                implementation(libs.pullrefresh)
+                implementation(libs.ui.backhandler)
+                implementation(libs.peekaboo.ui)
+                implementation(libs.peekaboo.image.picker)
+                // Others
+                implementation(libs.maplibre.compose)
+                implementation(libs.passage)
             }
         }
 
         val androidMain by getting {
             dependencies {
+                // Compose Preview & Activity
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
-
+                // Koin Android
                 implementation(libs.koin.android)
                 implementation(libs.koin.androidx.compose)
+                // Ktor Android
                 implementation(libs.ktor.client.okhttp)
+                // UI Icons
                 implementation(libs.xicon.pack.z.tabler)
                 implementation(libs.xicon.pack.z.octicon)
-
+                // Firebase (con BOM)
                 implementation(project.dependencies.platform(libs.firebase.bom))
                 implementation(libs.com.google.firebase.firebase.auth)
                 implementation(libs.com.google.firebase.firebase.firestore)
@@ -102,6 +121,7 @@ kotlin {
                 implementation(libs.com.google.firebase.firebase.messaging)
                 implementation(libs.firebase.crashlytics)
                 implementation(libs.firebase.analytics)
+                // Permission
                 implementation(libs.accompanist.permissions)
             }
         }

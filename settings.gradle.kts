@@ -13,6 +13,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlinx/maven") // 🔥 Importante para KMP
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -27,6 +28,7 @@ dependencyResolutionManagement {
         }
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlinx/maven") // 🔥 Importante para KMP
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
