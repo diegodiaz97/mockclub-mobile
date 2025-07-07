@@ -32,6 +32,7 @@ import compose.icons.tablericons.Plane
 import compose.icons.tablericons.School
 import compose.icons.tablericons.Video
 import compose.icons.tablericons.Wallet
+import dev.gitlive.firebase.firestore.Timestamp
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
@@ -148,7 +149,7 @@ class ProfileViewModel(
     private val _modal = mutableStateOf<Modal?>(null)
     override val modal: State<Modal?> = _modal
 
-    private var _lastTimestamp: Long? = null
+    private var _lastTimestamp: Timestamp? = null
     private var _endReached = false
     private val _bitmapImage = mutableStateOf<ImageBitmap?>(null)
     private val _byteArrayImage = mutableStateOf<ByteArray?>(null)
@@ -253,7 +254,7 @@ class ProfileViewModel(
                         }
                         _endReached = true
                     } else {
-                        _lastTimestamp = newPosts.lastOrNull()?.post?.timestamp
+                        _lastTimestamp = newPosts.lastOrNull()?.post?.serverTimestamp
                         if (_posts.value == null) {
                             _posts.value = newPosts
                         } else {

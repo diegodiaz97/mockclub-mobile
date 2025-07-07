@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -22,19 +24,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.diego.futty.core.presentation.theme.FuttyTheme
-import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
+import com.diego.futty.core.presentation.theme.colorPrimary
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
 import com.diego.futty.core.presentation.utils.Transitions
 import com.diego.futty.home.design.presentation.component.bottombar.BottomBarItem
 import com.diego.futty.home.design.presentation.screen.DesignScreen
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
+import com.diego.futty.home.feed.presentation.screen.CreatePostScreen
 import com.diego.futty.home.feed.presentation.screen.FeedScreen
 import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
 import com.diego.futty.home.match.presentation.screen.MatchScreen
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
+import com.diego.futty.home.post.presentation.viewmodel.PostViewModel
 import com.diego.futty.setup.view.SetupView
 import com.svenjacobs.reveal.RevealCanvas
 import com.svenjacobs.reveal.rememberRevealCanvasState
@@ -42,6 +46,7 @@ import com.svenjacobs.reveal.rememberRevealState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 @Preview
 fun HomeView(navigateToLogin: () -> Unit) {
@@ -49,7 +54,10 @@ fun HomeView(navigateToLogin: () -> Unit) {
     val designViewModel = koinViewModel<DesignViewModel>()
     val feedViewModel = koinViewModel<FeedViewModel>()
     val matchViewModel = koinViewModel<MatchViewModel>()
+    val postViewModel = koinViewModel<PostViewModel>()
     val navController = rememberNavController()
+
+    BackHandler(true) {}
 
     FuttyTheme(appViewModel.palette.value) {
         val revealCanvasState = rememberRevealCanvasState()
@@ -60,7 +68,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
             modifier = Modifier,
             revealCanvasState = revealCanvasState,
         ) {
-            SetStatusBarColor(Color.Transparent)
+            SetStatusBarColor(colorGrey0())
             LaunchedEffect(true) { appViewModel.setup() }
 
             Column {
@@ -84,7 +92,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
                                 revealCanvasState = revealCanvasState,
                                 scope = scope,
                                 revealState = revealState,
-                                viewModel = feedViewModel
+                                viewModel = feedViewModel,
                             )
                         }
 
@@ -128,6 +136,30 @@ fun HomeView(navigateToLogin: () -> Unit) {
                                 navigateToLogin = navigateToLogin,
                             )
                         }
+
+                        composable<HomeRoute.CreatePost>(
+                            enterTransition = Transitions.RightScreenEnter,
+                            exitTransition = Transitions.LeftScreenExit,
+                            popEnterTransition = Transitions.RightScreenPopEnter,
+                            popExitTransition = Transitions.LeftScreenPopExit
+                        ) {
+                            LaunchedEffect(true) {
+                                appViewModel.updateRoute(HomeRoute.CreatePost)
+                            }
+
+                            CreatePostScreen(
+                                user = feedViewModel.user.value,
+                                viewModel = postViewModel,
+                                onClose = { navController.popBackStack() },
+                                onStartPostCreation = {
+                                    feedViewModel.onStartPostCreation()
+                                    navController.popBackStack()
+                                },
+                                onPostCreated = {
+                                    feedViewModel.onPostCreated()
+                                },
+                            )
+                        }
                     }
                 }
 
@@ -153,13 +185,13 @@ private fun BottomNavBar(appViewModel: HomeViewModel, navController: NavControll
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(colorGrey0())
-                    .padding(bottom = 18.dp),
+                    .navigationBarsPadding(),
                 horizontalArrangement = Arrangement.SpaceAround,
             ) {
                 BottomNavScreen.allScreens.forEach { screen ->
                     BottomBarItem(
                         icon = if (currentRoute == screen.route) screen.selectedIcon else screen.icon,
-                        tint = if (currentRoute == screen.route) colorError() else colorGrey500(),
+                        tint = if (currentRoute == screen.route) colorPrimary() else colorGrey500(),
                         color = Color.Transparent,
                         text = screen.text,
                     ) {

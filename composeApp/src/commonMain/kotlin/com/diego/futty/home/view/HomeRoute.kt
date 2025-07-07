@@ -18,4 +18,7 @@ sealed interface HomeRoute {
 
     @Serializable
     data object Setup : HomeRoute
+
+    @Serializable
+    data object CreatePost : HomeRoute
 }

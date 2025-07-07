@@ -13,15 +13,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.theme.colorError
+import com.diego.futty.core.presentation.theme.colorGrey200
 import com.diego.futty.core.presentation.theme.colorGrey600
+import com.diego.futty.core.presentation.theme.colorGrey900
 
 @Composable
 fun SecondaryButton(
     modifier: Modifier = Modifier,
     title: String,
-    color: Color = colorError(),
+    color: Color = colorGrey900(),
     isEnabled: Boolean = true,
+    border: Boolean = false,
     onClick: () -> Unit,
 ) {
     Text(
@@ -29,7 +31,7 @@ fun SecondaryButton(
             .clip(RoundedCornerShape(12.dp))
             .border(
                 width = 1.dp,
-                color = Color.Transparent,
+                color = if (border) colorGrey200() else Color.Transparent,
                 shape = RoundedCornerShape(12.dp)
             )
             .clickable {
@@ -37,7 +39,7 @@ fun SecondaryButton(
                     onClick()
                 }
             }
-            .padding(vertical = 12.dp),
+            .padding(vertical = 6.dp),
         text = title,
         style = typography.bodyLarge,
         fontWeight = FontWeight.SemiBold,

@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.Grey0
-import com.diego.futty.core.presentation.theme.colorError
+import com.diego.futty.core.presentation.theme.colorSecondary
 import com.svenjacobs.reveal.Key
 import com.svenjacobs.reveal.RevealOverlayArrangement
 import com.svenjacobs.reveal.RevealOverlayScope
@@ -57,7 +57,7 @@ private fun OverlayText(
     Balloon(
         modifier = modifier.padding(8.dp),
         arrow = arrow,
-        backgroundColor = colorError(),
+        backgroundColor = colorSecondary(),
         elevation = 2.dp,
     ) {
         Text(

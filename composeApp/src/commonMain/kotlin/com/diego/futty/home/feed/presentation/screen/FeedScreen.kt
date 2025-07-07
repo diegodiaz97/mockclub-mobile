@@ -1,25 +1,37 @@
 package com.diego.futty.home.feed.presentation.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.Grey0
-import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
+import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.core.presentation.theme.colorGrey900
+import com.diego.futty.core.presentation.theme.colorPrimary
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
+import com.diego.futty.home.design.presentation.component.progressbar.DynamicLinearProgressBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.home.feed.presentation.component.Keys
@@ -99,8 +111,11 @@ fun FeedScreen(
                 }
             },
         )
-        OpenedImage(viewModel.openedImage.value) { viewModel.onImageClosed() }
-        CreatePostScreen(viewModel)
+        OpenedImage(
+            images = viewModel.openedImage.value,
+            index = viewModel.openedImageIndex.value,
+        ) { viewModel.onImageClosed() }
+
         viewModel.modal.value?.Draw()
     }
 }
@@ -125,7 +140,7 @@ private fun FeedContent(
                 ),
             avatarSize = AvatarSize.Big,
             icon = TablerIcons.Plus,
-            background = colorError(),
+            background = colorPrimary(),
             tint = Grey0,
             onClick = { viewModel.showPostCreation() }
         ).Draw()
@@ -142,25 +157,56 @@ private fun Posts(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
-    }
-    PostsList(
-        posts = viewModel.posts.value,
-        topListComponents = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                TopBanners(scope, revealState)
+        PostCreationProgress(viewModel.postCreationProgress.value)
+        PostsList(
+            posts = viewModel.posts.value,
+            topListComponents = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    TopBanners(scope, revealState)
+                }
+            },
+            onPostClicked = { post ->
+                viewModel.onPostClicked(post)
+            },
+            onImageClicked = { images, index ->
+                viewModel.onImageClicked(images, index)
+            },
+            onScrolled = {
+                viewModel.fetchFeed()
             }
-        },
-        onPostClicked = { post ->
-            viewModel.onPostClicked(post)
-        },
-        onImageClicked = { image ->
-            viewModel.onImageClicked(image)
-        },
-        onScrolled = {
-            viewModel.fetchFeed()
+        )
+    }
+}
+
+@Composable
+fun PostCreationProgress(progress: Float) {
+    AnimatedVisibility(
+        visible = progress > 0f && progress <= 1,
+        enter = expandVertically(),
+        exit = shrinkVertically()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(colorGrey100())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Posteando",
+                style = typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+                color = colorGrey900()
+            )
+            DynamicLinearProgressBar(
+                progress = progress,
+                color = colorGrey900()
+            )
         }
-    )
+    }
 }

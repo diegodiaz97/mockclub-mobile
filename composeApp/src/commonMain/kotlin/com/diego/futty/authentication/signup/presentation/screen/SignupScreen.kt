@@ -44,22 +44,22 @@ fun SignupScreen(viewModel: SignupViewModel) {
             SignupContent(viewModel, paddingValues)
         },
         bottomBar = {
-            Column(modifier = Modifier.navigationBarsPadding()) {
+            Column(
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
                 PrimaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 8.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     title = "Crear cuenta",
                     isEnabled = viewModel.canCreateAccount.value,
                     onClick = { viewModel.onSignupClicked() }
                 )
                 SecondaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     title = "Ya tengo cuenta",
-                    isEnabled = true,
                     onClick = { viewModel.onBackClicked() }
                 )
             }
@@ -76,26 +76,24 @@ private fun SignupContent(viewModel: SignupViewModel, paddingValues: PaddingValu
             .padding(top = paddingValues.calculateTopPadding())
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         TextInput.Input(
             input = viewModel.email.value,
             label = "Email",
-            placeholder = "ejemplo@gmail.com",
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updateEmail(it) }
         ).Draw()
 
         TextInput.PasswordInput(
             input = viewModel.password.value,
-            placeholder = "Ejemplo123",
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updatePassword(it) }
         ).Draw()
 
         TextInput.PasswordInput(
             input = viewModel.confirmPassword.value,
-            placeholder = "Ejemplo123",
+            label = "Repetir contraseña",
             onFocusChanged = { viewModel.hideKeyboard() },
             onTextChangeAction = { viewModel.updateConfirmPassword(it) }
         ).Draw()

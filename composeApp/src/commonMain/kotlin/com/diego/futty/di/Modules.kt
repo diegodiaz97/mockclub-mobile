@@ -40,6 +40,7 @@ import com.diego.futty.home.post.data.network.KtorRemotePostDataSource
 import com.diego.futty.home.post.data.network.RemotePostDataSource
 import com.diego.futty.home.post.data.repository.PostRepositoryImpl
 import com.diego.futty.home.post.domain.repository.PostRepository
+import com.diego.futty.home.post.presentation.viewmodel.PostViewModel
 import com.diego.futty.home.view.HomeViewModel
 import com.diego.futty.setup.profile.data.network.KtorRemoteProfileDataSource
 import com.diego.futty.setup.profile.data.network.RemoteProfileDataSource
@@ -101,7 +102,7 @@ val sharedModule = module {
     // Post
     singleOf(::KtorRemotePostDataSource).bind<RemotePostDataSource>()
     singleOf(::PostRepositoryImpl).bind<PostRepository>()
-    //viewModelOf(::HomeViewModel)
+    viewModelOf(::PostViewModel)
 
     // Profile
     singleOf(::KtorRemoteProfileDataSource).bind<RemoteProfileDataSource>()

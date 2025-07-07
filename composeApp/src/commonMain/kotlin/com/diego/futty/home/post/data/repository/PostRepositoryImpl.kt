@@ -5,9 +5,10 @@ import com.diego.futty.core.domain.DataResult
 import com.diego.futty.home.post.data.network.RemotePostDataSource
 import com.diego.futty.home.post.domain.model.Comment
 import com.diego.futty.home.post.domain.model.CommentWithUser
-import com.diego.futty.home.post.domain.model.Post
 import com.diego.futty.home.post.domain.model.PostWithUser
+import com.diego.futty.home.post.domain.model.Tag
 import com.diego.futty.home.post.domain.repository.PostRepository
+import dev.gitlive.firebase.firestore.Timestamp
 
 class PostRepositoryImpl(
     private val remotePostDataSource: RemotePostDataSource
@@ -16,9 +17,10 @@ class PostRepositoryImpl(
         text: String,
         images: List<ByteArray>,
         team: String,
-        brand: String
-    ): DataResult<Post, DataError.Remote> {
-        return remotePostDataSource.createPost(text, images, team, brand)
+        brand: String,
+        tags: List<String>,
+    ): DataResult<Unit, DataError.Remote> {
+        return remotePostDataSource.createPost(text, images, team, brand, tags)
     }
 
     override suspend fun countPosts(userId: String): DataResult<Int, DataError.Remote> {
@@ -27,7 +29,7 @@ class PostRepositoryImpl(
 
     override suspend fun getFeed(
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return remotePostDataSource.getFeed(limit, startAfterTimestamp)
     }
@@ -35,7 +37,7 @@ class PostRepositoryImpl(
     override suspend fun getPostsByUser(
         userId: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return remotePostDataSource.getPostsByUser(userId, limit, startAfterTimestamp)
     }
@@ -43,7 +45,7 @@ class PostRepositoryImpl(
     override suspend fun getPostsByTeam(
         team: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return remotePostDataSource.getPostsByTeam(team, limit, startAfterTimestamp)
     }
@@ -51,7 +53,7 @@ class PostRepositoryImpl(
     override suspend fun getPostsByBrand(
         brand: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return remotePostDataSource.getPostsByBrand(brand, limit, startAfterTimestamp)
     }
@@ -60,24 +62,12 @@ class PostRepositoryImpl(
         return remotePostDataSource.likePost(postId)
     }
 
-    override suspend fun dislikePost(postId: String): DataResult<Unit, DataError.Remote> {
-        return remotePostDataSource.dislikePost(postId)
-    }
-
     override suspend fun removeLike(postId: String): DataResult<Unit, DataError.Remote> {
         return remotePostDataSource.removeLike(postId)
     }
 
-    override suspend fun removeDislike(postId: String): DataResult<Unit, DataError.Remote> {
-        return remotePostDataSource.removeDislike(postId)
-    }
-
     override suspend fun isPostLikedByUser(postId: String): DataResult<Boolean, DataError.Remote> {
         return remotePostDataSource.isPostLikedByUser(postId)
-    }
-
-    override suspend fun isPostDislikedByUser(postId: String): DataResult<Boolean, DataError.Remote> {
-        return remotePostDataSource.isPostDislikedByUser(postId)
     }
 
     override suspend fun addComment(
@@ -113,7 +103,7 @@ class PostRepositoryImpl(
     override suspend fun getComments(
         postId: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<CommentWithUser>, DataError.Remote> {
         return remotePostDataSource.getComments(postId, limit, startAfterTimestamp)
     }
@@ -122,7 +112,7 @@ class PostRepositoryImpl(
         postId: String,
         commentId: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<CommentWithUser>, DataError.Remote> {
         return remotePostDataSource.getReplies(postId, commentId, limit, startAfterTimestamp)
     }
@@ -136,5 +126,13 @@ class PostRepositoryImpl(
         reason: String
     ): DataResult<Unit, DataError.Remote> {
         return remotePostDataSource.reportPost(postId, reason)
+    }
+
+    override suspend fun getAllTags(): DataResult<List<Tag>, DataError.Remote> {
+        return remotePostDataSource.getAllTags()
+    }
+
+    override suspend fun createOrUpdateTags(tags: List<String>): DataResult<Unit, DataError.Remote> {
+        return remotePostDataSource.createOrUpdateTags(tags)
     }
 }

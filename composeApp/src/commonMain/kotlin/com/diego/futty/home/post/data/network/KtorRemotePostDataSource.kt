@@ -10,8 +10,11 @@ import com.diego.futty.home.post.domain.model.Comment
 import com.diego.futty.home.post.domain.model.CommentWithUser
 import com.diego.futty.home.post.domain.model.Post
 import com.diego.futty.home.post.domain.model.PostWithUser
+import com.diego.futty.home.post.domain.model.Tag
 import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FieldValue
+import dev.gitlive.firebase.firestore.Timestamp
+import dev.gitlive.firebase.firestore.toMilliseconds
 import kotlinx.datetime.Clock
 
 class KtorRemotePostDataSource(
@@ -20,8 +23,9 @@ class KtorRemotePostDataSource(
 ) : RemotePostDataSource {
 
     private val firestore = firebaseManager.firestore
-    private val postsCollection = firestore.collection("posts")
     private val usersCollection = firestore.collection("users")
+    private val postsCollection = firestore.collection("posts")
+    private val tagsCollection = firestore.collection("tags")
     private val storage = firebaseManager.storage
     private val storageRef = storage.reference("images/posts")
 
@@ -29,8 +33,9 @@ class KtorRemotePostDataSource(
         text: String,
         images: List<ByteArray>,
         team: String,
-        brand: String
-    ): DataResult<Post, DataError.Remote> {
+        brand: String,
+        tags: List<String>,
+    ): DataResult<Unit, DataError.Remote> {
         return try {
             require(images.size <= 10) { "Máximo 10 imágenes por post" }
             val userId = preferences.getUserId() ?: ""
@@ -49,20 +54,21 @@ class KtorRemotePostDataSource(
                 emptyList()
             }
 
-
             val docRef = postsCollection.document
-            val post = Post(
-                id = docRef.id,
-                userId = userId,
-                text = text,
-                imageUrls = imageUrls,
-                timestamp = Clock.System.now().toEpochMilliseconds(),
-                team = team,
-                brand = brand
+            val result = docRef.set(
+                mapOf(
+                    "id" to docRef.id,
+                    "userId" to userId,
+                    "text" to text,
+                    "imageUrls" to imageUrls,
+                    "timestamp" to FieldValue.serverTimestamp,
+                    "team" to team,
+                    "brand" to brand,
+                    "tags" to tags
+                )
             )
-            docRef.set(post)
 
-            DataResult.Success(post)
+            DataResult.Success(result)
         } catch (e: Exception) {
             DataResult.Error(DataError.Remote.UNKNOWN)
         }
@@ -84,7 +90,7 @@ class KtorRemotePostDataSource(
 
     override suspend fun getFeed(
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return try {
             var query =
@@ -92,7 +98,22 @@ class KtorRemotePostDataSource(
             if (startAfterTimestamp != null) {
                 query = query.startAfter(startAfterTimestamp)
             }
-            val posts = query.get().documents.map { it.data<Post>() }
+
+            val posts = query.get().documents.map { doc ->
+                val timestamp = doc.get("timestamp") as? Timestamp
+                val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+
+                Post(
+                    id = doc.get("id") as? String ?: doc.id,
+                    userId = doc.get("userId") as? String ?: "",
+                    text = doc.get("text") as? String ?: "",
+                    imageUrls = doc.get("imageUrls") as? List<String> ?: emptyList(),
+                    timestamp = timestampMillis ?: 0L,
+                    serverTimestamp = doc.get("timestamp"),
+                    team = doc.get("team") as? String ?: "",
+                    brand = doc.get("brand") as? String ?: ""
+                )
+            }
 
             val uniqueUserIds = posts.map { it.userId }.distinct()
             val userMap = uniqueUserIds.associateWith { getUserById(it) }
@@ -131,7 +152,7 @@ class KtorRemotePostDataSource(
     override suspend fun getPostsByUser(
         userId: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return try {
             var query =
@@ -142,7 +163,21 @@ class KtorRemotePostDataSource(
                 query = query.startAfter(startAfterTimestamp)
             }
 
-            val posts = query.get().documents.map { it.data<Post>() }
+            val posts = query.get().documents.map { doc ->
+                val timestamp = doc.get("timestamp") as? Timestamp
+                val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+
+                Post(
+                    id = doc.get("id") as? String ?: doc.id,
+                    userId = doc.get("userId") as? String ?: "",
+                    text = doc.get("text") as? String ?: "",
+                    imageUrls = doc.get("imageUrls") as? List<String> ?: emptyList(),
+                    timestamp = timestampMillis ?: 0L,
+                    serverTimestamp = doc.get("timestamp"),
+                    team = doc.get("team") as? String ?: "",
+                    brand = doc.get("brand") as? String ?: ""
+                )
+            }
 
             val uniqueUserIds = posts.map { it.userId }.distinct()
             val userMap = uniqueUserIds.associateWith { getUserById(it) }
@@ -157,7 +192,7 @@ class KtorRemotePostDataSource(
     override suspend fun getPostsByTeam(
         team: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return try {
             var query =
@@ -168,7 +203,21 @@ class KtorRemotePostDataSource(
                 query = query.startAfter(startAfterTimestamp)
             }
 
-            val posts = query.get().documents.map { it.data<Post>() }
+            val posts = query.get().documents.map { doc ->
+                val timestamp = doc.get("timestamp") as? Timestamp
+                val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+
+                Post(
+                    id = doc.get("id") as? String ?: doc.id,
+                    userId = doc.get("userId") as? String ?: "",
+                    text = doc.get("text") as? String ?: "",
+                    imageUrls = doc.get("imageUrls") as? List<String> ?: emptyList(),
+                    timestamp = timestampMillis ?: 0L,
+                    serverTimestamp = doc.get("timestamp"),
+                    team = doc.get("team") as? String ?: "",
+                    brand = doc.get("brand") as? String ?: ""
+                )
+            }
 
             val uniqueUserIds = posts.map { it.userId }.distinct()
             val userMap = uniqueUserIds.associateWith { getUserById(it) }
@@ -183,7 +232,7 @@ class KtorRemotePostDataSource(
     override suspend fun getPostsByBrand(
         brand: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return try {
             var query =
@@ -194,7 +243,21 @@ class KtorRemotePostDataSource(
                 query = query.startAfter(startAfterTimestamp)
             }
 
-            val posts = query.get().documents.map { it.data<Post>() }
+            val posts = query.get().documents.map { doc ->
+                val timestamp = doc.get("timestamp") as? Timestamp
+                val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+
+                Post(
+                    id = doc.get("id") as? String ?: doc.id,
+                    userId = doc.get("userId") as? String ?: "",
+                    text = doc.get("text") as? String ?: "",
+                    imageUrls = doc.get("imageUrls") as? List<String> ?: emptyList(),
+                    timestamp = timestampMillis ?: 0L,
+                    serverTimestamp = doc.get("timestamp"),
+                    team = doc.get("team") as? String ?: "",
+                    brand = doc.get("brand") as? String ?: ""
+                )
+            }
 
             val uniqueUserIds = posts.map { it.userId }.distinct()
             val userMap = uniqueUserIds.associateWith { getUserById(it) }
@@ -211,17 +274,10 @@ class KtorRemotePostDataSource(
             val userId = preferences.getUserId() ?: ""
             val postRef = postsCollection.document(postId)
             val likesRef = postRef.collection("likes").document(userId)
-            val dislikesRef = postRef.collection("dislikes").document(userId)
 
             val result = firestore.runTransaction {
                 likesRef.set(mapOf("timestamp" to Clock.System.now().toEpochMilliseconds()))
-                dislikesRef.delete()
-                postRef.update(
-                    mapOf(
-                        "likesCount" to FieldValue.increment(1),
-                        "dislikesCount" to FieldValue.increment(-1)
-                    )
-                )
+                postRef.update(mapOf("likesCount" to FieldValue.increment(1)))
             }
             DataResult.Success(result)
         } catch (e: Exception) {
@@ -229,28 +285,6 @@ class KtorRemotePostDataSource(
         }
     }
 
-    override suspend fun dislikePost(postId: String): DataResult<Unit, DataError.Remote> {
-        return try {
-            val userId = preferences.getUserId() ?: ""
-            val postRef = postsCollection.document(postId)
-            val likesRef = postRef.collection("likes").document(userId)
-            val dislikesRef = postRef.collection("dislikes").document(userId)
-
-            val result = firestore.runTransaction {
-                dislikesRef.set(mapOf("timestamp" to Clock.System.now().toEpochMilliseconds()))
-                likesRef.delete()
-                postRef.update(
-                    mapOf(
-                        "dislikesCount" to FieldValue.increment(1),
-                        "likesCount" to FieldValue.increment(-1)
-                    )
-                )
-            }
-            DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
-    }
 
     override suspend fun removeLike(postId: String): DataResult<Unit, DataError.Remote> {
         return try {
@@ -268,38 +302,11 @@ class KtorRemotePostDataSource(
         }
     }
 
-    override suspend fun removeDislike(postId: String): DataResult<Unit, DataError.Remote> {
-        return try {
-            val userId = preferences.getUserId() ?: ""
-            val postRef = postsCollection.document(postId)
-            val likesRef = postRef.collection("dislikes").document(userId)
-
-            val result = firestore.runTransaction {
-                likesRef.delete()
-                postRef.update(mapOf("dislikesCount" to FieldValue.increment(-1)))
-            }
-            DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
-    }
-
     override suspend fun isPostLikedByUser(postId: String): DataResult<Boolean, DataError.Remote> {
         return try {
             val userId = preferences.getUserId() ?: ""
             val result = postsCollection.document(postId)
                 .collection("likes").document(userId).get().exists
-            DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
-    }
-
-    override suspend fun isPostDislikedByUser(postId: String): DataResult<Boolean, DataError.Remote> {
-        return try {
-            val userId = preferences.getUserId() ?: ""
-            val result = postsCollection.document(postId)
-                .collection("dislikes").document(userId).get().exists
             DataResult.Success(result)
         } catch (e: Exception) {
             DataResult.Error(DataError.Remote.UNKNOWN)
@@ -404,7 +411,7 @@ class KtorRemotePostDataSource(
     override suspend fun getComments(
         postId: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<CommentWithUser>, DataError.Remote> {
         return try {
             var query = postsCollection.document(postId)
@@ -433,7 +440,7 @@ class KtorRemotePostDataSource(
         postId: String,
         commentId: String,
         limit: Int,
-        startAfterTimestamp: Long?
+        startAfterTimestamp: Timestamp?
     ): DataResult<List<CommentWithUser>, DataError.Remote> {
         return try {
             var query = postsCollection.document(postId)
@@ -499,6 +506,53 @@ class KtorRemotePostDataSource(
                     "timestamp" to Clock.System.now().toEpochMilliseconds()
                 )
             )
+            DataResult.Success(result)
+        } catch (e: Exception) {
+            DataResult.Error(DataError.Remote.UNKNOWN)
+        }
+    }
+
+    override suspend fun getAllTags(): DataResult<List<Tag>, DataError.Remote> {
+        return try {
+            val result = tagsCollection
+                .orderBy("usageCount", Direction.DESCENDING) // 🔽 los más usados primero
+                .limit(50) // 🔹 ajustable según tu caso
+                .get()
+                .documents
+                .map { it.data<Tag>() }
+            DataResult.Success(result)
+        } catch (e: Exception) {
+            DataResult.Error(DataError.Remote.UNKNOWN)
+        }
+    }
+
+    override suspend fun createOrUpdateTags(tags: List<String>): DataResult<Unit, DataError.Remote> {
+        return try {
+            val result = tags.map { it.trim().lowercase() }
+                .distinct()
+                .forEach { createOrUpdateTag(it) }
+            DataResult.Success(result)
+        } catch (e: Exception) {
+            DataResult.Error(DataError.Remote.UNKNOWN)
+        }
+    }
+
+    private suspend fun createOrUpdateTag(tag: String): DataResult<Unit, DataError.Remote> {
+        return try {
+            val normalizedName = tag.trim().lowercase()
+            val docRef = tagsCollection.document(normalizedName)
+
+            val snapshot = docRef.get()
+
+            val result = if (snapshot.exists) {
+                docRef.update("usageCount" to FieldValue.increment(1))
+            } else {
+                val newTag = Tag(
+                    name = normalizedName,
+                    usageCount = 1
+                )
+                docRef.set(newTag)
+            }
             DataResult.Success(result)
         } catch (e: Exception) {
             DataResult.Error(DataError.Remote.UNKNOWN)

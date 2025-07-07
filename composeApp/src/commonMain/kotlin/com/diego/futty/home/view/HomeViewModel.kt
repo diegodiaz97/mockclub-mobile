@@ -47,7 +47,7 @@ class HomeViewModel(
 
     private fun updateBottomBar() = viewModelScope.launch {
         _showBottomBar.value = when (_currentRoute.value) {
-            HomeRoute.Setup -> false
+            HomeRoute.Setup, HomeRoute.CreatePost -> false
             else -> true
         }
         delay(300)

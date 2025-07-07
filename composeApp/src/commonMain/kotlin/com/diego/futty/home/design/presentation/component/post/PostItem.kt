@@ -42,7 +42,11 @@ import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.post.domain.model.Post
 import com.diego.futty.home.post.domain.model.PostWithUser
+import compose.icons.FontAwesomeIcons
 import compose.icons.TablerIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Comment
+import compose.icons.fontawesomeicons.solid.Heart
 import compose.icons.tablericons.Heart
 import compose.icons.tablericons.HeartBroken
 import compose.icons.tablericons.Message
@@ -182,11 +186,12 @@ private fun PostFooter(
         Row(
             modifier = Modifier.padding(horizontal = 14.dp).weight(1f),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         )
         {
             Avatar.IconAvatar(
-                icon = TablerIcons.Heart,
-                tint = if (hasLike) colorError() else colorGrey500(),
+                icon = FontAwesomeIcons.Solid.Heart,
+                tint = if (hasLike) colorError() else colorGrey900(),
                 background = colorGrey0(),
                 avatarSize = AvatarSize.Atomic,
                 onClick = { onLiked() }
@@ -195,28 +200,13 @@ private fun PostFooter(
                 text = post.likesCount.toString(),
                 style = typography.bodySmall,
                 fontWeight = FontWeight.Normal,
-                color = if (hasLike) colorError() else colorGrey500(),
+                color = if (hasLike) colorError() else colorGrey900(),
             )
             Spacer(Modifier.width(8.dp))
 
             Avatar.IconAvatar(
-                icon = TablerIcons.HeartBroken,
-                tint = if (hasDislike) colorError() else colorGrey500(),
-                background = colorGrey0(),
-                avatarSize = AvatarSize.Atomic,
-                onClick = { onDisliked() }
-            ).Draw()
-            Text(
-                text = post.dislikesCount.toString(),
-                style = typography.bodySmall,
-                fontWeight = FontWeight.Normal,
-                color = if (hasDislike) colorError() else colorGrey500(),
-            )
-            Spacer(Modifier.width(8.dp))
-
-            Avatar.IconAvatar(
-                icon = TablerIcons.Message,
-                tint = colorGrey500(),
+                icon = FontAwesomeIcons.Solid.Comment,
+                tint = colorGrey900(),
                 background = colorGrey0(),
                 avatarSize = AvatarSize.Atomic,
                 onClick = { }
@@ -225,37 +215,36 @@ private fun PostFooter(
                 text = post.commentsCount.toString(),
                 style = typography.bodySmall,
                 fontWeight = FontWeight.Normal,
-                color = colorGrey500()
+                color = colorGrey900()
             )
         }
         Row(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .clip(RoundedCornerShape(6.dp))
+                .clip(RoundedCornerShape(8.dp))
                 .background(colorGrey500())
-                .padding(horizontal = 2.dp, vertical = 1.dp),
+                .padding(horizontal = 8.dp, vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
         )
         {
             Text(
-                modifier = Modifier.padding(start = 4.dp),
                 text = post.team,
-                style = typography.labelSmall,
+                style = typography.labelMedium,
                 fontWeight = FontWeight.Bold,
-                color = colorGrey100()
+                color = colorGrey0()
             )
             Text(
                 text = " x ",
                 style = typography.labelSmall,
                 fontWeight = FontWeight.Normal,
-                color = colorGrey200()
-            )
-            Text(modifier = Modifier.padding(end = 4.dp),
-                text = post.brand,
-                style = typography.labelSmall,
-                fontWeight = FontWeight.Bold,
                 color = colorGrey100()
+            )
+            Text(
+                text = post.brand,
+                style = typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = colorGrey0()
             )
         }
     }

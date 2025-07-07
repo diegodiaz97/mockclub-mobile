@@ -10,27 +10,20 @@ interface FeedViewContract {
     val user: State<User?>
     val posts: State<List<PostWithUser>?>
     val openedPost: State<PostWithUser?>
-    val openedImage: State<String?>
+    val openedImage: State<List<String>>
+    val openedImageIndex: State<Int>
     val isRefreshing: State<Boolean>
     val modal: State<Modal?>
-    val showPostCreation: State<Boolean>
-    val postMaxLength: State<Int>
-    val text: State<String>
-    val team: State<String>
-    val brand: State<String>
-    val images: State<List<ByteArray>>
+    val postCreationProgress: State<Float>
     fun startReveal(revealState: RevealState)
     fun onProfileClicked()
-    fun onImageClicked(image: String)
+    fun onImageClicked(images: List<String>, index: Int)
     fun onImageClosed()
     fun onPostClicked(post: PostWithUser)
     fun onPostClosed()
-    fun createPost()
+    fun onPostCreated()
+    fun onStartPostCreation()
     fun showPostCreation()
-    fun dismissPostCreation()
     fun fetchFeed()
-    fun updateText(newText: String)
-    fun updateTeam(newTeam: String)
-    fun updateBrand(newBrand: String)
     fun onFeedRefreshed()
 }

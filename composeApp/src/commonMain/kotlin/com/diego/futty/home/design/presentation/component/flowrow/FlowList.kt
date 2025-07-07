@@ -21,10 +21,10 @@ fun FlowList(list: List<ChipModel>, selectedIndex: Int, onSelected: (Int) -> Uni
     ) {
         list.withIndex().forEach { item ->
             Chip(
-                item.value.icon,
-                item.value.text,
-                item.value.color,
-                list[selectedIndex] == item.value,
+                icon = item.value.icon,
+                text = item.value.text,
+                color = item.value.color,
+                isSelected = list[selectedIndex] == item.value,
             ) {
                 onSelected(item.index)
             }
@@ -32,7 +32,6 @@ fun FlowList(list: List<ChipModel>, selectedIndex: Int, onSelected: (Int) -> Uni
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MultipleFlowList(
     list: List<ChipModel>,
@@ -47,10 +46,10 @@ fun MultipleFlowList(
     ) {
         list.withIndex().forEach { item ->
             Chip(
-                item.value.icon,
-                item.value.text,
-                item.value.color,
-                selectedChips.contains(item.value),
+                icon = item.value.icon,
+                text = item.value.text,
+                color = item.value.color,
+                isSelected = selectedChips.contains(item.value),
             ) {
                 onSelected(item.value)
             }

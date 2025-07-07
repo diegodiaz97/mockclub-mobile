@@ -37,7 +37,7 @@ class SettingsViewModel(
     override val banner: State<Banner?> = _banner
 
     private var _navigate: (SetupRoute) -> Unit = {}
-    private var _navigateToLogin: () -> Unit = {}
+    private var _navigateToWelcome: () -> Unit = {}
     private var _back: () -> Unit = {}
 
     fun setup(
@@ -45,7 +45,7 @@ class SettingsViewModel(
         navigateToLogin: () -> Unit,
     ) {
         updatePalette()
-        _navigateToLogin = {
+        _navigateToWelcome = {
             navController.navigate(SetupRoute.Authentication) {
                 popUpTo(0) { inclusive = true }
             }
@@ -76,7 +76,7 @@ class SettingsViewModel(
         _banner.value = null
         viewModelScope.launch {
             settingsRepository.logout()
-                .onSuccess { _navigateToLogin() }
+                .onSuccess { _navigateToWelcome() }
                 .onError {
                     _banner.value = Banner.StatusBanner(
                         BannerUIData(
