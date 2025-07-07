@@ -1,10 +1,12 @@
 package com.diego.futty.home.design.presentation.component.bottomsheet
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.skydoves.flexible.bottomsheet.material3.BottomSheetDefaults
@@ -30,6 +32,7 @@ fun FlexibleBottomSheet(
             isModal = isModal,
             skipSlightlyExpanded = false,
         ),
+        shape = RoundedCornerShape(36.dp),
         containerColor = containerColor,
         dragHandle = { BottomSheetDefaults.DragHandle(color = colorError()) },
     ) { content() }
@@ -49,6 +52,7 @@ fun BottomSheet(
             skipPartiallyExpanded = true,
             confirmValueChange = { draggable }
         ),
+        shape = RoundedCornerShape(36.dp),
         containerColor = containerColor,
         dragHandle = null,
     ) {
