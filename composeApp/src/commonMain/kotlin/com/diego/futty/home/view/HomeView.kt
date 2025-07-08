@@ -38,6 +38,7 @@ import com.diego.futty.home.feed.presentation.screen.FeedScreen
 import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
 import com.diego.futty.home.match.presentation.screen.MatchScreen
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
+import com.diego.futty.home.post.presentation.screen.PostScreen
 import com.diego.futty.home.post.presentation.viewmodel.PostViewModel
 import com.diego.futty.setup.view.SetupView
 import com.svenjacobs.reveal.RevealCanvas
@@ -158,6 +159,28 @@ fun HomeView(navigateToLogin: () -> Unit) {
                                 onPostCreated = {
                                     feedViewModel.onPostCreated()
                                 },
+                            )
+                        }
+
+                        composable<HomeRoute.PostDetail>(
+                            enterTransition = Transitions.RightScreenEnter,
+                            exitTransition = Transitions.LeftScreenExit,
+                            popEnterTransition = Transitions.RightScreenPopEnter,
+                            popExitTransition = Transitions.LeftScreenPopExit
+                        ) {
+                            LaunchedEffect(true) {
+                                appViewModel.updateRoute(HomeRoute.PostDetail)
+                            }
+
+                            PostScreen(
+                                postWithUser = feedViewModel.openedPost.value,
+                                viewModel = postViewModel,
+                                onClose = { navController.popBackStack() },
+                                onLiked = {
+                                    feedViewModel.openedPost.value?.let { post ->
+                                        feedViewModel.onLikeClicked(post, true)
+                                    }
+                                }
                             )
                         }
                     }

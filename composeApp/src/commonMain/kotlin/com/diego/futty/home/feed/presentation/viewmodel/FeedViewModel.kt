@@ -90,11 +90,25 @@ class FeedViewModel(
 
     override fun onPostClicked(post: PostWithUser) {
         _openedPost.value = post
+        _navigate(HomeRoute.PostDetail)
     }
 
-    override fun onLikeClicked(post: PostWithUser) {
+    override fun onLikeClicked(post: PostWithUser, fromDetail: Boolean) {
         val postId = post.post.id
         val alreadyLiked = post.post.likedByUser
+
+        if (fromDetail) {
+            val current = _openedPost.value
+            _openedPost.value = current?.copy(
+                post = current.post.copy(
+                    likedByUser = !alreadyLiked,
+                    likesCount = if (alreadyLiked)
+                        current.post.likesCount - 1
+                    else
+                        current.post.likesCount + 1
+                )
+            )
+        }
 
         // ✅ 1. Optimistic UI update
         _likedPostIds.value = if (alreadyLiked) {
@@ -156,10 +170,6 @@ class FeedViewModel(
         }
     }
 
-    override fun onPostClosed() {
-        _openedPost.value = null
-    }
-
     override fun fetchFeed() {
         viewModelScope.launch {
             postRepository.getFeed(15, _lastTimestamp)
@@ -207,6 +217,7 @@ class FeedViewModel(
         _endReached = false
         _lastTimestamp = null
         _posts.value = null
+        _openedPost.value = null
         _openedImage.value = emptyList()
         _openedImageIndex.value = 0
         fetchFeed()

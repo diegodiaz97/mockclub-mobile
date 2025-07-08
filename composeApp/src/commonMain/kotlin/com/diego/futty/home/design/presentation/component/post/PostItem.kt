@@ -50,7 +50,6 @@ import compose.icons.fontawesomeicons.solid.Heart
 
 @Composable
 fun PostWithUser.Draw(
-    hasLike: Boolean,
     onLiked: () -> Unit,
     onImageClick: (image: String) -> Unit,
     onClick: () -> Unit,
@@ -75,7 +74,7 @@ fun PostWithUser.Draw(
         if (post.imageUrls.isNotEmpty()) {
             PostImage(post.imageUrls, onImageClick)
         }
-        PostFooter(post, hasLike, onLiked)
+        PostFooter(post, onLiked)
     }
 
 @Composable
@@ -169,9 +168,9 @@ private fun PostImage(
 @Composable
 private fun PostFooter(
     post: Post,
-    hasLike: Boolean,
     onLiked: () -> Unit,
 ) {
+    val hasLike = post.likedByUser
     Row(
         modifier = Modifier.padding(top = 8.dp),
         verticalAlignment = Alignment.CenterVertically,

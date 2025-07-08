@@ -39,7 +39,6 @@ fun PostsList(
             posts.forEachIndexed { index, post ->
                 item {
                     post.Draw(
-                        hasLike = post.post.likedByUser,
                         onLiked = { onLikeClicked?.let { it(post) } },
                         onImageClick = { image ->
                             if (onImageClicked != null) {
