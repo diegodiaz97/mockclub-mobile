@@ -28,7 +28,6 @@ import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
-import com.diego.futty.core.presentation.theme.colorGrey200
 import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey600
 import com.diego.futty.core.presentation.theme.colorGrey900
@@ -43,20 +42,16 @@ import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.post.domain.model.Post
 import com.diego.futty.home.post.domain.model.PostWithUser
 import compose.icons.FontAwesomeIcons
-import compose.icons.TablerIcons
+import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Comment
+import compose.icons.fontawesomeicons.regular.Comment
+import compose.icons.fontawesomeicons.regular.Heart
 import compose.icons.fontawesomeicons.solid.Heart
-import compose.icons.tablericons.Heart
-import compose.icons.tablericons.HeartBroken
-import compose.icons.tablericons.Message
 
 @Composable
 fun PostWithUser.Draw(
     hasLike: Boolean,
-    hasDislike: Boolean,
     onLiked: () -> Unit,
-    onDisliked: () -> Unit,
     onImageClick: (image: String) -> Unit,
     onClick: () -> Unit,
 ) =
@@ -80,7 +75,7 @@ fun PostWithUser.Draw(
         if (post.imageUrls.isNotEmpty()) {
             PostImage(post.imageUrls, onImageClick)
         }
-        PostFooter(post, hasLike, hasDislike, onLiked, onDisliked)
+        PostFooter(post, hasLike, onLiked)
     }
 
 @Composable
@@ -175,9 +170,7 @@ private fun PostImage(
 private fun PostFooter(
     post: Post,
     hasLike: Boolean,
-    hasDislike: Boolean,
     onLiked: () -> Unit,
-    onDisliked: () -> Unit,
 ) {
     Row(
         modifier = Modifier.padding(top = 8.dp),
@@ -190,7 +183,7 @@ private fun PostFooter(
         )
         {
             Avatar.IconAvatar(
-                icon = FontAwesomeIcons.Solid.Heart,
+                icon = if (hasLike) FontAwesomeIcons.Solid.Heart else FontAwesomeIcons.Regular.Heart,
                 tint = if (hasLike) colorError() else colorGrey900(),
                 background = colorGrey0(),
                 avatarSize = AvatarSize.Atomic,
@@ -205,7 +198,7 @@ private fun PostFooter(
             Spacer(Modifier.width(8.dp))
 
             Avatar.IconAvatar(
-                icon = FontAwesomeIcons.Solid.Comment,
+                icon = FontAwesomeIcons.Regular.Comment,
                 tint = colorGrey900(),
                 background = colorGrey0(),
                 avatarSize = AvatarSize.Atomic,

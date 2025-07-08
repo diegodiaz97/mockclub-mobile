@@ -27,6 +27,10 @@ class PostRepositoryImpl(
         return remotePostDataSource.countPosts(userId)
     }
 
+    override suspend fun getLikedPostIdsForUser(userId: String): Set<String> {
+        return remotePostDataSource.getLikedPostIdsForUser(userId)
+    }
+
     override suspend fun getFeed(
         limit: Int,
         startAfterTimestamp: Timestamp?

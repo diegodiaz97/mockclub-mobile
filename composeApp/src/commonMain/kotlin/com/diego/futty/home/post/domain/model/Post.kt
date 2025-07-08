@@ -13,6 +13,7 @@ data class Post(
     val serverTimestamp: Timestamp,
     val likesCount: Int = 0,
     val commentsCount: Int = 0,
+    val likedByUser: Boolean = false,
     val team: String,
     val brand: String,
     val tags: List<String> = emptyList()

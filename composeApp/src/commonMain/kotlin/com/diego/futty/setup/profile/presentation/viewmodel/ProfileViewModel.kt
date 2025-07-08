@@ -149,6 +149,7 @@ class ProfileViewModel(
     private val _modal = mutableStateOf<Modal?>(null)
     override val modal: State<Modal?> = _modal
 
+    private val _likedPostIds = mutableStateOf<Set<String>>(emptySet())
     private var _lastTimestamp: Timestamp? = null
     private var _endReached = false
     private val _bitmapImage = mutableStateOf<ImageBitmap?>(null)
@@ -248,18 +249,19 @@ class ProfileViewModel(
             val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
             postRepository.getPostsByUser(user, 15, _lastTimestamp)
                 .onSuccess { newPosts ->
-                    if (newPosts.isEmpty()) {
-                        if (_posts.value == null) {
-                            _posts.value = newPosts
-                        }
+                    val updatedPosts = newPosts.map { postWithUser ->
+                        val liked = postWithUser.post.id in _likedPostIds.value
+                        postWithUser.copy(
+                            post = postWithUser.post.copy(likedByUser = liked)
+                        )
+                    }
+
+                    if (updatedPosts.isEmpty()) {
+                        if (_posts.value == null) _posts.value = updatedPosts
                         _endReached = true
                     } else {
-                        _lastTimestamp = newPosts.lastOrNull()?.post?.serverTimestamp
-                        if (_posts.value == null) {
-                            _posts.value = newPosts
-                        } else {
-                            _posts.value = _posts.value?.plus(newPosts)
-                        }
+                        _lastTimestamp = updatedPosts.lastOrNull()?.post?.serverTimestamp
+                        _posts.value = _posts.value?.plus(updatedPosts) ?: updatedPosts
                     }
                 }
                 .onError {

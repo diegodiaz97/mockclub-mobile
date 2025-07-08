@@ -20,6 +20,7 @@ interface FeedViewContract {
     fun onImageClicked(images: List<String>, index: Int)
     fun onImageClosed()
     fun onPostClicked(post: PostWithUser)
+    fun onLikeClicked(post: PostWithUser)
     fun onPostClosed()
     fun onPostCreated()
     fun onStartPostCreation()

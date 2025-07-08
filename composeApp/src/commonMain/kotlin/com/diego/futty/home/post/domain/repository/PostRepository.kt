@@ -25,6 +25,8 @@ interface PostRepository {
         startAfterTimestamp: Timestamp?,
     ): DataResult<List<PostWithUser>, DataError.Remote>*/
 
+    suspend fun getLikedPostIdsForUser(userId: String): Set<String>
+
     suspend fun getFeed(
         limit: Int = 20,
         startAfterTimestamp: Timestamp?

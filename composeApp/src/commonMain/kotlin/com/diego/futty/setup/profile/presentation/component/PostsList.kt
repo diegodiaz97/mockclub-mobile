@@ -25,6 +25,7 @@ fun PostsList(
     topListComponents: @Composable () -> Unit = { },
     bottomListComponents: @Composable () -> Unit = { },
     onPostClicked: (PostWithUser) -> Unit,
+    onLikeClicked: ((PostWithUser) -> Unit)? = null,
     onImageClicked: ((images: List<String>, index: Int) -> Unit)? = null,
     onScrolled: () -> Unit,
 ) {
@@ -38,10 +39,8 @@ fun PostsList(
             posts.forEachIndexed { index, post ->
                 item {
                     post.Draw(
-                        hasLike = true,
-                        hasDislike = false,
-                        onLiked = {},
-                        onDisliked = {},
+                        hasLike = post.post.likedByUser,
+                        onLiked = { onLikeClicked?.let { it(post) } },
                         onImageClick = { image ->
                             if (onImageClicked != null) {
                                 onImageClicked(post.post.imageUrls, post.post.imageUrls.indexOf(image))

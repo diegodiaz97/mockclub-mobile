@@ -52,6 +52,7 @@ class FeedViewModel(
     private val _modal = mutableStateOf<Modal?>(null)
     override val modal: State<Modal?> = _modal
 
+    private val _likedPostIds = mutableStateOf<Set<String>>(emptySet())
     private var _loadingJob: Job? = null
     private var _lastTimestamp: Timestamp? = null
     private var _endReached = false
@@ -59,6 +60,7 @@ class FeedViewModel(
 
     fun setup(navController: NavHostController) {
         fetchUserInfo()
+        fetchPostsLiked()
         fetchFeed()
         _navigate = { navController.navigate(it) }
     }
@@ -76,7 +78,6 @@ class FeedViewModel(
         _navigate(HomeRoute.Setup)
     }
 
-
     override fun onImageClicked(images: List<String>, index: Int) {
         _openedImage.value = images
         _openedImageIndex.value = index
@@ -91,43 +92,91 @@ class FeedViewModel(
         _openedPost.value = post
     }
 
-    override fun onPostClosed() {
-        _openedPost.value = null
+    override fun onLikeClicked(post: PostWithUser) {
+        val postId = post.post.id
+        val alreadyLiked = post.post.likedByUser
+
+        // ✅ 1. Optimistic UI update
+        _likedPostIds.value = if (alreadyLiked) {
+            _likedPostIds.value - postId
+        } else {
+            _likedPostIds.value + postId
+        }
+
+        _posts.value = _posts.value?.map { current ->
+            if (current.post.id == postId) {
+                current.copy(
+                    post = current.post.copy(
+                        likedByUser = !alreadyLiked,
+                        likesCount = if (alreadyLiked)
+                            current.post.likesCount - 1
+                        else
+                            current.post.likesCount + 1
+                    )
+                )
+            } else current
+        }
+
+        viewModelScope.launch {
+            val result = if (alreadyLiked) {
+                postRepository.removeLike(postId)
+            } else {
+                postRepository.likePost(postId)
+            }
+
+            // ❌ 3. Si falla, revertir cambios
+            result.onError {
+                // 🔁 revertir el set
+                _likedPostIds.value = if (alreadyLiked) {
+                    _likedPostIds.value + postId
+                } else {
+                    _likedPostIds.value - postId
+                }
+
+                // 🔁 revertir la UI
+                _posts.value = _posts.value?.map { current ->
+                    if (current.post.id == postId) {
+                        current.copy(
+                            post = current.post.copy(
+                                likedByUser = alreadyLiked,
+                                likesCount = if (alreadyLiked)
+                                    current.post.likesCount + 1
+                                else
+                                    current.post.likesCount - 1
+                            )
+                        )
+                    } else current
+                }
+
+                _modal.value = Modal.GenericErrorModal(
+                    onPrimaryAction = { _modal.value = null },
+                    onDismiss = { _modal.value = null },
+                )
+            }
+        }
     }
 
-    private fun fetchUserInfo() {
-        viewModelScope.launch {
-            val user = preferences.getUserId() ?: return@launch
-            profileCreationRepository.fetchProfile(user)
-                .onSuccess { loggedUser ->
-                    _user.value = loggedUser
-                    preferences.saveUserType(loggedUser.userType)
-                }
-                .onError {
-                    _modal.value = Modal.GenericErrorModal(
-                        onPrimaryAction = { _modal.value = null },
-                        onDismiss = { _modal.value = null },
-                    )
-                }
-        }
+    override fun onPostClosed() {
+        _openedPost.value = null
     }
 
     override fun fetchFeed() {
         viewModelScope.launch {
             postRepository.getFeed(15, _lastTimestamp)
                 .onSuccess { newPosts ->
-                    if (newPosts.isEmpty()) {
-                        if (_posts.value == null) {
-                            _posts.value = newPosts
-                        }
+                    val updatedPosts = newPosts.map { postWithUser ->
+                        val liked = postWithUser.post.id in _likedPostIds.value
+                        postWithUser.copy(
+                            post = postWithUser.post.copy(likedByUser = liked)
+                        )
+                    }
+
+                    if (updatedPosts.isEmpty()) {
+                        if (_posts.value == null) _posts.value = updatedPosts
                         _endReached = true
                     } else {
-                        _lastTimestamp = newPosts.lastOrNull()?.post?.serverTimestamp
-                        if (_posts.value == null) {
-                            _posts.value = newPosts
-                        } else {
-                            _posts.value = _posts.value?.plus(newPosts)
-                        }
+                        _lastTimestamp = updatedPosts.lastOrNull()?.post?.serverTimestamp
+                        _posts.value = _posts.value?.plus(updatedPosts) ?: updatedPosts
                     }
                 }
                 .onError {
@@ -161,6 +210,30 @@ class FeedViewModel(
         _openedImage.value = emptyList()
         _openedImageIndex.value = 0
         fetchFeed()
+    }
+
+    private fun fetchUserInfo() {
+        viewModelScope.launch {
+            val user = preferences.getUserId() ?: return@launch
+            profileCreationRepository.fetchProfile(user)
+                .onSuccess { loggedUser ->
+                    _user.value = loggedUser
+                    preferences.saveUserType(loggedUser.userType)
+                }
+                .onError {
+                    _modal.value = Modal.GenericErrorModal(
+                        onPrimaryAction = { _modal.value = null },
+                        onDismiss = { _modal.value = null },
+                    )
+                }
+        }
+    }
+
+    private fun fetchPostsLiked() {
+        viewModelScope.launch {
+            val userId = preferences.getUserId() ?: return@launch
+            _likedPostIds.value = postRepository.getLikedPostIdsForUser(userId)
+        }
     }
 
     private fun simulateLoading() {

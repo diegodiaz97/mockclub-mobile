@@ -62,6 +62,7 @@ class KtorRemotePostDataSource(
                     "text" to text,
                     "imageUrls" to imageUrls,
                     "timestamp" to FieldValue.serverTimestamp,
+                    "likesCount" to 0,
                     "team" to team,
                     "brand" to brand,
                     "tags" to tags
@@ -88,20 +89,40 @@ class KtorRemotePostDataSource(
         }
     }
 
+    override suspend fun getLikedPostIdsForUser(userId: String): Set<String> {
+        return try {
+            val likedDocs = firestore.collection("users")
+                .document(userId)
+                .collection("likedPosts")
+                .get()
+                .documents
+
+            likedDocs.map { it.id }.toSet()
+        } catch (e: Exception) {
+            emptySet()
+        }
+    }
+
     override suspend fun getFeed(
         limit: Int,
         startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return try {
+            val userId = preferences.getUserId() ?: ""
             var query =
                 postsCollection.orderBy("timestamp", Direction.DESCENDING).limit(limit.toLong())
             if (startAfterTimestamp != null) {
                 query = query.startAfter(startAfterTimestamp)
             }
 
+            val likedPostIds = getLikedPostIdsForUser(userId)
+
             val posts = query.get().documents.map { doc ->
                 val timestamp = doc.get("timestamp") as? Timestamp
                 val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+                val postId = doc.get("id") as? String ?: doc.id
+
+                val likedByUser = postId in likedPostIds
 
                 Post(
                     id = doc.get("id") as? String ?: doc.id,
@@ -110,6 +131,8 @@ class KtorRemotePostDataSource(
                     imageUrls = doc.get("imageUrls") as? List<String> ?: emptyList(),
                     timestamp = timestampMillis ?: 0L,
                     serverTimestamp = doc.get("timestamp"),
+                    likesCount = (doc.get("likesCount") as? Int) ?: 0,
+                    likedByUser = likedByUser,
                     team = doc.get("team") as? String ?: "",
                     brand = doc.get("brand") as? String ?: ""
                 )
@@ -163,9 +186,14 @@ class KtorRemotePostDataSource(
                 query = query.startAfter(startAfterTimestamp)
             }
 
+            val likedPostIds = getLikedPostIdsForUser(userId)
+
             val posts = query.get().documents.map { doc ->
                 val timestamp = doc.get("timestamp") as? Timestamp
                 val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+                val postId = doc.get("id") as? String ?: doc.id
+
+                val likedByUser = postId in likedPostIds
 
                 Post(
                     id = doc.get("id") as? String ?: doc.id,
@@ -174,6 +202,8 @@ class KtorRemotePostDataSource(
                     imageUrls = doc.get("imageUrls") as? List<String> ?: emptyList(),
                     timestamp = timestampMillis ?: 0L,
                     serverTimestamp = doc.get("timestamp"),
+                    likesCount = (doc.get("likesCount") as? Int) ?: 0,
+                    likedByUser = likedByUser,
                     team = doc.get("team") as? String ?: "",
                     brand = doc.get("brand") as? String ?: ""
                 )
@@ -195,6 +225,7 @@ class KtorRemotePostDataSource(
         startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return try {
+            val userId = preferences.getUserId() ?: ""
             var query =
                 postsCollection.where { "team" equalTo team }
                     .orderBy("timestamp", Direction.DESCENDING)
@@ -203,9 +234,14 @@ class KtorRemotePostDataSource(
                 query = query.startAfter(startAfterTimestamp)
             }
 
+            val likedPostIds = getLikedPostIdsForUser(userId)
+
             val posts = query.get().documents.map { doc ->
                 val timestamp = doc.get("timestamp") as? Timestamp
                 val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+                val postId = doc.get("id") as? String ?: doc.id
+
+                val likedByUser = postId in likedPostIds
 
                 Post(
                     id = doc.get("id") as? String ?: doc.id,
@@ -214,6 +250,8 @@ class KtorRemotePostDataSource(
                     imageUrls = doc.get("imageUrls") as? List<String> ?: emptyList(),
                     timestamp = timestampMillis ?: 0L,
                     serverTimestamp = doc.get("timestamp"),
+                    likesCount = (doc.get("likesCount") as? Int) ?: 0,
+                    likedByUser = likedByUser,
                     team = doc.get("team") as? String ?: "",
                     brand = doc.get("brand") as? String ?: ""
                 )
@@ -235,6 +273,7 @@ class KtorRemotePostDataSource(
         startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithUser>, DataError.Remote> {
         return try {
+            val userId = preferences.getUserId() ?: ""
             var query =
                 postsCollection.where { "brand" equalTo brand }
                     .orderBy("timestamp", Direction.DESCENDING)
@@ -242,10 +281,14 @@ class KtorRemotePostDataSource(
             if (startAfterTimestamp != null) {
                 query = query.startAfter(startAfterTimestamp)
             }
+            val likedPostIds = getLikedPostIdsForUser(userId)
 
             val posts = query.get().documents.map { doc ->
                 val timestamp = doc.get("timestamp") as? Timestamp
                 val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+                val postId = doc.get("id") as? String ?: doc.id
+
+                val likedByUser = postId in likedPostIds
 
                 Post(
                     id = doc.get("id") as? String ?: doc.id,
@@ -254,6 +297,8 @@ class KtorRemotePostDataSource(
                     imageUrls = doc.get("imageUrls") as? List<String> ?: emptyList(),
                     timestamp = timestampMillis ?: 0L,
                     serverTimestamp = doc.get("timestamp"),
+                    likesCount = (doc.get("likesCount") as? Int) ?: 0,
+                    likedByUser = likedByUser,
                     team = doc.get("team") as? String ?: "",
                     brand = doc.get("brand") as? String ?: ""
                 )
@@ -271,15 +316,32 @@ class KtorRemotePostDataSource(
 
     override suspend fun likePost(postId: String): DataResult<Unit, DataError.Remote> {
         return try {
-            val userId = preferences.getUserId() ?: ""
-            val postRef = postsCollection.document(postId)
-            val likesRef = postRef.collection("likes").document(userId)
+            val userId =
+                preferences.getUserId() ?: return DataResult.Error(DataError.Remote.UNKNOWN)
+            val timestamp = Clock.System.now().toEpochMilliseconds()
 
-            val result = firestore.runTransaction {
-                likesRef.set(mapOf("timestamp" to Clock.System.now().toEpochMilliseconds()))
-                postRef.update(mapOf("likesCount" to FieldValue.increment(1)))
+            firestore.runTransaction {
+                // 1. Agregar like al post
+                postsCollection
+                    .document(postId)
+                    .collection("likes")
+                    .document(userId)
+                    .set(mapOf("timestamp" to timestamp))
+
+                // 2. Incrementar contador
+                postsCollection
+                    .document(postId)
+                    .update(mapOf("likesCount" to FieldValue.increment(1)))
+
+                // 3. Guardar like en el usuario
+                firestore.collection("users")
+                    .document(userId)
+                    .collection("likedPosts")
+                    .document(postId)
+                    .set(mapOf("timestamp" to timestamp))
             }
-            DataResult.Success(result)
+
+            DataResult.Success(Unit)
         } catch (e: Exception) {
             DataResult.Error(DataError.Remote.UNKNOWN)
         }
@@ -288,15 +350,29 @@ class KtorRemotePostDataSource(
 
     override suspend fun removeLike(postId: String): DataResult<Unit, DataError.Remote> {
         return try {
-            val userId = preferences.getUserId() ?: ""
-            val postRef = postsCollection.document(postId)
-            val likesRef = postRef.collection("likes").document(userId)
+            val userId =
+                preferences.getUserId() ?: return DataResult.Error(DataError.Remote.UNKNOWN)
+            firestore.runTransaction {
+                // 1. Quitar el like del post
+                postsCollection
+                    .document(postId)
+                    .collection("likes")
+                    .document(userId)
+                    .delete()
 
-            val result = firestore.runTransaction {
-                likesRef.delete()
-                postRef.update(mapOf("likesCount" to FieldValue.increment(-1)))
+                // 2. Decrementar contador
+                postsCollection
+                    .document(postId)
+                    .update(mapOf("likesCount" to FieldValue.increment(-1)))
+
+                // 3. Eliminar el like del usuario
+                firestore.collection("users")
+                    .document(userId)
+                    .collection("likedPosts")
+                    .document(postId)
+                    .delete()
             }
-            DataResult.Success(result)
+            DataResult.Success(Unit)
         } catch (e: Exception) {
             DataResult.Error(DataError.Remote.UNKNOWN)
         }

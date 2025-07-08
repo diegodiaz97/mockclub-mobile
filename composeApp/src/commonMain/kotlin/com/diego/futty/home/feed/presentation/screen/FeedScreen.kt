@@ -170,6 +170,9 @@ private fun Posts(
             onPostClicked = { post ->
                 viewModel.onPostClicked(post)
             },
+            onLikeClicked = { post ->
+                viewModel.onLikeClicked(post)
+            },
             onImageClicked = { images, index ->
                 viewModel.onImageClicked(images, index)
             },
