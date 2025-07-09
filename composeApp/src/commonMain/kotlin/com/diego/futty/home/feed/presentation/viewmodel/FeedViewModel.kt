@@ -52,10 +52,12 @@ class FeedViewModel(
     private val _postCreationProgress = mutableStateOf(0f)
     override val postCreationProgress: State<Float> = _postCreationProgress
 
+    private val _likedPostIds = mutableStateOf<Set<String>>(emptySet())
+    override val likedPostIds: State<Set<String>> = _likedPostIds
+
     private val _modal = mutableStateOf<Modal?>(null)
     override val modal: State<Modal?> = _modal
 
-    private val _likedPostIds = mutableStateOf<Set<String>>(emptySet())
     private var _loadingJob: Job? = null
     private var _lastTimestamp: Timestamp? = null
     private var _endReached = false
@@ -221,6 +223,13 @@ class FeedViewModel(
 
     override fun showPostCreation() {
         _navigate(HomeRoute.CreatePost)
+    }
+
+    override fun updateLikes(likes: Set<String>) {
+        if (_likedPostIds.value != likes) {
+            _likedPostIds.value = likes
+            onFeedRefreshed()
+        }
     }
 
     override fun onFeedRefreshed() {
