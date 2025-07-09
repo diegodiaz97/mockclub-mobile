@@ -12,12 +12,13 @@ interface FeedViewContract {
     val openedPost: State<PostWithUser?>
     val openedImage: State<List<String>>
     val openedImageIndex: State<Int>
+    val openedImageRatio: State<Float>
     val isRefreshing: State<Boolean>
     val modal: State<Modal?>
     val postCreationProgress: State<Float>
     fun startReveal(revealState: RevealState)
     fun onProfileClicked()
-    fun onImageClicked(images: List<String>, index: Int)
+    fun onImageClicked(images: List<String>, index: Int, ratio: Float)
     fun onImageClosed()
     fun onPostClicked(post: PostWithUser)
     fun onLikeClicked(post: PostWithUser, fromDetail: Boolean = false)

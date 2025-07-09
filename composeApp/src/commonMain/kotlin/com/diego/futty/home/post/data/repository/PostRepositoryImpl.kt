@@ -16,11 +16,12 @@ class PostRepositoryImpl(
     override suspend fun createPost(
         text: String,
         images: List<ByteArray>,
+        ratio: Float,
         team: String,
         brand: String,
         tags: List<String>,
     ): DataResult<Unit, DataError.Remote> {
-        return remotePostDataSource.createPost(text, images, team, brand, tags)
+        return remotePostDataSource.createPost(text, images, ratio, team, brand, tags)
     }
 
     override suspend fun countPosts(userId: String): DataResult<Int, DataError.Remote> {

@@ -43,6 +43,9 @@ class FeedViewModel(
     private val _openedImageIndex = mutableStateOf(0)
     override val openedImageIndex: State<Int> = _openedImageIndex
 
+    private val _openedImageRatio = mutableStateOf(1f)
+    override val openedImageRatio: State<Float> = _openedImageRatio
+
     private val _isRefreshing = mutableStateOf(false)
     override val isRefreshing: State<Boolean> = _isRefreshing
 
@@ -78,14 +81,21 @@ class FeedViewModel(
         _navigate(HomeRoute.Setup)
     }
 
-    override fun onImageClicked(images: List<String>, index: Int) {
+    override fun onImageClicked(
+        images: List<String>,
+        index: Int,
+        ratio: Float
+    ) {
         _openedImage.value = images
         _openedImageIndex.value = index
+        _openedImageRatio.value = ratio
     }
 
     override fun onImageClosed() {
         _openedImage.value = emptyList()
         _openedImageIndex.value = 0
+        _openedImageIndex.value = 0
+        _openedImageRatio.value = 1f
     }
 
     override fun onPostClicked(post: PostWithUser) {
@@ -220,6 +230,7 @@ class FeedViewModel(
         _openedPost.value = null
         _openedImage.value = emptyList()
         _openedImageIndex.value = 0
+        _openedImageRatio.value = 1f
         fetchFeed()
     }
 

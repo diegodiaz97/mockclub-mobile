@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
@@ -32,6 +31,7 @@ fun PagerImages(
     modifier: Modifier = Modifier.fillMaxWidth(),
     images: List<String>,
     index: Int,
+    aspectRatio: Float = 1f,
     isFullscreen: Boolean = false,
     onImageClosed: (() -> Unit)? = null,
 ) {
@@ -49,14 +49,14 @@ fun PagerImages(
                 state = state,
                 pageSpacing = 0.dp,
                 pageContent = { page: Int ->
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        AsyncImage(
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        ZoomableImage(
                             modifier = Modifier.fillMaxWidth(),
-                            contentScale = ContentScale.FillWidth,
-                            contentDescription = "opened image",
-                            image = images[page]
+                            image = images[page],
+                            aspectRatio = aspectRatio,
+                            withSnapBackZoom = isFullscreen.not(),
+                            onTap = { },
+                            onLongPress = { }
                         )
                     }
                 },

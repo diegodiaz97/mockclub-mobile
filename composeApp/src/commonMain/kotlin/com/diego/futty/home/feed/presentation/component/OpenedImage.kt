@@ -11,6 +11,7 @@ import com.diego.futty.home.design.presentation.component.image.PagerImages
 fun OpenedImage(
     images: List<String>,
     index: Int,
+    aspectRatio: Float = 1f,
     onImageClosed: () -> Unit,
 ) {
     if (images.isNotEmpty()) {
@@ -23,6 +24,7 @@ fun OpenedImage(
                 modifier = Modifier.fillMaxSize(),
                 images = images,
                 index = index,
+                aspectRatio = aspectRatio,
                 isFullscreen = true,
                 onImageClosed = onImageClosed,
             )

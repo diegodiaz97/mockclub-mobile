@@ -94,6 +94,7 @@ kotlin {
                 implementation(libs.ui.backhandler)
                 implementation(libs.peekaboo.ui)
                 implementation(libs.peekaboo.image.picker)
+                implementation(libs.zoomable)
                 // Others
                 implementation(libs.maplibre.compose)
                 implementation(libs.passage)

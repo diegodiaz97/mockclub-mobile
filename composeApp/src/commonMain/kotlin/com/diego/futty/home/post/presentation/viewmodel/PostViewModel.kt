@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
+import com.diego.futty.home.design.presentation.component.image.AspectRatio
 import com.diego.futty.home.post.domain.repository.PostRepository
 import com.diego.futty.home.view.HomeRoute
 import kotlinx.coroutines.launch
@@ -16,7 +17,7 @@ class PostViewModel(
     private val postRepository: PostRepository,
 ) : PostViewContract, ViewModel() {
 
-    private val _postMaxLength = mutableStateOf(100)
+    private val _postMaxLength = mutableStateOf(200)
     override val postMaxLength: State<Int> = _postMaxLength
 
     private val _text = mutableStateOf("")
@@ -31,11 +32,11 @@ class PostViewModel(
     private val _images = mutableStateOf<List<ByteArray>>(emptyList())
     override val images: State<List<ByteArray>> = _images
 
+    private val _imageRatio = mutableStateOf(AspectRatio.Square)
+    override val imageRatio: State<AspectRatio> = _imageRatio
+
     private val _launchGallery = mutableStateOf(false)
     override val launchGallery: State<Boolean> = _launchGallery
-
-    private val _launchCamera = mutableStateOf(false)
-    override val launchCamera: State<Boolean> = _launchCamera
 
     private val _showTags = mutableStateOf(false)
     override val showTags: State<Boolean> = _showTags
@@ -73,6 +74,7 @@ class PostViewModel(
             postRepository.createPost(
                 text = _text.value,
                 images = _images.value,
+                ratio = _imageRatio.value.ratio,
                 team = _team.value,
                 brand = _brand.value,
                 tags = _newTags.value,
@@ -130,12 +132,16 @@ class PostViewModel(
         _brand.value = newBrand
     }
 
-    override fun launchGallery() {
-        _launchGallery.value = _launchGallery.value.not()
+    override fun updateRatio() {
+        _imageRatio.value = if (_imageRatio.value == AspectRatio.Square) {
+            AspectRatio.Portrait
+        } else {
+            AspectRatio.Square
+        }
     }
 
-    override fun launchCamera() {
-        _launchCamera.value = _launchCamera.value.not()
+    override fun launchGallery() {
+        _launchGallery.value = _launchGallery.value.not()
     }
 
     override fun dismissPostCreation() {

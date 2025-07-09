@@ -2,14 +2,15 @@ package com.diego.futty.home.post.presentation.viewmodel
 
 import androidx.compose.runtime.State
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
+import com.diego.futty.home.design.presentation.component.image.AspectRatio
 
 interface PostViewContract {
     val text: State<String>
-    val images: State<List<ByteArray>>
-    val brand: State<String>
     val team: State<String>
+    val brand: State<String>
+    val images: State<List<ByteArray>>
+    val imageRatio: State<AspectRatio>
     val launchGallery: State<Boolean>
-    val launchCamera: State<Boolean>
     val postMaxLength: State<Int>
     val showTags: State<Boolean>
     val existingTags: State<List<String>>
@@ -18,8 +19,8 @@ interface PostViewContract {
     fun updateText(newText: String)
     fun updateTeam(newTeam: String)
     fun updateBrand(newBrand: String)
+    fun updateRatio()
     fun launchGallery()
-    fun launchCamera()
     fun dismissPostCreation()
     fun createPost(onStartPostCreation: () -> Unit, onPostCreated: () -> Unit)
     fun onImagesSelected(images: List<ByteArray>)

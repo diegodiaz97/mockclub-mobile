@@ -100,7 +100,12 @@ fun PostScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                PagerImages(images = postWithUser.post.imageUrls, index = 0)
+                PagerImages(
+                    modifier = Modifier.fillMaxSize(),
+                    aspectRatio = postWithUser.post.ratio,
+                    images = postWithUser.post.imageUrls,
+                    index = 0
+                )
                 PostInformation(
                     post = postWithUser.post,
                     user = postWithUser.user,

@@ -114,6 +114,7 @@ fun FeedScreen(
         OpenedImage(
             images = viewModel.openedImage.value,
             index = viewModel.openedImageIndex.value,
+            aspectRatio = viewModel.openedImageRatio.value,
         ) { viewModel.onImageClosed() }
 
         viewModel.modal.value?.Draw()
@@ -173,8 +174,8 @@ private fun Posts(
             onLikeClicked = { post ->
                 viewModel.onLikeClicked(post)
             },
-            onImageClicked = { images, index ->
-                viewModel.onImageClicked(images, index)
+            onImageClicked = { images, index, ratio ->
+                viewModel.onImageClicked(images, index, ratio)
             },
             onScrolled = {
                 viewModel.fetchFeed()

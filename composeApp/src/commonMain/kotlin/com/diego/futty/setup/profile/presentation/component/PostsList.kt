@@ -26,7 +26,7 @@ fun PostsList(
     bottomListComponents: @Composable () -> Unit = { },
     onPostClicked: (PostWithUser) -> Unit,
     onLikeClicked: ((PostWithUser) -> Unit)? = null,
-    onImageClicked: ((images: List<String>, index: Int) -> Unit)? = null,
+    onImageClicked: ((images: List<String>, index: Int, ratio: Float) -> Unit)? = null,
     onScrolled: () -> Unit,
 ) {
     LazyColumn(
@@ -42,7 +42,11 @@ fun PostsList(
                         onLiked = { onLikeClicked?.let { it(post) } },
                         onImageClick = { image ->
                             if (onImageClicked != null) {
-                                onImageClicked(post.post.imageUrls, post.post.imageUrls.indexOf(image))
+                                onImageClicked(
+                                    post.post.imageUrls,
+                                    post.post.imageUrls.indexOf(image),
+                                    post.post.ratio,
+                                )
                             } else {
                                 onPostClicked(post)
                             }

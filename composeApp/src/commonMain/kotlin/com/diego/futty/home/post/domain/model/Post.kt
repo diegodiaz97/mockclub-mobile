@@ -9,6 +9,7 @@ data class Post(
     val userId: String,
     val text: String,
     val imageUrls: List<String> = emptyList(),
+    val ratio: Float,
     val timestamp: Long,
     val serverTimestamp: Timestamp,
     val likesCount: Int = 0,

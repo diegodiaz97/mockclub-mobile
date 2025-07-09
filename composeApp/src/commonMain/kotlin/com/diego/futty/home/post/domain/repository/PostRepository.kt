@@ -12,6 +12,7 @@ interface PostRepository {
     suspend fun createPost(
         text: String,
         images: List<ByteArray>,
+        ratio: Float,
         team: String,
         brand: String,
         tags: List<String>,

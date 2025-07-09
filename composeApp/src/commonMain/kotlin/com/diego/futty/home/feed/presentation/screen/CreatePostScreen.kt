@@ -11,15 +11,14 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -45,7 +44,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
-import com.diego.futty.core.presentation.photos.CameraView
 import com.diego.futty.core.presentation.theme.colorAlertLight
 import com.diego.futty.core.presentation.theme.colorErrorLight
 import com.diego.futty.core.presentation.theme.colorGrey0
@@ -64,6 +62,7 @@ import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.bottomsheet.BottomSheet
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.chip.Chip
+import com.diego.futty.home.design.presentation.component.image.AspectRatio
 import com.diego.futty.home.design.presentation.component.input.TextInput
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.design.presentation.component.progressbar.CircularProgressSize
@@ -72,12 +71,14 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.post.presentation.viewmodel.PostViewModel
+import com.preat.peekaboo.image.picker.ResizeOptions
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import compose.icons.TablerIcons
-import compose.icons.tablericons.Camera
 import compose.icons.tablericons.Photo
 import compose.icons.tablericons.Plus
+import compose.icons.tablericons.RectangleVertical
+import compose.icons.tablericons.Square
 import compose.icons.tablericons.X
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -187,16 +188,6 @@ fun CreatePostScreen(
             onConfirm = { tags -> viewModel.addTags(tags) },
         )
     }
-
-    CameraView(
-        showGallery = viewModel.launchGallery.value,
-        showCamera = viewModel.launchCamera.value,
-        launchCamera = { viewModel.launchCamera() },
-        launchGallery = { viewModel.launchGallery() },
-        onImageCaptured = { image ->
-            viewModel.onImagesSelected(listOf(image))
-        }
-    )
 }
 
 fun Modifier.adaptiveBottomBarPadding(imeVisible: Boolean): Modifier {
@@ -214,7 +205,6 @@ private fun PostFooter(viewModel: PostViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .imePadding()
-            //.background(if (imeVisible) colorError() else colorAlert())
             .adaptiveBottomBarPadding(imeVisible),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -287,7 +277,22 @@ private fun PostFooter(viewModel: PostViewModel) {
                 onTextChangeAction = { viewModel.updateBrand(it) }
             ).Draw()*/
 
-            CameraView(viewModel)
+            Chip(
+                icon = if (viewModel.imageRatio.value == AspectRatio.Square) {
+                    TablerIcons.Square
+                } else {
+                    TablerIcons.RectangleVertical
+                },
+                text = if (viewModel.imageRatio.value == AspectRatio.Square) {
+                    "1:1"
+                } else {
+                    "4:5"
+                },
+                color = colorGrey100(),
+                isSelected = false,
+                onClick = { viewModel.updateRatio() }
+            )
+
             GalleryView(viewModel)
 
             val difference =
@@ -310,24 +315,14 @@ private fun PostFooter(viewModel: PostViewModel) {
 }
 
 @Composable
-private fun CameraView(viewModel: PostViewModel) {
-    Avatar.IconAvatar(
-        modifier = Modifier,
-        icon = TablerIcons.Camera,
-        tint = colorGrey900(),
-        background = colorGrey0(),
-        avatarSize = AvatarSize.Small,
-        onClick = { viewModel.launchCamera() }
-    ).Draw()
-}
-
-@Composable
 fun GalleryView(viewModel: PostViewModel) {
     val scope = rememberCoroutineScope()
+    val resizeOptions = ResizeOptions(compressionQuality = 0.6)
 
     val multipleImagePicker = rememberImagePickerLauncher(
-        selectionMode = SelectionMode.Multiple(maxSelection = 4),
+        selectionMode = SelectionMode.Multiple(maxSelection = 10),
         scope = scope,
+        resizeOptions = resizeOptions,
         onResult = { images ->
             viewModel.onImagesSelected(images)
         }
@@ -345,9 +340,8 @@ fun GalleryView(viewModel: PostViewModel) {
 
 @Composable
 fun SelectedImages(viewModel: PostViewModel) = LazyRow(
-    modifier = Modifier.height(80.dp).fillMaxWidth(),
+    modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(6.dp),
-    verticalAlignment = Alignment.CenterVertically
 ) {
     item { Spacer(Modifier.width(16.dp)) }
     viewModel.images.value.forEachIndexed { index, image ->
@@ -355,9 +349,10 @@ fun SelectedImages(viewModel: PostViewModel) = LazyRow(
             Box {
                 SubcomposeAsyncImage(
                     modifier = Modifier
-                        .size(80.dp)
-                        .clickable { }
                         .clip(RoundedCornerShape(8.dp))
+                        .width(120.dp)
+                        .aspectRatio(viewModel.imageRatio.value.ratio)
+                        .clickable { }
                         .background(colorGrey100()),
                     model = image,
                     contentScale = ContentScale.Crop,

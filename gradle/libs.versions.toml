@@ -38,6 +38,7 @@ room = "2.7.0-alpha11"
 sqlite = "2.5.0-alpha11"
 uiBackhandler = "1.8.1"
 xicon_pack_z = "1.1.1"
+zoomable = "2.8.1"
 
 [libraries] # Ordered by alphabet
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -118,6 +119,7 @@ ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.r
 xicon_pack_z_font_awesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "xicon_pack_z" }
 xicon_pack_z_octicon = { module = "br.com.devsrsouza.compose.icons:octicons", version.ref = "xicon_pack_z" }
 xicon_pack_z_tabler = { module = "br.com.devsrsouza.compose.icons:tabler-icons", version.ref = "xicon_pack_z" }
+zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 
 [plugins] # Ordered by functionality
 androidApplication = { id = "com.android.application", version.ref = "agp" }
