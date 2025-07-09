@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -23,7 +24,7 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.setup.profile.presentation.component.DesiresList
 import com.diego.futty.setup.profile.presentation.component.Levels
-import com.diego.futty.setup.profile.presentation.component.PostsList
+import com.diego.futty.setup.profile.presentation.component.PostsGrid
 import com.diego.futty.setup.profile.presentation.component.ProfileImageHandler
 import com.diego.futty.setup.profile.presentation.component.UpgradeBanner
 import com.diego.futty.setup.profile.presentation.component.UserMainInfo
@@ -103,38 +104,44 @@ private fun FollowButton(viewModel: ProfileViewModel) {
 
 @Composable
 private fun Posts(viewModel: ProfileViewModel) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
     ) {
-        PostsList(
-            posts = viewModel.posts.value,
-            topListComponents = {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    UserMainInfo(viewModel)
-                    UserSecondaryInfo(viewModel)
-                    UpgradeBanner(viewModel)
-                    FollowButton(viewModel)
-                    HorizontalDivider(thickness = 12.dp, color = colorGrey0())
-                }
-            },
-            bottomListComponents = {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    DesiresList(viewModel)
-                    Levels()
-                }
-            },
-            onPostClicked = { post ->
-                viewModel.onPostClicked(post)
-            },
-            onScrolled = {
-                viewModel.fetchOwnFeed()
+        // Parte superior: header, stats, botón seguir, etc.
+        item {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                UserMainInfo(viewModel)
+                UserSecondaryInfo(viewModel)
+                UpgradeBanner(viewModel)
+                FollowButton(viewModel)
+                HorizontalDivider(thickness = 12.dp, color = colorGrey0())
             }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        // Grilla de posts (en un solo item)
+        item {
+            PostsGrid(
+                posts = viewModel.posts.value,
+                onPostClicked = { post ->
+                    viewModel.onPostClicked(post)
+                },
+                onScrolled = {
+                    viewModel.fetchOwnFeed()
+                }
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        item {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                DesiresList(viewModel)
+                Levels()
+            }
+        }
     }
 }

@@ -16,6 +16,7 @@ import com.diego.futty.authentication.view.AuthenticationView
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
 import com.diego.futty.core.presentation.utils.Transitions
+import com.diego.futty.home.post.presentation.screen.PostScreen
 import com.diego.futty.setup.profile.presentation.screen.ProfileScreen
 import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
 import com.diego.futty.setup.settings.presentation.screen.SettingsScreen
@@ -25,7 +26,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SetupView(
     userId: String = "",
-    onBack: () -> Unit,
+    likes: Set<String> = emptySet(),
+    onBack: (likes: Set<String>) -> Unit,
     navigateToLogin: () -> Unit,
 ) {
     val setupViewModel = koinViewModel<SetupViewModel>()
@@ -40,6 +42,7 @@ fun SetupView(
         LaunchedEffect(true) {
             setupViewModel.setup()
             profileCreationViewModel.setup(navController, "profile")
+            profileViewModel.setup(userId, likes, navController, onBack)
             settingsViewModel.setup(navController, navigateToLogin)
         }
         Column {
@@ -59,7 +62,6 @@ fun SetupView(
                     ) {
                         LaunchedEffect(true) {
                             setupViewModel.updateRoute(SetupRoute.Profile)
-                            profileViewModel.setup(userId, navController, onBack)
                         }
                         ProfileScreen(viewModel = profileViewModel)
                     }
@@ -72,9 +74,29 @@ fun SetupView(
                     ) {
                         LaunchedEffect(true) {
                             setupViewModel.updateRoute(SetupRoute.ProfileCreation)
-                            profileCreationViewModel.setup(navController, "profile")
                         }
                         ProfileCreationScreen(profileCreationViewModel)
+                    }
+
+                    composable<SetupRoute.PostDetail>(
+                        enterTransition = Transitions.RightScreenEnter,
+                        exitTransition = Transitions.LeftScreenExit,
+                        popEnterTransition = Transitions.RightScreenPopEnter,
+                        popExitTransition = Transitions.LeftScreenPopExit
+                    ) {
+                        LaunchedEffect(true) {
+                            setupViewModel.updateRoute(SetupRoute.PostDetail)
+                        }
+
+                        PostScreen(
+                            postWithUser = profileViewModel.openedPost.value,
+                            onClose = { navController.popBackStack() },
+                            onLiked = {
+                                profileViewModel.openedPost.value?.let { post ->
+                                    profileViewModel.onLikeClicked(post, true)
+                                }
+                            }
+                        )
                     }
 
                     composable<SetupRoute.Setting>(

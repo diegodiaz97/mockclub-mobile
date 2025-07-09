@@ -44,7 +44,6 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBarActionTyp
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.post.domain.model.Post
 import com.diego.futty.home.post.domain.model.PostWithUser
-import com.diego.futty.home.post.presentation.viewmodel.PostViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.TablerIcons
 import compose.icons.fontawesomeicons.Regular
@@ -58,7 +57,6 @@ import compose.icons.tablericons.Dots
 @Composable
 fun PostScreen(
     postWithUser: PostWithUser?,
-    viewModel: PostViewModel,
     onClose: () -> Unit,
     onLiked: () -> Unit,
 ) {

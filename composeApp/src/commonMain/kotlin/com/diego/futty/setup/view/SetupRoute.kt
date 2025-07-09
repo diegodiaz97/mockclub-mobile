@@ -17,4 +17,7 @@ sealed interface SetupRoute {
 
     @Serializable
     data object Authentication : SetupRoute
+
+    @Serializable
+    data object PostDetail : SetupRoute
 }

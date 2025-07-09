@@ -70,7 +70,12 @@ fun HomeView(navigateToLogin: () -> Unit) {
             revealCanvasState = revealCanvasState,
         ) {
             SetStatusBarColor(colorGrey0())
-            LaunchedEffect(true) { appViewModel.setup() }
+            LaunchedEffect(true) {
+                appViewModel.setup()
+                feedViewModel.setup(navController)
+                designViewModel.setup(navController)
+                // matchViewModel.setup()
+            }
 
             Column {
                 NavHost(
@@ -87,7 +92,6 @@ fun HomeView(navigateToLogin: () -> Unit) {
                         ) {
                             LaunchedEffect(true) {
                                 appViewModel.updateRoute(HomeRoute.Feed)
-                                feedViewModel.setup(navController)
                             }
                             FeedScreen(
                                 revealCanvasState = revealCanvasState,
@@ -103,7 +107,6 @@ fun HomeView(navigateToLogin: () -> Unit) {
                         ) {
                             LaunchedEffect(true) {
                                 appViewModel.updateRoute(HomeRoute.Design)
-                                designViewModel.setup(navController)
                             }
                             DesignScreen(viewModel = designViewModel)
                         }
@@ -114,7 +117,6 @@ fun HomeView(navigateToLogin: () -> Unit) {
                         ) {
                             LaunchedEffect(true) {
                                 appViewModel.updateRoute(HomeRoute.Match)
-                                // matchViewModel.setup()
                             }
                             MatchScreen(viewModel = matchViewModel)
                         }
@@ -130,9 +132,11 @@ fun HomeView(navigateToLogin: () -> Unit) {
                             }
                             SetupView(
                                 userId = designViewModel.clickedUser.value,
-                                onBack = {
+                                likes = feedViewModel.likedPostIds.value,
+                                onBack = { likes ->
                                     navController.popBackStack()
                                     designViewModel.resetUserId()
+                                    feedViewModel.updateLikes(likes)
                                 },
                                 navigateToLogin = navigateToLogin,
                             )
@@ -174,7 +178,6 @@ fun HomeView(navigateToLogin: () -> Unit) {
 
                             PostScreen(
                                 postWithUser = feedViewModel.openedPost.value,
-                                viewModel = postViewModel,
                                 onClose = { navController.popBackStack() },
                                 onLiked = {
                                     feedViewModel.openedPost.value?.let { post ->

@@ -39,7 +39,7 @@ class DesignViewModel(
     fun setup(navController: NavHostController) {
         debounce()
         _navigate = { navController.navigate(it) }
-        _modal.value = Modal.GenericModal(
+        /*_modal.value = Modal.GenericModal(
             image = "https://framerusercontent.com/images/nrDI4qjkcIIXHS1wDcmvfuW9Q.png",
             title = "Busca personas",
             subtitle = "Aquí puedes encontrar a tus amigos o nuevo contenido.",
@@ -48,7 +48,7 @@ class DesignViewModel(
             onPrimaryAction = { _modal.value = null },
             onSecondaryAction = { },
             onDismiss = { _modal.value = null },
-        )
+        )*/
     }
 
     override fun onProfileClicked() {

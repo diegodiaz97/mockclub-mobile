@@ -39,7 +39,7 @@ interface ProfileViewContract {
     fun obtainFollows()
     fun onFollowOrUnfollowClicked()
     fun onPostClicked(post: PostWithUser)
-    fun onPostClosed()
+    fun onLikeClicked(post: PostWithUser, fromDetail: Boolean)
     fun fetchOwnFeed()
     fun onFeedRefreshed()
 }

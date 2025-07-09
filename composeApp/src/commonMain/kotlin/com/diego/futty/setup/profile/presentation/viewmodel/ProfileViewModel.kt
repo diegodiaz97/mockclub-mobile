@@ -155,14 +155,16 @@ class ProfileViewModel(
     private val _bitmapImage = mutableStateOf<ImageBitmap?>(null)
     private val _byteArrayImage = mutableStateOf<ByteArray?>(null)
     private var _navigate: (SetupRoute) -> Unit = {}
-    private var _back: () -> Unit = {}
+    private var _back: (likes: Set<String>) -> Unit = {}
 
     fun setup(
         userId: String = "",
+        likes: Set<String>,
         navController: NavHostController,
-        onBack: () -> Unit,
+        onBack: (likes: Set<String>) -> Unit,
     ) {
         _userId.value = userId
+        _likedPostIds.value = likes
         _chipItems.value = dummyChips
         _navigate = { navController.navigate(it) }
         _back = onBack
@@ -176,7 +178,7 @@ class ProfileViewModel(
     }
 
     override fun onBackClicked() {
-        _back()
+        _back(_likedPostIds.value)
     }
 
     override fun onChipSelected(chip: ChipModel) {
@@ -288,16 +290,91 @@ class ProfileViewModel(
 
     override fun onPostClicked(post: PostWithUser) {
         _openedPost.value = post
+        _navigate(SetupRoute.PostDetail)
     }
 
-    override fun onPostClosed() {
-        _openedPost.value = null
+    override fun onLikeClicked(post: PostWithUser, fromDetail: Boolean) {
+        val postId = post.post.id
+        val alreadyLiked = post.post.likedByUser
+
+        if (fromDetail) {
+            val current = _openedPost.value
+            _openedPost.value = current?.copy(
+                post = current.post.copy(
+                    likedByUser = !alreadyLiked,
+                    likesCount = if (alreadyLiked)
+                        current.post.likesCount - 1
+                    else
+                        current.post.likesCount + 1
+                )
+            )
+        }
+
+        // ✅ 1. Optimistic UI update
+        _likedPostIds.value = if (alreadyLiked) {
+            _likedPostIds.value - postId
+        } else {
+            _likedPostIds.value + postId
+        }
+
+        _posts.value = _posts.value?.map { current ->
+            if (current.post.id == postId) {
+                current.copy(
+                    post = current.post.copy(
+                        likedByUser = !alreadyLiked,
+                        likesCount = if (alreadyLiked)
+                            current.post.likesCount - 1
+                        else
+                            current.post.likesCount + 1
+                    )
+                )
+            } else current
+        }
+
+        viewModelScope.launch {
+            val result = if (alreadyLiked) {
+                postRepository.removeLike(postId)
+            } else {
+                postRepository.likePost(postId)
+            }
+
+            // ❌ 3. Si falla, revertir cambios
+            result.onError {
+                // 🔁 revertir el set
+                _likedPostIds.value = if (alreadyLiked) {
+                    _likedPostIds.value + postId
+                } else {
+                    _likedPostIds.value - postId
+                }
+
+                // 🔁 revertir la UI
+                _posts.value = _posts.value?.map { current ->
+                    if (current.post.id == postId) {
+                        current.copy(
+                            post = current.post.copy(
+                                likedByUser = alreadyLiked,
+                                likesCount = if (alreadyLiked)
+                                    current.post.likesCount + 1
+                                else
+                                    current.post.likesCount - 1
+                            )
+                        )
+                    } else current
+                }
+
+                _modal.value = Modal.GenericErrorModal(
+                    onPrimaryAction = { _modal.value = null },
+                    onDismiss = { _modal.value = null },
+                )
+            }
+        }
     }
 
     override fun onFeedRefreshed() {
         _endReached = false
         _lastTimestamp = null
         _posts.value = null
+        _openedPost.value = null
         fetchOwnFeed()
     }
 
