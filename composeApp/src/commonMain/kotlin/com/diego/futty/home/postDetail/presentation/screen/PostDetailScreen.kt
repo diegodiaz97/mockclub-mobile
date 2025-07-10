@@ -231,7 +231,7 @@ private fun PostComments(viewModel: PostDetailViewModel) {
         } else {
             item {
                 Text(
-                    modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
+                    modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
                     text = "Aún no hay comentarios",
                     style = typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,

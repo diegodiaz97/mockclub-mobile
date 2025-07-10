@@ -39,13 +39,13 @@ import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.colorInfo
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
-import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.brands.Apple
 import compose.icons.fontawesomeicons.brands.Google
 import futty.composeapp.generated.resources.Res
-import futty.composeapp.generated.resources.logo
+import futty.composeapp.generated.resources.background
+import futty.composeapp.generated.resources.icon
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -70,7 +70,7 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
 @Composable
 private fun WelcomeContent(modifier: Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
-        AsyncImage(
+        Image(
             modifier = Modifier.fillMaxSize(),
             colorFilter = ColorFilter.tint(
                 color = Grey900.copy(alpha = 0.4f),
@@ -78,7 +78,7 @@ private fun WelcomeContent(modifier: Modifier) {
             ),
             contentScale = ContentScale.FillHeight,
             contentDescription = "welcome image",
-            image = "https://st5.depositphotos.com/3138123/70473/i/450/depositphotos_704733844-stock-photo-abstract-pastel-soft-colorful-textured.jpg"
+            painter = painterResource(Res.drawable.background),
         )
     }
 }
@@ -89,10 +89,10 @@ private fun ButtonsContent(modifier: Modifier, viewModel: WelcomeViewModel) {
         Image(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .size(180.dp)
+                .size(240.dp)
                 .weight(1f)
                 .wrapContentSize(Alignment.Center),
-            painter = painterResource(Res.drawable.logo),
+            painter = painterResource(Res.drawable.icon),
             contentDescription = "app icon"
         )
 
