@@ -17,8 +17,8 @@ import com.diego.futty.core.presentation.theme.SuccessLight
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.design.presentation.component.chip.ChipModel
 import com.diego.futty.home.feed.domain.model.User
-import com.diego.futty.home.post.domain.model.PostWithUser
-import com.diego.futty.home.post.domain.repository.PostRepository
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.repository.PostRepository
 import com.diego.futty.setup.profile.domain.repository.ProfileRepository
 import com.diego.futty.setup.view.SetupRoute
 import compose.icons.TablerIcons

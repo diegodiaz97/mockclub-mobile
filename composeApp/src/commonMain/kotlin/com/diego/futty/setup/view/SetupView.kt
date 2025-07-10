@@ -16,7 +16,8 @@ import com.diego.futty.authentication.view.AuthenticationView
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
 import com.diego.futty.core.presentation.utils.Transitions
-import com.diego.futty.home.post.presentation.screen.PostScreen
+import com.diego.futty.home.postDetail.presentation.screen.PostDetailScreen
+import com.diego.futty.home.postDetail.presentation.viewmodel.PostDetailViewModel
 import com.diego.futty.setup.profile.presentation.screen.ProfileScreen
 import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
 import com.diego.futty.setup.settings.presentation.screen.SettingsScreen
@@ -34,6 +35,7 @@ fun SetupView(
     val profileViewModel = koinViewModel<ProfileViewModel>()
     val profileCreationViewModel = koinViewModel<ProfileCreationViewModel>()
     val settingsViewModel = koinViewModel<SettingsViewModel>()
+    val postDetailViewModel = koinViewModel<PostDetailViewModel>()
 
     val navController = rememberNavController()
 
@@ -85,11 +87,15 @@ fun SetupView(
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
-                            setupViewModel.updateRoute(SetupRoute.PostDetail)
+                            val post = profileViewModel.openedPost.value
+                            if (post != null) {
+                                setupViewModel.updateRoute(SetupRoute.PostDetail)
+                                postDetailViewModel.setup(post)
+                            }
                         }
 
-                        PostScreen(
-                            postWithUser = profileViewModel.openedPost.value,
+                        PostDetailScreen(
+                            viewModel = postDetailViewModel,
                             onClose = { navController.popBackStack() },
                             onLiked = {
                                 profileViewModel.openedPost.value?.let { post ->

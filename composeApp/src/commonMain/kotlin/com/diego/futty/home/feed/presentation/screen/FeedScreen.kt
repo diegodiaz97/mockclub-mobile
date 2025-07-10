@@ -158,7 +158,11 @@ private fun Posts(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        PostCreationProgress(viewModel.postCreationProgress.value)
+        LoadingProgress(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = "Posteando",
+            progress = viewModel.postCreationProgress.value
+        )
         PostsList(
             posts = viewModel.posts.value,
             topListComponents = {
@@ -185,28 +189,33 @@ private fun Posts(
 }
 
 @Composable
-fun PostCreationProgress(progress: Float) {
+fun LoadingProgress(
+    modifier: Modifier = Modifier,
+    text: String?,
+    progress: Float
+) {
     AnimatedVisibility(
         visible = progress > 0f && progress <= 1,
         enter = expandVertically(),
         exit = shrinkVertically()
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(colorGrey100())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(
-                text = "Posteando",
-                style = typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                color = colorGrey900()
-            )
+            if (text != null) {
+                Text(
+                    text = text,
+                    style = typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = colorGrey900()
+                )
+            }
             DynamicLinearProgressBar(
                 progress = progress,
                 color = colorGrey900()

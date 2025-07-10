@@ -39,8 +39,8 @@ import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.feed.domain.model.User
-import com.diego.futty.home.post.domain.model.Post
-import com.diego.futty.home.post.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.Post
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.Solid

@@ -1,4 +1,4 @@
-package com.diego.futty.home.post.domain.model
+package com.diego.futty.home.postCreation.domain.model
 
 import kotlinx.serialization.Serializable
 

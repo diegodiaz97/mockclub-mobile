@@ -1,4 +1,4 @@
-package com.diego.futty.home.post.data.network
+package com.diego.futty.home.postCreation.data.network
 
 import com.diego.futty.core.data.firebase.FirebaseManager
 import com.diego.futty.core.data.firebase.ImageUploader
@@ -6,11 +6,11 @@ import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
 import com.diego.futty.home.feed.domain.model.User
-import com.diego.futty.home.post.domain.model.Comment
-import com.diego.futty.home.post.domain.model.CommentWithUser
-import com.diego.futty.home.post.domain.model.Post
-import com.diego.futty.home.post.domain.model.PostWithUser
-import com.diego.futty.home.post.domain.model.Tag
+import com.diego.futty.home.postCreation.domain.model.Comment
+import com.diego.futty.home.postCreation.domain.model.CommentWithUser
+import com.diego.futty.home.postCreation.domain.model.Post
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.Tag
 import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.Timestamp
@@ -398,24 +398,40 @@ class KtorRemotePostDataSource(
     override suspend fun addComment(
         postId: String,
         text: String
-    ): DataResult<Comment, DataError.Remote> {
+    ): DataResult<CommentWithUser, DataError.Remote> {
         return try {
             val userId = preferences.getUserId() ?: ""
             val commentRef = postsCollection.document(postId).collection("comments").document
-            val comment = Comment(
-                id = commentRef.id,
-                userId = userId,
-                text = text,
-                timestamp = Clock.System.now().toEpochMilliseconds(),
-            )
 
             firestore.runTransaction {
-                commentRef.set(comment)
+                commentRef.set(
+                    mapOf(
+                        "id" to commentRef.id,
+                        "userId" to userId,
+                        "text" to text,
+                        "timestamp" to FieldValue.serverTimestamp, //save firebase timestamp
+                    )
+                )
                 postsCollection.document(postId)
                     .update(mapOf("commentsCount" to FieldValue.increment(1)))
             }
 
-            DataResult.Success(comment)
+            val doc = commentRef.get()
+            val timestamp = doc.get("timestamp") as? Timestamp
+            val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+
+            val comment = Comment(
+                id = doc.get("id") as? String ?: doc.id,
+                userId = doc.get("userId") as? String ?: "",
+                text = doc.get("text") as? String ?: "",
+                timestamp = timestampMillis ?: 0L,
+                serverTimestamp = doc.get("timestamp"),
+            )
+
+            val user = getUserById(userId)
+            val commentsWithUser = CommentWithUser(comment, user)
+
+            DataResult.Success(commentsWithUser)
         } catch (e: Exception) {
             DataResult.Error(DataError.Remote.UNKNOWN)
         }
@@ -436,10 +452,18 @@ class KtorRemotePostDataSource(
                 id = replyRef.id,
                 userId = userId,
                 text = text,
-                timestamp = Clock.System.now().toEpochMilliseconds(),
+                timestamp = Clock.System.now()
+                    .toEpochMilliseconds(), // no problem, it's only to show the first time
             )
 
-            replyRef.set(reply)
+            replyRef.set(
+                mapOf(
+                    "id" to replyRef.id,
+                    "userId" to userId,
+                    "text" to text,
+                    "timestamp" to FieldValue.serverTimestamp, //save firebase timestamp
+                )
+            )
             DataResult.Success(reply)
         } catch (e: Exception) {
             DataResult.Error(DataError.Remote.UNKNOWN)
@@ -505,7 +529,18 @@ class KtorRemotePostDataSource(
                 query = query.startAfter(startAfterTimestamp)
             }
 
-            val comments = query.get().documents.map { it.data<Comment>() }
+            val comments = query.get().documents.map { doc ->
+                val timestamp = doc.get("timestamp") as? Timestamp
+                val timestampMillis = timestamp?.toMilliseconds()?.toLong()
+
+                Comment(
+                    id = doc.get("id") as? String ?: doc.id,
+                    userId = doc.get("userId") as? String ?: "",
+                    text = doc.get("text") as? String ?: "",
+                    timestamp = timestampMillis ?: 0L,
+                    serverTimestamp = doc.get("timestamp"),
+                )
+            }
 
             val uniqueUserIds = comments.map { it.userId }.distinct()
             val userMap = uniqueUserIds.associateWith { getUserById(it) }

@@ -33,13 +33,14 @@ import com.diego.futty.core.presentation.utils.Transitions
 import com.diego.futty.home.design.presentation.component.bottombar.BottomBarItem
 import com.diego.futty.home.design.presentation.screen.DesignScreen
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
-import com.diego.futty.home.feed.presentation.screen.CreatePostScreen
+import com.diego.futty.home.postCreation.presentation.screen.PostCreationScreen
 import com.diego.futty.home.feed.presentation.screen.FeedScreen
 import com.diego.futty.home.feed.presentation.viewmodel.FeedViewModel
 import com.diego.futty.home.match.presentation.screen.MatchScreen
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
-import com.diego.futty.home.post.presentation.screen.PostScreen
-import com.diego.futty.home.post.presentation.viewmodel.PostViewModel
+import com.diego.futty.home.postDetail.presentation.screen.PostDetailScreen
+import com.diego.futty.home.postCreation.presentation.viewmodel.PostCreationViewModel
+import com.diego.futty.home.postDetail.presentation.viewmodel.PostDetailViewModel
 import com.diego.futty.setup.view.SetupView
 import com.svenjacobs.reveal.RevealCanvas
 import com.svenjacobs.reveal.rememberRevealCanvasState
@@ -55,7 +56,8 @@ fun HomeView(navigateToLogin: () -> Unit) {
     val designViewModel = koinViewModel<DesignViewModel>()
     val feedViewModel = koinViewModel<FeedViewModel>()
     val matchViewModel = koinViewModel<MatchViewModel>()
-    val postViewModel = koinViewModel<PostViewModel>()
+    val postCreationViewModel = koinViewModel<PostCreationViewModel>()
+    val postDetailViewModel = koinViewModel<PostDetailViewModel>()
     val navController = rememberNavController()
 
     BackHandler(true) {}
@@ -152,9 +154,9 @@ fun HomeView(navigateToLogin: () -> Unit) {
                                 appViewModel.updateRoute(HomeRoute.CreatePost)
                             }
 
-                            CreatePostScreen(
+                            PostCreationScreen(
                                 user = feedViewModel.user.value,
-                                viewModel = postViewModel,
+                                viewModel = postCreationViewModel,
                                 onClose = { navController.popBackStack() },
                                 onStartPostCreation = {
                                     feedViewModel.onStartPostCreation()
@@ -173,17 +175,21 @@ fun HomeView(navigateToLogin: () -> Unit) {
                             popExitTransition = Transitions.LeftScreenPopExit
                         ) {
                             LaunchedEffect(true) {
-                                appViewModel.updateRoute(HomeRoute.PostDetail)
+                                val post = feedViewModel.openedPost.value
+                                if (post != null) {
+                                    appViewModel.updateRoute(HomeRoute.PostDetail)
+                                    postDetailViewModel.setup(post)
+                                }
                             }
 
-                            PostScreen(
-                                postWithUser = feedViewModel.openedPost.value,
+                            PostDetailScreen(
+                                viewModel = postDetailViewModel,
                                 onClose = { navController.popBackStack() },
                                 onLiked = {
                                     feedViewModel.openedPost.value?.let { post ->
                                         feedViewModel.onLikeClicked(post, true)
                                     }
-                                }
+                                },
                             )
                         }
                     }

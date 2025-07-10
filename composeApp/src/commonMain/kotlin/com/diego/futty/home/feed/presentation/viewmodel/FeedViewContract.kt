@@ -3,7 +3,7 @@ package com.diego.futty.home.feed.presentation.viewmodel
 import androidx.compose.runtime.State
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.feed.domain.model.User
-import com.diego.futty.home.post.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
 import com.svenjacobs.reveal.RevealState
 
 interface FeedViewContract {

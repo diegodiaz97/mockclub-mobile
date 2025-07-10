@@ -23,7 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.home.design.presentation.component.image.AsyncImage
-import com.diego.futty.home.post.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
 
 @Composable
 fun PostsGrid(
@@ -62,7 +62,7 @@ fun PostsGrid(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 0.dp, max = 10_000.dp) // 👈 ESTO AGREGALE
+            .heightIn(min = 0.dp, max = 10_000.dp)
     ) {
         items(posts) { post ->
             post.DrawInGrid(onPostClicked)

@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.design.presentation.component.chip.ChipModel
 import com.diego.futty.home.feed.domain.model.User
-import com.diego.futty.home.post.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
 
 interface ProfileViewContract {
     val showUpdateImage: State<Boolean>

@@ -1,14 +1,14 @@
-package com.diego.futty.home.post.domain.repository
+package com.diego.futty.home.postCreation.data.network
 
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
-import com.diego.futty.home.post.domain.model.Comment
-import com.diego.futty.home.post.domain.model.CommentWithUser
-import com.diego.futty.home.post.domain.model.PostWithUser
-import com.diego.futty.home.post.domain.model.Tag
+import com.diego.futty.home.postCreation.domain.model.Comment
+import com.diego.futty.home.postCreation.domain.model.CommentWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.Tag
 import dev.gitlive.firebase.firestore.Timestamp
 
-interface PostRepository {
+interface RemotePostDataSource {
     suspend fun createPost(
         text: String,
         images: List<ByteArray>,
@@ -57,7 +57,7 @@ interface PostRepository {
 
     suspend fun isPostLikedByUser(postId: String): DataResult<Boolean, DataError.Remote>
 
-    suspend fun addComment(postId: String, text: String): DataResult<Comment, DataError.Remote>
+    suspend fun addComment(postId: String, text: String): DataResult<CommentWithUser, DataError.Remote>
 
     suspend fun replyToComment(
         postId: String,
@@ -82,8 +82,8 @@ interface PostRepository {
     suspend fun getReplies(
         postId: String,
         commentId: String,
-        limit: Int,
-        startAfterTimestamp: Timestamp?
+        limit: Int = 20,
+        startAfterTimestamp: Timestamp? = null
     ): DataResult<List<CommentWithUser>, DataError.Remote>
 
     suspend fun deletePost(postId: String): DataResult<Unit, DataError.Remote>

@@ -1,21 +1,19 @@
-package com.diego.futty.home.post.presentation.viewmodel
+package com.diego.futty.home.postCreation.presentation.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.design.presentation.component.image.AspectRatio
-import com.diego.futty.home.post.domain.repository.PostRepository
-import com.diego.futty.home.view.HomeRoute
+import com.diego.futty.home.postCreation.domain.repository.PostRepository
 import kotlinx.coroutines.launch
 
-class PostViewModel(
+class PostCreationViewModel(
     private val postRepository: PostRepository,
-) : PostViewContract, ViewModel() {
+) : PostCreationViewContract, ViewModel() {
 
     private val _postMaxLength = mutableStateOf(200)
     override val postMaxLength: State<Int> = _postMaxLength
@@ -49,12 +47,6 @@ class PostViewModel(
 
     private val _modal = mutableStateOf<Modal?>(null)
     override val modal: State<Modal?> = _modal
-
-    private var _navigate: (HomeRoute) -> Unit = {}
-
-    fun setup(navController: NavHostController) {
-        _navigate = { navController.navigate(it) }
-    }
 
     override fun createPost(
         onStartPostCreation: () -> Unit,

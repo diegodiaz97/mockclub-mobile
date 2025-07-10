@@ -1,10 +1,10 @@
-package com.diego.futty.home.post.presentation.viewmodel
+package com.diego.futty.home.postCreation.presentation.viewmodel
 
 import androidx.compose.runtime.State
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.design.presentation.component.image.AspectRatio
 
-interface PostViewContract {
+interface PostCreationViewContract {
     val text: State<String>
     val team: State<String>
     val brand: State<String>

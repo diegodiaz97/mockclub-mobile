@@ -36,11 +36,12 @@ import com.diego.futty.home.match.data.network.RemoteLiveScoresDataSource
 import com.diego.futty.home.match.data.repository.LiveScoresRepositoryImpl
 import com.diego.futty.home.match.domain.LiveScoresRepository
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
-import com.diego.futty.home.post.data.network.KtorRemotePostDataSource
-import com.diego.futty.home.post.data.network.RemotePostDataSource
-import com.diego.futty.home.post.data.repository.PostRepositoryImpl
-import com.diego.futty.home.post.domain.repository.PostRepository
-import com.diego.futty.home.post.presentation.viewmodel.PostViewModel
+import com.diego.futty.home.postCreation.data.network.KtorRemotePostDataSource
+import com.diego.futty.home.postCreation.data.network.RemotePostDataSource
+import com.diego.futty.home.postCreation.data.repository.PostRepositoryImpl
+import com.diego.futty.home.postCreation.domain.repository.PostRepository
+import com.diego.futty.home.postCreation.presentation.viewmodel.PostCreationViewModel
+import com.diego.futty.home.postDetail.presentation.viewmodel.PostDetailViewModel
 import com.diego.futty.home.view.HomeViewModel
 import com.diego.futty.setup.profile.data.network.KtorRemoteProfileDataSource
 import com.diego.futty.setup.profile.data.network.RemoteProfileDataSource
@@ -102,7 +103,9 @@ val sharedModule = module {
     // Post
     singleOf(::KtorRemotePostDataSource).bind<RemotePostDataSource>()
     singleOf(::PostRepositoryImpl).bind<PostRepository>()
-    viewModelOf(::PostViewModel)
+
+    viewModelOf(::PostCreationViewModel)
+    viewModelOf(::PostDetailViewModel)
 
     // Profile
     singleOf(::KtorRemoteProfileDataSource).bind<RemoteProfileDataSource>()

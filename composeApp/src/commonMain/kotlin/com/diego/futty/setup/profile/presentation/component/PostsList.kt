@@ -17,7 +17,7 @@ import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.home.design.presentation.component.post.Draw
 import com.diego.futty.home.design.presentation.component.post.PostShimmer
-import com.diego.futty.home.post.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
 
 @Composable
 fun PostsList(

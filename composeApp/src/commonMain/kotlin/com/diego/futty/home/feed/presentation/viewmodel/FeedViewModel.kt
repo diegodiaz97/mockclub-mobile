@@ -13,8 +13,8 @@ import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.feed.presentation.component.Keys
 import com.diego.futty.home.feed.presentation.component.tryShowReveal
-import com.diego.futty.home.post.domain.model.PostWithUser
-import com.diego.futty.home.post.domain.repository.PostRepository
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.repository.PostRepository
 import com.diego.futty.home.view.HomeRoute
 import com.svenjacobs.reveal.RevealState
 import dev.gitlive.firebase.firestore.Timestamp

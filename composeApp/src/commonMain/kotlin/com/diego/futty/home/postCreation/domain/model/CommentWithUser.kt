@@ -1,4 +1,4 @@
-package com.diego.futty.home.post.domain.model
+package com.diego.futty.home.postCreation.domain.model
 
 import com.diego.futty.home.feed.domain.model.User
 import kotlinx.serialization.Serializable

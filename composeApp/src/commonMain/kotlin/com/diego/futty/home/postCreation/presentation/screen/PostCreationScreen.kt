@@ -1,4 +1,4 @@
-package com.diego.futty.home.feed.presentation.screen
+package com.diego.futty.home.postCreation.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -70,7 +70,7 @@ import com.diego.futty.home.design.presentation.component.progressbar.DynamicCir
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.home.feed.domain.model.User
-import com.diego.futty.home.post.presentation.viewmodel.PostViewModel
+import com.diego.futty.home.postCreation.presentation.viewmodel.PostCreationViewModel
 import com.preat.peekaboo.image.picker.ResizeOptions
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
@@ -83,8 +83,8 @@ import compose.icons.tablericons.X
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CreatePostScreen(
-    viewModel: PostViewModel,
+fun PostCreationScreen(
+    viewModel: PostCreationViewModel,
     user: User?,
     onClose: () -> Unit,
     onStartPostCreation: () -> Unit,
@@ -199,7 +199,7 @@ fun Modifier.adaptiveBottomBarPadding(imeVisible: Boolean): Modifier {
 }
 
 @Composable
-private fun PostFooter(viewModel: PostViewModel) {
+private fun PostFooter(viewModel: PostCreationViewModel) {
     val imeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
     Column(
         modifier = Modifier
@@ -315,7 +315,7 @@ private fun PostFooter(viewModel: PostViewModel) {
 }
 
 @Composable
-fun GalleryView(viewModel: PostViewModel) {
+fun GalleryView(viewModel: PostCreationViewModel) {
     val scope = rememberCoroutineScope()
     val resizeOptions = ResizeOptions(compressionQuality = 0.6)
 
@@ -339,7 +339,7 @@ fun GalleryView(viewModel: PostViewModel) {
 }
 
 @Composable
-fun SelectedImages(viewModel: PostViewModel) = LazyRow(
+fun SelectedImages(viewModel: PostCreationViewModel) = LazyRow(
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(6.dp),
 ) {

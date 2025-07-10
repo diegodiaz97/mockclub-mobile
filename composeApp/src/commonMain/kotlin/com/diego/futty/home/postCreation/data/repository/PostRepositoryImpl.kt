@@ -1,13 +1,13 @@
-package com.diego.futty.home.post.data.repository
+package com.diego.futty.home.postCreation.data.repository
 
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
-import com.diego.futty.home.post.data.network.RemotePostDataSource
-import com.diego.futty.home.post.domain.model.Comment
-import com.diego.futty.home.post.domain.model.CommentWithUser
-import com.diego.futty.home.post.domain.model.PostWithUser
-import com.diego.futty.home.post.domain.model.Tag
-import com.diego.futty.home.post.domain.repository.PostRepository
+import com.diego.futty.home.postCreation.data.network.RemotePostDataSource
+import com.diego.futty.home.postCreation.domain.model.Comment
+import com.diego.futty.home.postCreation.domain.model.CommentWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.Tag
+import com.diego.futty.home.postCreation.domain.repository.PostRepository
 import dev.gitlive.firebase.firestore.Timestamp
 
 class PostRepositoryImpl(
@@ -78,7 +78,7 @@ class PostRepositoryImpl(
     override suspend fun addComment(
         postId: String,
         text: String
-    ): DataResult<Comment, DataError.Remote> {
+    ): DataResult<CommentWithUser, DataError.Remote> {
         return remotePostDataSource.addComment(postId, text)
     }
 
