@@ -1,27 +1,31 @@
 package com.diego.futty.home.postDetail.presentation.screen
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,12 +38,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.Fill
+import com.adamglin.phosphoricons.bold.ArrowUp
+import com.adamglin.phosphoricons.bold.ChatCircle
+import com.adamglin.phosphoricons.bold.DotsThree
+import com.adamglin.phosphoricons.bold.Heart
+import com.adamglin.phosphoricons.fill.Heart
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
@@ -48,6 +61,7 @@ import com.diego.futty.core.presentation.theme.colorGrey600
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
 import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
+import com.diego.futty.core.presentation.utils.getShortTimeAgoLabel
 import com.diego.futty.core.presentation.utils.getTimeAgoLabel
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
@@ -61,15 +75,6 @@ import com.diego.futty.home.feed.presentation.screen.LoadingProgress
 import com.diego.futty.home.postCreation.domain.model.CommentWithUser
 import com.diego.futty.home.postCreation.domain.model.Post
 import com.diego.futty.home.postDetail.presentation.viewmodel.PostDetailViewModel
-import compose.icons.FontAwesomeIcons
-import compose.icons.TablerIcons
-import compose.icons.fontawesomeicons.Regular
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.regular.Comment
-import compose.icons.fontawesomeicons.regular.Heart
-import compose.icons.fontawesomeicons.solid.Heart
-import compose.icons.tablericons.ArrowUp
-import compose.icons.tablericons.Dots
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -81,6 +86,7 @@ fun PostDetailScreen(
     val postWithUser = viewModel.post.value ?: return
 
     BackHandler {
+        viewModel.resetPost()
         onClose()
     }
 
@@ -100,62 +106,62 @@ fun PostDetailScreen(
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp),
-                title = "${postWithUser.post.team} | ${postWithUser.post.brand}",
+                title = "${postWithUser.post.team} ⨯ ${postWithUser.post.brand}",
                 topBarActionType = TopBarActionType.Icon(
-                    icon = TablerIcons.Dots,
+                    icon = PhosphorIcons.Bold.DotsThree,
                     onClick = { }
                 ),
                 onBack = {
+                    viewModel.resetPost()
                     onClose()
                 }
             )
         },
         content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .padding(
-                        top = paddingValues.calculateTopPadding(),
-                        bottom = paddingValues.calculateBottomPadding()
+            Column {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = paddingValues.calculateTopPadding())
+                        .animateContentSize()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    PagerImages(
+                        modifier = Modifier.fillMaxSize(),
+                        aspectRatio = postWithUser.post.ratio,
+                        images = postWithUser.post.imageUrls,
+                        index = 0
                     )
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                PagerImages(
-                    modifier = Modifier.fillMaxSize(),
-                    aspectRatio = postWithUser.post.ratio,
-                    images = postWithUser.post.imageUrls,
-                    index = 0
-                )
-                PostInformation(
-                    post = postWithUser.post,
-                    user = postWithUser.user,
-                    onLiked = {
-                        viewModel.onLikeClicked()
-                        onLiked()
+                    PostInformation(
+                        post = postWithUser.post,
+                        user = postWithUser.user,
+                        onLiked = {
+                            viewModel.onLikeClicked()
+                            onLiked()
+                        }
+                    )
+                    if (postWithUser.post.text.isNotEmpty()) {
+                        Text(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 8.dp)
+                                .fillMaxWidth(),
+                            text = postWithUser.post.text,
+                            style = typography.bodyLarge,
+                            color = colorGrey900(),
+                        )
                     }
-                )
-                if (postWithUser.post.text.isNotEmpty()) {
-                    Text(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 8.dp)
-                            .fillMaxWidth(),
-                        text = postWithUser.post.text,
-                        style = typography.bodyLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = colorGrey900(),
+                    LoadingProgress(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = "Agregando comentario",
+                        progress = viewModel.commentCreationProgress.value
                     )
+                    PostComments(viewModel)
                 }
-                LoadingProgress(
-                    text = "Agregando comentario",
-                    progress = viewModel.commentCreationProgress.value
-                )
-                PostComments(viewModel)
+                CommentInput(focusManager) { comment -> viewModel.onCommentClicked(comment) }
             }
         },
-        bottomBar = {
-            CommentInput(focusManager) { comment -> viewModel.onCommentClicked(comment) }
-        }
     )
 }
 
@@ -168,11 +174,9 @@ fun CommentInput(
 
     Row(
         modifier = Modifier.fillMaxWidth()
-            .clip(RoundedCornerShape(36.dp))
-            .background(colorGrey100())
-            .padding(horizontal = 16.dp, vertical = 24.dp)
-            .imePadding()
-            .navigationBarsPadding(),
+            .padding(horizontal = 16.dp)
+            .padding(top = 8.dp, bottom = 24.dp)
+            .imePadding(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -180,13 +184,13 @@ fun CommentInput(
             modifier = Modifier.weight(1f),
             input = comment,
             placeholder = "Agregar Comentario",
-            background = colorGrey0(),
+            background = colorGrey100(),
             onFocusChanged = { },
             onTextChangeAction = { comment = it }
         ).Draw()
         Avatar.IconAvatar(
-            icon = TablerIcons.ArrowUp,
-            background = colorGrey0(),
+            icon = PhosphorIcons.Bold.ArrowUp,
+            background = colorGrey100(),
             tint = colorGrey400(),
             onClick = {
                 if (comment.isNotEmpty()) {
@@ -201,35 +205,36 @@ fun CommentInput(
 
 @Composable
 private fun PostComments(viewModel: PostDetailViewModel) {
-    LazyColumn(
-        modifier = Modifier.heightIn(min = 0.dp, max = 10_000.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    Column(
+        modifier = Modifier.animateContentSize(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        item { HorizontalDivider(thickness = 1.dp, color = colorGrey100()) }
+        HorizontalDivider(thickness = 1.dp, color = colorGrey100())
 
-        item {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                text = "Comentarios",
-                style = typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = colorGrey900()
-            )
-        }
+        Text(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            text = "Comentarios",
+            style = typography.bodyLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = colorGrey900()
+        )
 
         val comments = viewModel.comments.value
 
         if (comments.isNotEmpty()) {
             comments.forEachIndexed { index, comment ->
-                item {
-                    CommentItem(comment)
-                    if (index < comments.lastIndex) {
-                        HorizontalDivider(thickness = 1.dp, color = colorGrey100())
-                    }
+                CommentItem(viewModel, comment)
+                if (index < comments.lastIndex) {
+                    HorizontalDivider(thickness = 1.dp, color = colorGrey100())
+                } else {
+                    HorizontalDivider(thickness = 24.dp, color = Color.Transparent)
+                }
+                if (index >= comments.size - 1) {
+                    viewModel.getComments()
                 }
             }
         } else {
-            item {
+            if (viewModel.post.value?.post?.commentsCount == 0) {
                 Text(
                     modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
                     text = "Aún no hay comentarios",
@@ -244,11 +249,15 @@ private fun PostComments(viewModel: PostDetailViewModel) {
 }
 
 @Composable
-private fun CommentItem(commentWithUser: CommentWithUser) {
+private fun CommentItem(
+    viewModel: PostDetailViewModel,
+    commentWithUser: CommentWithUser,
+) {
     val user = commentWithUser.user
+    val hasLike = commentWithUser.comment.likedByUser
 
     Row(
-        modifier = Modifier.padding(horizontal = 16.dp).height(IntrinsicSize.Min),
+        modifier = Modifier.padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.Top
     ) {
@@ -259,8 +268,10 @@ private fun CommentItem(commentWithUser: CommentWithUser) {
             onClick = { }
         ).Draw()
         Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.SpaceAround
+            modifier = Modifier
+                .weight(1f)
+                .animateContentSize(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -269,32 +280,232 @@ private fun CommentItem(commentWithUser: CommentWithUser) {
             ) {
                 Text(
                     text = "${user?.name} ${user?.lastName}",
-                    style = typography.bodyLarge,
+                    style = typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = colorGrey900()
                 )
                 if (user?.userType == USER_TYPE_PRO) {
-                    VerifiedIcon(Modifier.padding(top = 4.dp), size = 16.dp)
+                    VerifiedIcon(Modifier.padding(top = 2.dp), size = 16.dp)
                 }
                 Text(
                     modifier = Modifier.weight(1f),
-                    text = commentWithUser.comment.timestamp.getTimeAgoLabel(),
+                    text = " • ${commentWithUser.comment.timestamp.getShortTimeAgoLabel()}",
                     style = typography.bodySmall,
-                    textAlign = TextAlign.End,
-                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Start,
                     color = colorGrey600()
+                )
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .clickable { /* viewModel.onMoreOptionsClicked(commentWithUser, reply) */ }
+                        .size(16.dp),
+                    imageVector = PhosphorIcons.Bold.DotsThree,
+                    tint = colorGrey900(),
+                    contentDescription = null
                 )
             }
 
             Text(
                 modifier = Modifier
-                    .padding(bottom = 8.dp)
+                    .padding(bottom = 8.dp, end = 32.dp)
                     .fillMaxWidth(),
                 text = commentWithUser.comment.text,
                 style = typography.bodyMedium,
-                fontWeight = FontWeight.Normal,
                 color = colorGrey900(),
             )
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    modifier = Modifier.clickable { viewModel.onReplyCommentClicked(commentWithUser) },
+                    text = "Responder",
+                    style = typography.bodySmall,
+                    color = colorGrey600()
+                )
+
+                val repliesState = viewModel.repliesMap.value[commentWithUser.comment.id]
+                val repliesVisible = repliesState?.visible ?: false
+
+                if (commentWithUser.comment.repliesCount > 0 && !repliesVisible) {
+                    val repliesText = if (commentWithUser.comment.repliesCount == 1) {
+                        "respuesta"
+                    } else {
+                        "respuestas"
+                    }
+                    Text(
+                        modifier = Modifier.clickable {
+                            viewModel.onShowRepliesClicked(
+                                commentWithUser
+                            )
+                        },
+                        text = "Ver ${commentWithUser.comment.repliesCount} $repliesText",
+                        style = typography.bodySmall,
+                        textAlign = TextAlign.End,
+                        color = colorGrey600()
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .clickable { viewModel.onLikeCommentClicked(commentWithUser) }
+                            .padding(end = 4.dp)
+                            .size(16.dp),
+                        imageVector = if (hasLike) PhosphorIcons.Fill.Heart else PhosphorIcons.Bold.Heart,
+                        tint = if (hasLike) colorError() else colorGrey900(),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = commentWithUser.comment.likesCount.toString(),
+                        style = typography.bodySmall,
+                        color = if (hasLike) colorError() else colorGrey900(),
+                    )
+                }
+            }
+            val density = LocalDensity.current
+            val repliesState = viewModel.repliesMap.value[commentWithUser.comment.id]
+            val replies = repliesState?.replies ?: emptyList()
+            val showReplies = repliesState?.visible == true
+            AnimatedVisibility(
+                visible = showReplies,
+                enter = slideInVertically { with(density) { -40.dp.roundToPx() } }
+                        + expandVertically(expandFrom = Alignment.Top)
+                        + fadeIn(initialAlpha = 0.3f),
+                exit = slideOutVertically()
+                        + shrinkVertically()
+                        + fadeOut()
+            ) {
+                if (replies.isNotEmpty()) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        replies.forEach { reply ->
+                            val replyUser = reply.user
+                            val liked = reply.comment.likedByUser
+                            Row(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Avatar.ProfileAvatar(
+                                    imageUrl = replyUser?.profileImage?.image,
+                                    initials = replyUser?.profileImage?.initials,
+                                    background = replyUser?.profileImage?.background?.toColor(),
+                                    avatarSize = AvatarSize.Small,
+                                    onClick = { }
+                                ).Draw()
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    verticalArrangement = Arrangement.SpaceAround
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                    ) {
+                                        Text(
+                                            text = "${replyUser?.name} ${replyUser?.lastName}",
+                                            style = typography.bodyMedium,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = colorGrey900()
+                                        )
+                                        if (replyUser?.userType == USER_TYPE_PRO) {
+                                            VerifiedIcon(Modifier.padding(top = 2.dp), size = 16.dp)
+                                        }
+                                        Text(
+                                            modifier = Modifier.weight(1f),
+                                            text = " • ${reply.comment.timestamp.getShortTimeAgoLabel()}",
+                                            style = typography.bodySmall,
+                                            color = colorGrey600()
+                                        )
+                                        Icon(
+                                            modifier = Modifier
+                                                .padding(start = 12.dp)
+                                                .clickable { /* viewModel.onMoreOptionsClicked(commentWithUser, reply) */ }
+                                                .size(16.dp),
+                                            imageVector = PhosphorIcons.Bold.DotsThree,
+                                            tint = colorGrey900(),
+                                            contentDescription = null
+                                        )
+                                    }
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.Bottom,
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.weight(1f),
+                                            text = reply.comment.text,
+                                            style = typography.bodyMedium,
+                                            color = colorGrey900(),
+                                        )
+
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier
+                                                    .clickable {
+                                                        viewModel.onLikeCommentClicked(
+                                                            commentWithUser,
+                                                            reply
+                                                        )
+                                                    }
+                                                    .size(16.dp),
+                                                imageVector = if (liked) PhosphorIcons.Fill.Heart else PhosphorIcons.Bold.Heart,
+                                                tint = if (liked) colorError() else colorGrey900(),
+                                                contentDescription = null
+                                            )
+                                            Text(
+                                                text = reply.comment.likesCount.toString(),
+                                                style = typography.bodySmall,
+                                                color = if (liked) colorError() else colorGrey900(),
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                modifier = Modifier.clickable {
+                                    viewModel.onHideRepliesClicked(
+                                        commentWithUser
+                                    )
+                                },
+                                text = "Ocultar respuestas",
+                                style = typography.bodySmall,
+                                color = colorGrey600(),
+                            )
+
+                            if (repliesState?.endReached == false) {
+                                Text(
+                                    modifier = Modifier.clickable {
+                                        viewModel.onShowRepliesClicked(
+                                            commentWithUser
+                                        )
+                                    },
+                                    text = "Ver más respuestas",
+                                    style = typography.bodySmall,
+                                    color = colorGrey600(),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -338,7 +549,6 @@ private fun PostInformation(
             Text(
                 text = post.timestamp.getTimeAgoLabel(),
                 style = typography.bodySmall,
-                fontWeight = FontWeight.Normal,
                 color = colorGrey600()
             )
             Spacer(Modifier.height(4.dp))
@@ -363,7 +573,7 @@ private fun PostInteractions(
     )
     {
         Avatar.IconAvatar(
-            icon = if (hasLike) FontAwesomeIcons.Solid.Heart else FontAwesomeIcons.Regular.Heart,
+            icon = if (hasLike) PhosphorIcons.Fill.Heart else PhosphorIcons.Bold.Heart,
             tint = if (hasLike) colorError() else colorGrey900(),
             background = colorGrey0(),
             avatarSize = AvatarSize.Atomic,
@@ -372,13 +582,12 @@ private fun PostInteractions(
         Text(
             text = post.likesCount.toString(),
             style = typography.bodySmall,
-            fontWeight = FontWeight.Normal,
             color = if (hasLike) colorError() else colorGrey900(),
         )
         Spacer(Modifier.width(8.dp))
 
         Avatar.IconAvatar(
-            icon = FontAwesomeIcons.Regular.Comment,
+            icon = PhosphorIcons.Bold.ChatCircle,
             tint = colorGrey900(),
             background = colorGrey0(),
             avatarSize = AvatarSize.Atomic,
@@ -387,7 +596,6 @@ private fun PostInteractions(
         Text(
             text = post.commentsCount.toString(),
             style = typography.bodySmall,
-            fontWeight = FontWeight.Normal,
             color = colorGrey900()
         )
     }

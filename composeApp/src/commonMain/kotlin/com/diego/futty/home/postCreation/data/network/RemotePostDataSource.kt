@@ -63,7 +63,7 @@ interface RemotePostDataSource {
         postId: String,
         commentId: String,
         text: String
-    ): DataResult<Comment, DataError.Remote>
+    ): DataResult<CommentWithUser, DataError.Remote>
 
     suspend fun deleteComment(postId: String, commentId: String): DataResult<Unit, DataError.Remote>
 
@@ -72,6 +72,14 @@ interface RemotePostDataSource {
         commentId: String,
         replyId: String? = null
     ): DataResult<Unit, DataError.Remote>
+
+    suspend fun removeLikeCommentOrReply(
+        postId: String,
+        commentId: String,
+        replyId: String?
+    ): DataResult<Unit, DataError.Remote>
+
+    suspend fun getLikedItemsForCurrentUser(postId: String): LikedItems
 
     suspend fun getComments(
         postId: String,

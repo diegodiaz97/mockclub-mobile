@@ -2,8 +2,8 @@ package com.diego.futty.home.postCreation.data.repository
 
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
+import com.diego.futty.home.postCreation.data.network.LikedItems
 import com.diego.futty.home.postCreation.data.network.RemotePostDataSource
-import com.diego.futty.home.postCreation.domain.model.Comment
 import com.diego.futty.home.postCreation.domain.model.CommentWithUser
 import com.diego.futty.home.postCreation.domain.model.PostWithUser
 import com.diego.futty.home.postCreation.domain.model.Tag
@@ -86,7 +86,7 @@ class PostRepositoryImpl(
         postId: String,
         commentId: String,
         text: String
-    ): DataResult<Comment, DataError.Remote> {
+    ): DataResult<CommentWithUser, DataError.Remote> {
         return remotePostDataSource.replyToComment(postId, commentId, text)
     }
 
@@ -103,6 +103,18 @@ class PostRepositoryImpl(
         replyId: String?
     ): DataResult<Unit, DataError.Remote> {
         return remotePostDataSource.likeCommentOrReply(postId, commentId, replyId)
+    }
+
+    override suspend fun removeLikeCommentOrReply(
+        postId: String,
+        commentId: String,
+        replyId: String?
+    ): DataResult<Unit, DataError.Remote> {
+        return remotePostDataSource.removeLikeCommentOrReply(postId, commentId, replyId)
+    }
+
+    override suspend fun getLikedItemsForCurrentUser(postId: String): LikedItems {
+        return remotePostDataSource.getLikedItemsForCurrentUser(postId)
     }
 
     override suspend fun getComments(

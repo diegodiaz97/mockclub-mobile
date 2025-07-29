@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +29,7 @@ import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
+import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.colorPrimary
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
 import com.diego.futty.core.presentation.utils.Transitions
@@ -217,13 +220,14 @@ private fun BottomNavBar(appViewModel: HomeViewModel, navController: NavControll
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(colorGrey0())
-                    .navigationBarsPadding(),
+                    .navigationBarsPadding()
+                    .offset(y = 8.dp),
                 horizontalArrangement = Arrangement.SpaceAround,
             ) {
                 BottomNavScreen.allScreens.forEach { screen ->
                     BottomBarItem(
                         icon = if (currentRoute == screen.route) screen.selectedIcon else screen.icon,
-                        tint = if (currentRoute == screen.route) colorPrimary() else colorGrey500(),
+                        tint = if (currentRoute == screen.route) colorGrey900() else colorGrey500(),
                         color = Color.Transparent,
                         text = screen.text,
                     ) {

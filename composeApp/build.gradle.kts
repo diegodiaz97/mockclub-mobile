@@ -87,6 +87,7 @@ kotlin {
                 implementation(libs.xicon.pack.z.tabler)
                 implementation(libs.xicon.pack.z.octicon)
                 implementation(libs.xicon.pack.z.font.awesome)
+                implementation("com.adamglin:phosphor-icon:1.0.0")
                 implementation(libs.reveal.core)
                 implementation(libs.reveal.shapes)
                 implementation(libs.flexible.bottomsheet.material3)

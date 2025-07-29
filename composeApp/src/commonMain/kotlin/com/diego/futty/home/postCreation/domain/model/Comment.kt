@@ -9,5 +9,9 @@ data class Comment(
     val userId: String,
     val text: String,
     val timestamp: Long, // used to display
+    val likesCount: Int = 0,
+    val likedByUser: Boolean = false,
+    val replies: List<CommentWithUser> = emptyList(),
+    val repliesCount: Int = 0,
     val serverTimestamp: Timestamp? = null, // used to order
 )

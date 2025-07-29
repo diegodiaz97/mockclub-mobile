@@ -52,6 +52,30 @@ fun Long.getTimeAgoLabel(): String {
     }
 }
 
+fun Long.getShortTimeAgoLabel(): String {
+    val preferences = UserPreferences(provideSettings())
+    val delta = preferences.getServerTimeDelta()
+    val nowMillis = Clock.System.now().toEpochMilliseconds() + (delta ?: 0L)
+
+    val pastInstant = Instant.fromEpochMilliseconds(this)
+    val nowInstant =  Instant.fromEpochMilliseconds(nowMillis)
+
+    val duration = nowInstant - pastInstant
+    val minutes = duration.inWholeMinutes
+    val hours = duration.inWholeHours
+    val days = duration.inWholeDays
+
+    return when {
+        minutes < 1 -> "Ahora"
+        minutes < 60 -> "$minutes min"
+        hours < 24 -> "$hours h"
+        days < 7 -> "$days d"
+        days < 30 -> "${days / 7} semanas"
+        days < 365 -> "${days / 30} meses"
+        else -> "${days / 365} años"
+    }
+}
+
 fun Month.getMonthName(): String = when (this) {
     Month.JANUARY -> "enero"
     Month.FEBRUARY -> "febrero"

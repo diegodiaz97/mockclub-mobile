@@ -2,6 +2,7 @@ package com.diego.futty.home.postCreation.domain.repository
 
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
+import com.diego.futty.home.postCreation.data.network.LikedItems
 import com.diego.futty.home.postCreation.domain.model.Comment
 import com.diego.futty.home.postCreation.domain.model.CommentWithUser
 import com.diego.futty.home.postCreation.domain.model.PostWithUser
@@ -63,7 +64,7 @@ interface PostRepository {
         postId: String,
         commentId: String,
         text: String
-    ): DataResult<Comment, DataError.Remote>
+    ): DataResult<CommentWithUser, DataError.Remote>
 
     suspend fun deleteComment(postId: String, commentId: String): DataResult<Unit, DataError.Remote>
 
@@ -73,17 +74,25 @@ interface PostRepository {
         replyId: String? = null
     ): DataResult<Unit, DataError.Remote>
 
+    suspend fun removeLikeCommentOrReply(
+        postId: String,
+        commentId: String,
+        replyId: String?
+    ): DataResult<Unit, DataError.Remote>
+
+    suspend fun getLikedItemsForCurrentUser(postId: String): LikedItems
+
     suspend fun getComments(
         postId: String,
-        limit: Int = 20,
+        limit: Int = 10,
         startAfterTimestamp: Timestamp? = null
     ): DataResult<List<CommentWithUser>, DataError.Remote>
 
     suspend fun getReplies(
         postId: String,
         commentId: String,
-        limit: Int,
-        startAfterTimestamp: Timestamp?
+        limit: Int = 5,
+        startAfterTimestamp: Timestamp? = null
     ): DataResult<List<CommentWithUser>, DataError.Remote>
 
     suspend fun deletePost(postId: String): DataResult<Unit, DataError.Remote>
