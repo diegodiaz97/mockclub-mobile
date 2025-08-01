@@ -158,18 +158,20 @@ private fun Posts(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        LoadingProgress(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = "Posteando",
-            progress = viewModel.postCreationProgress.value
-        )
         PostsList(
             posts = viewModel.posts.value,
             topListComponents = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    TopBanners(scope, revealState)
+                    TopBanners(scope, revealState) {
+                        viewModel.onChallengesClicked()
+                    }
+                    LoadingProgress(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = "Posteando",
+                        progress = viewModel.postCreationProgress.value
+                    )
                 }
             },
             onPostClicked = { post ->

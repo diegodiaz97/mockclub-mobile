@@ -243,6 +243,10 @@ class FeedViewModel(
         fetchFeed()
     }
 
+    override fun onChallengesClicked() {
+        _navigate(HomeRoute.Match)
+    }
+
     private fun fetchUserInfo() {
         viewModelScope.launch {
             val user = preferences.getUserId() ?: return@launch

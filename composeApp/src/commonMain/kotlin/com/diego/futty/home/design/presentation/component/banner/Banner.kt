@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,7 +44,6 @@ import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import compose.icons.TablerIcons
-import compose.icons.tablericons.ArrowRight
 import compose.icons.tablericons.ChevronRight
 
 sealed interface Banner {
@@ -120,7 +118,7 @@ sealed interface Banner {
                     .fillMaxWidth()
                     .height(140.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(bannerUIData.color ?: colorGrey100())
+                    .background(bannerUIData.color ?: colorGrey0())
                     .carouselTransition(page, state)
                     .clickable { bannerUIData.action?.invoke() }
             ) {
@@ -133,7 +131,10 @@ sealed interface Banner {
 
                 if (bannerUIData.illustration != null) {
                     AsyncImage(
-                        modifier = Modifier.clipToBounds().fillMaxSize(),
+                        modifier = Modifier
+                            .clipToBounds()
+                            .clip(RoundedCornerShape(12.dp))
+                            .fillMaxSize(),
                         colorFilter = ColorFilter.tint(
                             color = Grey900.copy(alpha = 0.4f),
                             blendMode = BlendMode.Darken
@@ -148,7 +149,7 @@ sealed interface Banner {
                 ) {
                     Text(
                         text = bannerUIData.title,
-                        style = typography.titleMedium,
+                        style = typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = textColor,
                         maxLines = 1,
@@ -163,24 +164,18 @@ sealed interface Banner {
                         overflow = TextOverflow.Ellipsis,
                     )
                     if (bannerUIData.label != null) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = bannerUIData.label,
-                                style = typography.bodySmall,
-                                fontWeight = FontWeight.Medium,
-                                color = textColor,
-                                maxLines = 1,
-                            )
-                            Icon(
-                                modifier = Modifier.size(16.dp),
-                                imageVector = TablerIcons.ArrowRight,
-                                tint = textColor,
-                                contentDescription = null
-                            )
-                        }
+                        Text(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(textColor)
+                                .padding(vertical = 4.dp, horizontal = 12.dp)
+                            ,
+                            text = bannerUIData.label,
+                            style = typography.titleSmall,
+                            fontWeight = FontWeight.Medium,
+                            color = Grey900,
+                            maxLines = 1,
+                        )
                     }
                 }
             }

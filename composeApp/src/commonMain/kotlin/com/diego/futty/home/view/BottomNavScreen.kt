@@ -4,9 +4,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.adamglin.PhosphorIcons
 import com.adamglin.phosphoricons.Bold
 import com.adamglin.phosphoricons.Fill
+import com.adamglin.phosphoricons.bold.Bell
 import com.adamglin.phosphoricons.bold.House
 import com.adamglin.phosphoricons.bold.MagnifyingGlass
 import com.adamglin.phosphoricons.bold.TShirt
+import com.adamglin.phosphoricons.fill.Bell
 import com.adamglin.phosphoricons.fill.House
 import com.adamglin.phosphoricons.fill.MagnifyingGlass
 import com.adamglin.phosphoricons.fill.TShirt
@@ -17,28 +19,35 @@ sealed class BottomNavScreen(
     val icon: ImageVector,
     val selectedIcon: ImageVector
 ) {
-    object Home : BottomNavScreen(
+    data object Home : BottomNavScreen(
         "Inicio",
         HomeRoute.Feed,
         PhosphorIcons.Bold.House,
         PhosphorIcons.Fill.House
     )
 
-    object Discover : BottomNavScreen(
-        "Explorar",
+    data object Challenges : BottomNavScreen(
+        "Retos",
         HomeRoute.Match,
         PhosphorIcons.Bold.TShirt,
         PhosphorIcons.Fill.TShirt
     )
 
-    object Search : BottomNavScreen(
+    data object Search : BottomNavScreen(
         "Buscar",
         HomeRoute.Design,
         PhosphorIcons.Bold.MagnifyingGlass,
         PhosphorIcons.Fill.MagnifyingGlass
     )
 
+    data object Notifications : BottomNavScreen(
+        "Notificationes",
+        HomeRoute.Match,
+        PhosphorIcons.Bold.Bell,
+        PhosphorIcons.Fill.Bell
+    )
+
     companion object {
-        val allScreens = listOf(Home, Discover, Search)
+        val allScreens = listOf(Home, Challenges, Search, Notifications)
     }
 }

@@ -30,7 +30,7 @@ fun MatchScreen(viewModel: MatchViewModel = koinViewModel()) {
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp),
-                title = "Opina",
+                title = "Desafíos",
                 topBarActionType = TopBarActionType.Icon(
                     icon = TablerIcons.Menu2,
                     onClick = { }

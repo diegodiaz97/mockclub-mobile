@@ -29,4 +29,5 @@ interface FeedViewContract {
     fun updateLikes(likes: Set<String>)
     fun fetchFeed()
     fun onFeedRefreshed()
+    fun onChallengesClicked()
 }
