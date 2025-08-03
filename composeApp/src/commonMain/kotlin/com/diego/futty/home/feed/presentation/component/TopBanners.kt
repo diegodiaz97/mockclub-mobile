@@ -33,7 +33,7 @@ fun TopBanners(
             BannerUIData(
                 title = "Nuevo Challenge",
                 description = "¡Diseña, compite y gana!",
-                illustration = "https://img.freepik.com/premium-photo/colorful-background-with-pink-blue-waves_68067-1914.jpg",
+                illustration = "https://www.seowebdesignllc.com/wp-content/uploads/2019/10/41d99481-image1.jpg",
                 label = "Participar",
                 action = { action() },
             ),

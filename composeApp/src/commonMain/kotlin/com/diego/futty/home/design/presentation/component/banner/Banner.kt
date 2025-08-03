@@ -117,7 +117,7 @@ sealed interface Banner {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(140.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(16.dp))
                     .background(bannerUIData.color ?: colorGrey0())
                     .carouselTransition(page, state)
                     .clickable { bannerUIData.action?.invoke() }
@@ -133,13 +133,13 @@ sealed interface Banner {
                     AsyncImage(
                         modifier = Modifier
                             .clipToBounds()
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(16.dp))
                             .fillMaxSize(),
                         colorFilter = ColorFilter.tint(
-                            color = Grey900.copy(alpha = 0.4f),
+                            color = Grey900.copy(alpha = 0.2f),
                             blendMode = BlendMode.Darken
                         ),
-                        contentDescription = "profile image",
+                        contentDescription = "full image banner",
                         image = bannerUIData.illustration
                     )
                 }

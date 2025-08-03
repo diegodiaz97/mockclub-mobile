@@ -25,6 +25,7 @@ import com.diego.futty.core.data.firebase.FirebaseManager
 import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.data.local.provideSettings
 import com.diego.futty.core.data.remote.HttpClientFactory
+import com.diego.futty.home.challenge.presentation.viewmodel.ChallengeViewModel
 import com.diego.futty.home.design.data.network.KtorRemoteDiscoveryDataSource
 import com.diego.futty.home.design.data.network.RemoteDiscoveryDataSource
 import com.diego.futty.home.design.data.repository.DiscoverRepositoryImpl
@@ -99,6 +100,7 @@ val sharedModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::DesignViewModel)
     viewModelOf(::FeedViewModel)
+    viewModelOf(::ChallengeViewModel)
 
     // Post
     singleOf(::KtorRemotePostDataSource).bind<RemotePostDataSource>()

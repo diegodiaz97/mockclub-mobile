@@ -244,7 +244,7 @@ class FeedViewModel(
     }
 
     override fun onChallengesClicked() {
-        _navigate(HomeRoute.Match)
+        _navigate(HomeRoute.Challenge)
     }
 
     private fun fetchUserInfo() {

@@ -11,6 +11,9 @@ sealed interface HomeRoute {
     data object Feed : HomeRoute
 
     @Serializable
+    data object Challenge : HomeRoute
+
+    @Serializable
     data object Match : HomeRoute
 
     @Serializable

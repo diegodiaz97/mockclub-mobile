@@ -28,7 +28,7 @@ sealed class BottomNavScreen(
 
     data object Challenges : BottomNavScreen(
         "Retos",
-        HomeRoute.Match,
+        HomeRoute.Challenge,
         PhosphorIcons.Bold.TShirt,
         PhosphorIcons.Fill.TShirt
     )

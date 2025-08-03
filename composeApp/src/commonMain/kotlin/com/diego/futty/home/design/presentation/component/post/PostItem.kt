@@ -24,6 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.Fill
+import com.adamglin.phosphoricons.bold.ChatCircle
+import com.adamglin.phosphoricons.bold.Heart
+import com.adamglin.phosphoricons.fill.Heart
 import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
@@ -41,12 +47,6 @@ import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.postCreation.domain.model.Post
 import com.diego.futty.home.postCreation.domain.model.PostWithUser
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Regular
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.regular.Comment
-import compose.icons.fontawesomeicons.regular.Heart
-import compose.icons.fontawesomeicons.solid.Heart
 
 @Composable
 fun PostWithUser.Draw(
@@ -178,11 +178,11 @@ private fun PostFooter(
         Row(
             modifier = Modifier.padding(horizontal = 14.dp).weight(1f),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
         )
         {
             Avatar.IconAvatar(
-                icon = if (hasLike) FontAwesomeIcons.Solid.Heart else FontAwesomeIcons.Regular.Heart,
+                icon = if (hasLike) PhosphorIcons.Fill.Heart else PhosphorIcons.Bold.Heart,
                 tint = if (hasLike) colorError() else colorGrey900(),
                 background = colorGrey0(),
                 avatarSize = AvatarSize.Atomic,
@@ -190,14 +190,14 @@ private fun PostFooter(
             ).Draw()
             Text(
                 text = post.likesCount.toString(),
-                style = typography.bodySmall,
+                style = typography.bodyMedium,
                 fontWeight = FontWeight.Normal,
                 color = if (hasLike) colorError() else colorGrey900(),
             )
             Spacer(Modifier.width(8.dp))
 
             Avatar.IconAvatar(
-                icon = FontAwesomeIcons.Regular.Comment,
+                icon = PhosphorIcons.Bold.ChatCircle,
                 tint = colorGrey900(),
                 background = colorGrey0(),
                 avatarSize = AvatarSize.Atomic,
@@ -205,7 +205,7 @@ private fun PostFooter(
             ).Draw()
             Text(
                 text = post.commentsCount.toString(),
-                style = typography.bodySmall,
+                style = typography.bodyMedium,
                 fontWeight = FontWeight.Normal,
                 color = colorGrey900()
             )
@@ -227,7 +227,7 @@ private fun PostFooter(
                 color = colorGrey0()
             )
             Text(
-                text = " x ",
+                text = " ⨯ ",
                 style = typography.labelSmall,
                 fontWeight = FontWeight.Normal,
                 color = colorGrey100()

@@ -31,6 +31,8 @@ import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
 import com.diego.futty.core.presentation.utils.Transitions
+import com.diego.futty.home.challenge.presentation.screen.ChallengeScreen
+import com.diego.futty.home.challenge.presentation.viewmodel.ChallengeViewModel
 import com.diego.futty.home.design.presentation.component.bottombar.BottomBarItem
 import com.diego.futty.home.design.presentation.screen.DesignScreen
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
@@ -56,6 +58,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
     val appViewModel = koinViewModel<HomeViewModel>()
     val designViewModel = koinViewModel<DesignViewModel>()
     val feedViewModel = koinViewModel<FeedViewModel>()
+    val challengeViewModel = koinViewModel<ChallengeViewModel>()
     val matchViewModel = koinViewModel<MatchViewModel>()
     val postCreationViewModel = koinViewModel<PostCreationViewModel>()
     val postDetailViewModel = koinViewModel<PostDetailViewModel>()
@@ -102,6 +105,17 @@ fun HomeView(navigateToLogin: () -> Unit) {
                                 revealState = revealState,
                                 viewModel = feedViewModel,
                             )
+                        }
+
+                        composable<HomeRoute.Challenge>(
+                            enterTransition = { EnterTransition.None }, // Sin animación de entrada
+                            exitTransition = { ExitTransition.None },    // Sin animación de salida
+                        ) {
+                            LaunchedEffect(true) {
+                                challengeViewModel.setup(navController)
+                                appViewModel.updateRoute(HomeRoute.Challenge)
+                            }
+                            ChallengeScreen(viewModel = challengeViewModel)
                         }
 
                         composable<HomeRoute.Design>(
