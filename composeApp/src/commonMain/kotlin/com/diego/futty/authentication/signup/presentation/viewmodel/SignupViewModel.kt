@@ -31,6 +31,9 @@ class SignupViewModel(
     private val _email = mutableStateOf("")
     override val email: State<String> = _email
 
+    private val _userName = mutableStateOf("")
+    override val userName: State<String> = _userName
+
     private val _password = mutableStateOf("")
     override val password: State<String> = _password
 
@@ -57,6 +60,11 @@ class SignupViewModel(
 
     override fun updateEmail(email: String) {
         _email.value = email
+        validateButtonEnabled()
+    }
+
+    override fun updateUsername(username: String) {
+        _userName.value = username
         validateButtonEnabled()
     }
 
@@ -122,12 +130,18 @@ class SignupViewModel(
             val user = User(
                 id = preferences.getUserId() ?: "",
                 email = preferences.getUserEmail() ?: "",
-                profileImage = ProfileImage(
-                    background = getRandomLightColorHex()
-                ),
+                username = _userName.value,
                 creationDate = Clock.System.now().toEpochMilliseconds(),
                 userType = USER_TYPE_BASIC,
-                level = 0,
+                name = null,
+                lastName = null,
+                description = null,
+                profileImage = ProfileImage(
+                    background = getRandomLightColorHex(),
+                    initials = null,
+                    image = null,
+                ),
+                country = null,
             )
 
             profileCreationRepository.createProfile(user)
@@ -148,8 +162,10 @@ class SignupViewModel(
 
     private fun validateButtonEnabled() {
         _banner.value = null
-        _canCreateAccount.value =
-            _email.value.isNotEmpty() && _password.value.isNotEmpty() && _confirmPassword.value.isNotEmpty()
+        _canCreateAccount.value = _email.value.isNotEmpty()
+                && _userName.value.isNotEmpty()
+                && _password.value.isNotEmpty()
+                && _confirmPassword.value.isNotEmpty()
     }
 
     private fun isValidPassword() =

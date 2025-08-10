@@ -9,7 +9,7 @@ interface ProfileCreationRepository {
     suspend fun fetchProfile(id: String): DataResult<User, DataError.Remote>
     suspend fun updateProfile(
         id: String,
-        updates: Map<String, Any?>
+        updatedUser: User,
     ): DataResult<String, DataError.Remote>
     suspend fun updateProfileImage(image: ByteArray): DataResult<String, DataError.Remote>
 }

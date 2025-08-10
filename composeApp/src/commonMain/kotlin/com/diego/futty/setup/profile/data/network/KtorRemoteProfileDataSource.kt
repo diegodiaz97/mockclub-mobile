@@ -1,141 +1,105 @@
 package com.diego.futty.setup.profile.data.network
 
 import com.diego.futty.core.data.firebase.FirebaseManager
+import com.diego.futty.core.data.remote.safeCall
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
-import dev.gitlive.firebase.firestore.FieldValue
-import kotlinx.datetime.Clock
+import com.diego.futty.core.presentation.utils.PlatformInfo
+import com.diego.futty.home.feed.domain.model.Count
+import com.diego.futty.home.feed.domain.model.Following
+import com.diego.futty.home.feed.domain.model.User
+import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.http.HttpHeaders
 
 class KtorRemoteProfileDataSource(
     private val firebaseManager: FirebaseManager,
+    private val httpClient: HttpClient,
 ) : RemoteProfileDataSource {
 
-    private val firestore = firebaseManager.firestore
-    private val followsCollection = firestore.collection("follows")
-    private val usersCollection = firestore.collection("users")
-
-    override suspend fun followUser(
-        followerId: String,
-        followingId: String
-    ): DataResult<String, DataError.Remote> {
-        return try {
-            val followId = "${followerId}_$followingId"
-
-            val data = mapOf(
-                "followerId" to followerId,
-                "followingId" to followingId,
-                "timestamp" to Clock.System.now(),
-            )
-
-            followsCollection.document(followId).set(data)
-
-            usersCollection.document(followerId)
-                .update("followingCount" to FieldValue.increment(1))
-            usersCollection.document(followingId)
-                .update("followersCount" to FieldValue.increment(1))
-
-            DataResult.Success("")
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
+    private fun baseUrl(): String {
+        return if (PlatformInfo.isIOS) {
+            "http://192.168.0.192:8080"
+        } else {
+            "http://10.0.2.2:8080"
         }
     }
 
-    override suspend fun unfollowUser(
-        followerId: String,
-        followingId: String
-    ): DataResult<String, DataError.Remote> {
-        return try {
-            val followId = "${followerId}_$followingId"
-
-            followsCollection.document(followId).delete()
-
-            usersCollection.document(followerId)
-                .update("followingCount" to FieldValue.increment(-1))
-            usersCollection.document(followingId)
-                .update("followersCount" to FieldValue.increment(-1))
-
-            DataResult.Success("")
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
+    private suspend fun authToken(): String {
+        val currentUser = firebaseManager.auth.currentUser
+        return currentUser?.getIdToken(false)
+            ?: throw IllegalStateException("No token")
     }
+
+    override suspend fun followUser(targetUserId: String): DataResult<Unit, DataError.Remote> =
+        safeCall {
+            httpClient.post("${baseUrl()}/users/$targetUserId/follow") {
+                header(HttpHeaders.Authorization, "Bearer ${authToken()}")
+            }
+        }
+
+    override suspend fun unfollowUser(targetUserId: String): DataResult<Unit, DataError.Remote> =
+        safeCall {
+            httpClient.delete("${baseUrl()}/users/$targetUserId/unfollow") {
+                header(HttpHeaders.Authorization, "Bearer ${authToken()}")
+            }
+        }
 
     override suspend fun areYouFollowing(
         followerId: String,
         followingId: String
-    ): DataResult<Boolean, DataError.Remote> {
-        return try {
-            val followId = "${followerId}_$followingId"
-
-            val result = followsCollection.document(followId).get().exists
-
-            DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
+    ): DataResult<Following, DataError.Remote> =
+        safeCall<Following> {
+            httpClient.get("${baseUrl()}/users/$followerId/following/$followingId/isFollowing") {
+                header(HttpHeaders.Authorization, "Bearer ${authToken()}")
+            }
         }
-    }
 
-    override suspend fun obtainFollowers( // lista de los que me siguen
+    override suspend fun obtainFollowers(
+        userId: String,
+        limit: Int,
+        offset: Int,
+    ): DataResult<List<User>, DataError.Remote> =
+        safeCall<List<User>> {
+            httpClient.get("${baseUrl()}/users/$userId/followers") {
+                header(HttpHeaders.Authorization, "Bearer ${authToken()}")
+                parameter("limit", limit)
+                parameter("offset", offset)
+            }
+        }
+
+    override suspend fun obtainFollowing(
+        userId: String,
+        limit: Int,
+        offset: Int,
+    ): DataResult<List<User>, DataError.Remote> =
+        safeCall<List<User>> {
+            httpClient.get("${baseUrl()}/users/$userId/following") {
+                header(HttpHeaders.Authorization, "Bearer ${authToken()}")
+                parameter("limit", limit)
+                parameter("offset", offset)
+            }
+        }
+
+    override suspend fun countFollowers(
         userId: String
-    ): DataResult<List<String>, DataError.Remote> {
-        return try {
-            val result = followsCollection
-                .where { "followingId" equalTo userId }
-                .get()
-                .documents
-                .map { it.get<String>("followerId") }
-
-            DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
+    ): DataResult<Count, DataError.Remote> =
+        safeCall<Count> {
+            httpClient.get("${baseUrl()}/users/$userId/followers/count") {
+                header(HttpHeaders.Authorization, "Bearer ${authToken()}")
+            }
         }
-    }
 
-    override suspend fun obtainFollows( // lista de los que yo sigo
+    override suspend fun countFollows(
         userId: String
-    ): DataResult<List<String>, DataError.Remote> {
-        return try {
-            val result = followsCollection
-                .where { "followerId" equalTo userId }
-                .get()
-                .documents
-                .map { it.get<String>("followingId") }
-
-            DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
+    ): DataResult<Count, DataError.Remote> =
+        safeCall<Count> {
+            httpClient.get("${baseUrl()}/users/$userId/following/count") {
+                header(HttpHeaders.Authorization, "Bearer ${authToken()}")
+            }
         }
-    }
-
-    override suspend fun countFollowers( // contar seguidores
-        userId: String
-    ): DataResult<Int, DataError.Remote> {
-        return try {
-            val result = followsCollection
-                .where { "followingId" equalTo userId }
-                .get()
-                .documents
-                .size
-
-            DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
-    }
-
-    override suspend fun countFollows( // contar a los que sigo
-        userId: String
-    ): DataResult<Int, DataError.Remote> {
-        return try {
-            val result = followsCollection
-                .where { "followerId" equalTo userId }
-                .get()
-                .documents
-                .size
-
-            DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
-    }
 }

@@ -34,9 +34,9 @@ fun User.Draw(onClick: (() -> Unit)? = null) = Row(
 ) {
     Avatar.ProfileAvatar(
         modifier = Modifier.align(Alignment.Top),
-        imageUrl = profileImage.image,
-        initials = profileImage.initials,
-        background = profileImage.background.toColor(),
+        imageUrl = profileImage?.image,
+        initials = profileImage?.initials,
+        background = profileImage?.background?.toColor(),
         avatarSize = AvatarSize.Big,
         onClick = {
             if (onClick != null) {

@@ -20,9 +20,9 @@ class ProfileCreationRepositoryImpl(
 
     override suspend fun updateProfile(
         id: String,
-        updates: Map<String, Any?>
+        updatedUser: User,
     ): DataResult<String, DataError.Remote> {
-        return remoteProfileCreationDataSource.updateProfile(id, updates)
+        return remoteProfileCreationDataSource.updateProfile(id, updatedUser)
     }
 
     override suspend fun updateProfileImage(image: ByteArray): DataResult<String, DataError.Remote> {

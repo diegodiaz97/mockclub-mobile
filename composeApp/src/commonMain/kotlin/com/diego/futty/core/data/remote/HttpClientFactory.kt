@@ -20,7 +20,9 @@ object HttpClientFactory {
             install(ContentNegotiation) {
                 json(
                     json = Json {
+                        prettyPrint = true
                         ignoreUnknownKeys = true
+                        explicitNulls = true  // IMPORTANTE: para que se manden explícitamente los nulls
                     }
                 )
             }

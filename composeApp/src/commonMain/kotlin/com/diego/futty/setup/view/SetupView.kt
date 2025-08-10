@@ -43,9 +43,6 @@ fun SetupView(
         SetStatusBarColor(Color.Transparent)
         LaunchedEffect(true) {
             setupViewModel.setup()
-            profileCreationViewModel.setup(navController, "profile")
-            profileViewModel.setup(userId, likes, navController, onBack)
-            settingsViewModel.setup(navController, navigateToLogin)
         }
         Column {
             NavHost(
@@ -63,6 +60,7 @@ fun SetupView(
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
+                            profileViewModel.setup(userId, likes, navController, onBack)
                             setupViewModel.updateRoute(SetupRoute.Profile)
                         }
                         ProfileScreen(viewModel = profileViewModel)
@@ -75,6 +73,7 @@ fun SetupView(
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
+                            profileCreationViewModel.setup(navController, "profile")
                             setupViewModel.updateRoute(SetupRoute.ProfileCreation)
                         }
                         ProfileCreationScreen(profileCreationViewModel)
@@ -112,6 +111,7 @@ fun SetupView(
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
+                            settingsViewModel.setup(navController, navigateToLogin)
                             setupViewModel.updateRoute(SetupRoute.Setting)
                         }
                         SettingsScreen(viewModel = settingsViewModel)

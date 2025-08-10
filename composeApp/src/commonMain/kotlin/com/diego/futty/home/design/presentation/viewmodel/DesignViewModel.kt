@@ -39,16 +39,6 @@ class DesignViewModel(
     fun setup(navController: NavHostController) {
         debounce()
         _navigate = { navController.navigate(it) }
-        /*_modal.value = Modal.GenericModal(
-            image = "https://framerusercontent.com/images/nrDI4qjkcIIXHS1wDcmvfuW9Q.png",
-            title = "Busca personas",
-            subtitle = "Aquí puedes encontrar a tus amigos o nuevo contenido.",
-            primaryButton = "Entendido",
-            secondaryButton = null,
-            onPrimaryAction = { _modal.value = null },
-            onSecondaryAction = { },
-            onDismiss = { _modal.value = null },
-        )*/
     }
 
     override fun onProfileClicked() {
@@ -58,7 +48,7 @@ class DesignViewModel(
     @OptIn(FlowPreview::class)
     private fun debounce() {
         viewModelScope.launch {
-            _searchText.debounce(300) // Espera 300ms después de la última pulsación
+            _searchText.debounce(500) // Espera 300ms después de la última pulsación
                 .filter { it.isNotEmpty() } // No busca si el texto está vacío
                 .collectLatest { query ->
                     searchUsers(query)

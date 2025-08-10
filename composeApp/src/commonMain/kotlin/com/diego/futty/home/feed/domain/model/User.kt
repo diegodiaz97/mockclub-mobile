@@ -6,13 +6,12 @@ import kotlinx.serialization.Serializable
 data class User(
     val id: String,
     val email: String,
+    val username: String,
+    val creationDate: Long,
+    val userType: String,
     val name: String? = null,
     val lastName: String? = null,
     val description: String? = null,
-    val profileImage: ProfileImage,
-    val creationDate: Long,
-    val userType: String,
-    val level: Int,
+    val profileImage: ProfileImage? = null,
     val country: String? = null,
-    val desires: List<String>? = null,
 )

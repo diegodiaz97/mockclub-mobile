@@ -224,8 +224,8 @@ class ProfileViewModel(
                 .onSuccess { loggedUser ->
                     // show info
                     _user.value = loggedUser
-                    _urlImage.value = loggedUser.profileImage.image
-                    _initials.value = loggedUser.profileImage.initials
+                    _urlImage.value = loggedUser.profileImage?.image
+                    _initials.value = loggedUser.profileImage?.initials
                 }
                 .onError {
                     // show error
@@ -398,9 +398,8 @@ class ProfileViewModel(
     }
 
     private fun followUser(followingId: String) {
-        val user = preferences.getUserId() ?: return
         viewModelScope.launch {
-            profileRepository.followUser(followerId = user, followingId = followingId)
+            profileRepository.followUser(targetUserId = followingId)
                 .onSuccess {
                     _followersCant.value = _followersCant.value?.plus(1)
                     _followingUser.value = true
@@ -415,9 +414,8 @@ class ProfileViewModel(
     }
 
     private fun unfollowUser(followingId: String) {
-        val user = preferences.getUserId() ?: return
         viewModelScope.launch {
-            profileRepository.unfollowUser(followerId = user, followingId = followingId)
+            profileRepository.unfollowUser(targetUserId = followingId)
                 .onSuccess {
                     _followersCant.value = _followersCant.value?.minus(1)
                     _followingUser.value = false
@@ -436,7 +434,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             profileRepository.areYouFollowing(followerId = user, followingId = followingId)
                 .onSuccess { following ->
-                    _followingUser.value = following
+                    _followingUser.value = following.following
                     _showFollowButton.value = true
                 }
                 .onError {
@@ -448,7 +446,7 @@ class ProfileViewModel(
     override fun obtainFollowers() {
         val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
         viewModelScope.launch {
-            profileRepository.obtainFollowers(userId = user)
+            profileRepository.obtainFollowers(userId = user, 2, 1)
                 .onSuccess {
                     // _urlImage.value = url
                     // UPDATE FOLLOWING USER PROFILE UI
@@ -462,7 +460,7 @@ class ProfileViewModel(
     override fun obtainFollows() {
         val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
         viewModelScope.launch {
-            profileRepository.obtainFollows(userId = user)
+            profileRepository.obtainFollowing(userId = user, 2, 1)
                 .onSuccess {
                     // _urlImage.value = url
                     // UPDATE FOLLOWING USER PROFILE UI
@@ -478,7 +476,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             profileRepository.countFollowers(userId = user)
                 .onSuccess {
-                    _followersCant.value = it
+                    _followersCant.value = it.count
                 }
                 .onError {
                     // SHOW ERROR
@@ -491,7 +489,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             profileRepository.countFollows(userId = user)
                 .onSuccess {
-                    _followsCant.value = it
+                    _followsCant.value = it.count
                 }
                 .onError {
                     // SHOW ERROR

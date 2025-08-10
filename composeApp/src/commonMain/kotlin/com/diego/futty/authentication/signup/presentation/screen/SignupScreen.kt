@@ -82,6 +82,13 @@ private fun SignupContent(viewModel: SignupViewModel, paddingValues: PaddingValu
             onTextChangeAction = { viewModel.updateEmail(it) }
         ).Draw()
 
+        TextInput.Input(
+            input = viewModel.userName.value,
+            label = "Username",
+            onFocusChanged = { },
+            onTextChangeAction = { viewModel.updateUsername(it) }
+        ).Draw()
+
         TextInput.PasswordInput(
             input = viewModel.password.value,
             onFocusChanged = { },

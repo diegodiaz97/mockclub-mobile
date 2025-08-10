@@ -1,41 +1,43 @@
 package com.diego.futty.home.design.data.network
 
 import com.diego.futty.core.data.firebase.FirebaseManager
-import com.diego.futty.core.data.local.UserPreferences
+import com.diego.futty.core.data.remote.safeCall
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
+import com.diego.futty.core.presentation.utils.PlatformInfo
 import com.diego.futty.home.feed.domain.model.User
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.http.HttpHeaders
 
 class KtorRemoteDiscoveryDataSource(
     private val firebaseManager: FirebaseManager,
-    private val preferences: UserPreferences,
+    private val httpClient: HttpClient,
 ) : RemoteDiscoveryDataSource {
-    override suspend fun searchUsers(query: String): DataResult<List<User>, DataError.Remote> {
-        return try {
-            val firestore = firebaseManager.firestore
-            val usersCollection = firestore.collection("users")
 
-            // Búsqueda por nombre
-            val nameQuery = usersCollection
-                .orderBy("nameLowercase")
-                .startAt(query)
-                .endAt(query + "\uf8ff") // Agrega el carácter especial para rango
-                .get().documents.map { it.data<User>() }
-                .filter { it.id != preferences.getUserId() }
-
-            // Búsqueda por nombre
-            val lastnameQuery = usersCollection
-                .orderBy("lastNameLowercase")
-                .startAt(query)
-                .endAt(query + "\uf8ff") // Agrega el carácter especial para rango
-                .get().documents.map { it.data<User>() }
-                .filter { it.id != preferences.getUserId() }
-
-            val result = (nameQuery + lastnameQuery).distinctBy { it.id }
-
-            return DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
+    private fun baseUrl(): String {
+        return if (PlatformInfo.isIOS) {
+            "http://192.168.0.192:8080"
+        } else {
+            "http://10.0.2.2:8080"
         }
     }
+
+    private suspend fun authToken(): String {
+        val currentUser = firebaseManager.auth.currentUser
+        return currentUser?.getIdToken(false)
+            ?: throw IllegalStateException("No token")
+    }
+
+    override suspend fun searchUsers(query: String): DataResult<List<User>, DataError.Remote> =
+        safeCall<List<User>> {
+            httpClient.get("${baseUrl()}/users/search") {
+                header(HttpHeaders.Authorization, "Bearer ${authToken()}")
+                parameter("q", query)
+                parameter("limit", 10)
+                parameter("offset", 0)
+            }
+        }
 }

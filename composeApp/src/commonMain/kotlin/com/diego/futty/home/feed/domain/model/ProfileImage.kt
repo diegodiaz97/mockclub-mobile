@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class ProfileImage(
     val image: String? = null,
     val initials: String? = null,
-    val background: String,
+    val background: String? = null,
 )

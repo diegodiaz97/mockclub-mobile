@@ -14,6 +14,7 @@ import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.home.design.presentation.component.banner.Banner
 import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
+import com.diego.futty.home.feed.domain.model.ProfileImage
 import com.diego.futty.home.feed.domain.model.User
 import kotlinx.coroutines.launch
 
@@ -109,9 +110,9 @@ class ProfileCreationViewModel(
                     _name.value = loggedUser.name ?: ""
                     _lastName.value = loggedUser.lastName ?: ""
                     _description.value = loggedUser.description ?: ""
-                    _urlImage.value = loggedUser.profileImage.image
-                    _initials.value = loggedUser.profileImage.initials
-                    _background.value = loggedUser.profileImage.background
+                    _urlImage.value = loggedUser.profileImage?.image
+                    _initials.value = loggedUser.profileImage?.initials
+                    _background.value = loggedUser.profileImage?.background ?: "0xFF71D88A"
                     _country.value = loggedUser.country ?: ""
                 }
                 .onError {
@@ -124,25 +125,24 @@ class ProfileCreationViewModel(
         viewModelScope.launch {
             val id = preferences.getUserId() ?: ""
 
-            val updates: MutableMap<String, String> = mutableMapOf()
+            val updatedUser = User(
+                name = _name.value,
+                lastName = _lastName.value,
+                description = _description.value,
+                profileImage = ProfileImage(
+                    image = null,
+                    initials = _initials.value,
+                    background = null
+                ),
+                country = _country.value,
+                id = "",
+                email = "",
+                username = "",
+                creationDate = 0,
+                userType = "",
+            )
 
-            if (_name.value.isNotEmpty()) {
-                updates["name"] = _name.value
-                updates["lastName"] = _lastName.value
-                updates["profileImage.initials"] = _initials.value ?: ""
-
-                updates["nameLowercase"] = _name.value.lowercase()
-                updates["lastNameLowercase"] = _lastName.value.lowercase()
-            }
-            if (_description.value.isNotEmpty()) {
-                updates["description"] = _description.value
-            }
-
-            if (_country.value.isNotEmpty()) {
-                updates["country"] = _country.value
-            }
-
-            profileCreationRepository.updateProfile(id, updates)
+            profileCreationRepository.updateProfile(id, updatedUser)
                 .onSuccess {
                     _onClose()
                 }

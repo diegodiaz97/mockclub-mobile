@@ -140,9 +140,9 @@ fun PostCreationScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Avatar.ProfileAvatar(
-                        imageUrl = user.profileImage.image,
-                        initials = user.profileImage.initials,
-                        background = user.profileImage.background.toColor(),
+                        imageUrl = user.profileImage?.image,
+                        initials = user.profileImage?.initials,
+                        background = user.profileImage?.background?.toColor(),
                         avatarSize = AvatarSize.Big,
                         onClick = { }
                     ).Draw()
