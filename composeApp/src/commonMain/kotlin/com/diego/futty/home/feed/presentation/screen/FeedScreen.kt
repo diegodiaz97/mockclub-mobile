@@ -199,7 +199,7 @@ fun LoadingProgress(
     AnimatedVisibility(
         visible = progress > 0f && progress <= 1,
         enter = expandVertically(),
-        exit = shrinkVertically()
+        exit = shrinkVertically(),
     ) {
         Column(
             modifier = modifier

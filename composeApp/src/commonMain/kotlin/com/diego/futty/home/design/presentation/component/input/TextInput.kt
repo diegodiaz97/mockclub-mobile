@@ -1,7 +1,7 @@
 package com.diego.futty.home.design.presentation.component.input
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
@@ -26,20 +27,21 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.Eye
+import com.adamglin.phosphoricons.bold.EyeClosed
+import com.adamglin.phosphoricons.bold.X
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey400
 import com.diego.futty.core.presentation.theme.colorGrey900
-import compose.icons.TablerIcons
-import compose.icons.tablericons.Eye
-import compose.icons.tablericons.EyeOff
-import compose.icons.tablericons.X
 
 sealed interface TextInput {
     @Composable
@@ -52,8 +54,8 @@ sealed interface TextInput {
         val maxLength: Int? = null,
         val placeholder: String = "",
         val background: Color? = null,
+        val leadingIcon: ImageVector? = null,
         val onTextChangeAction: (String) -> Unit,
-        val onFocusChanged: () -> Unit,
     ) : TextInput {
         @Composable
         override fun Draw() {
@@ -79,19 +81,14 @@ sealed interface TextInput {
                         .fillMaxWidth()
                         .height(46.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        /* .border(
-                             width = 1.dp,
-                             color = colorGrey300(),
-                             shape = RoundedCornerShape(12.dp)
-                         )*/
                         .background(background ?: colorGrey100())
                         .focusRequester(focusRequester)
                         .onFocusChanged { isFocused.value = it.hasFocus },
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    if (input.isEmpty() && !isFocused.value) {
+                    if (input.isEmpty()) {
                         Text(
-                            modifier = Modifier.padding(bottom = 4.dp, start = 16.dp),
+                            modifier = Modifier.padding(start = 44.dp),
                             text = placeholder,
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Normal,
@@ -104,8 +101,18 @@ sealed interface TextInput {
                             .fillMaxSize()
                             .padding(vertical = 10.dp)
                             .padding(start = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        if (leadingIcon != null) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = leadingIcon,
+                                tint = colorGrey400(),
+                                contentDescription = "input leading icon"
+                            )
+                        }
+
                         BasicTextField(
                             value = input,
                             onValueChange = { onTextChangeAction(it) },
@@ -125,7 +132,8 @@ sealed interface TextInput {
                         if (input.isNotEmpty()) {
                             IconButton(onClick = { onTextChangeAction("") }) {
                                 Icon(
-                                    imageVector = TablerIcons.X,
+                                    modifier = Modifier.size(20.dp),
+                                    imageVector = PhosphorIcons.Bold.X,
                                     tint = colorGrey400(),
                                     contentDescription = "Borrar texto"
                                 )
@@ -193,12 +201,14 @@ sealed interface TextInput {
                     )
 
                     if (input.isNotEmpty()) {
-                        Icon(
-                            modifier = Modifier.clickable { onTextChangeAction("") },
-                            imageVector = TablerIcons.X,
-                            tint = colorGrey400(),
-                            contentDescription = "Borrar texto"
-                        )
+                        IconButton(onClick = { onTextChangeAction("") }) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = PhosphorIcons.Bold.X,
+                                tint = colorGrey400(),
+                                contentDescription = "Borrar texto"
+                            )
+                        }
                     }
                 }
             }
@@ -210,7 +220,6 @@ sealed interface TextInput {
         val label: String? = null,
         val onTextChangeAction: (String) -> Unit,
         val placeholder: String = "",
-        val onFocusChanged: () -> Unit,
     ) : TextInput {
         @Composable
         override fun Draw() {
@@ -237,17 +246,12 @@ sealed interface TextInput {
                         .fillMaxWidth()
                         .height(46.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        /*.border(
-                            width = 1.dp,
-                            color = colorGrey300(),
-                            shape = RoundedCornerShape(12.dp)
-                        )*/
                         .background(colorGrey100())
                         .focusRequester(focusRequester)
                         .onFocusChanged { isFocused.value = it.hasFocus },
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    if (input.isEmpty() && !isFocused.value) {
+                    if (input.isEmpty()) {
                         Text(
                             modifier = Modifier.padding(bottom = 4.dp, start = 16.dp),
                             text = placeholder,
@@ -288,7 +292,8 @@ sealed interface TextInput {
                         if (input.isNotEmpty()) {
                             IconButton(onClick = { setVisible(visible.not()) }) {
                                 Icon(
-                                    imageVector = if (visible) TablerIcons.Eye else TablerIcons.EyeOff,
+                                    modifier = Modifier.size(20.dp),
+                                    imageVector = if (visible) PhosphorIcons.Bold.Eye else PhosphorIcons.Bold.EyeClosed,
                                     tint = colorGrey400(),
                                     contentDescription = "password visibility"
                                 )

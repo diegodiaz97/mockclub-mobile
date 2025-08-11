@@ -44,7 +44,7 @@ class KtorRemoteProfileDataSource(
 
     override suspend fun unfollowUser(targetUserId: String): DataResult<Unit, DataError.Remote> =
         safeCall {
-            httpClient.delete("${baseUrl()}/users/$targetUserId/unfollow") {
+            httpClient.delete("${baseUrl()}/users/$targetUserId/follow") {
                 header(HttpHeaders.Authorization, "Bearer ${authToken()}")
             }
         }
@@ -54,7 +54,7 @@ class KtorRemoteProfileDataSource(
         followingId: String
     ): DataResult<Following, DataError.Remote> =
         safeCall<Following> {
-            httpClient.get("${baseUrl()}/users/$followerId/following/$followingId/isFollowing") {
+            httpClient.get("${baseUrl()}/users/$followingId/is-following") {
                 header(HttpHeaders.Authorization, "Bearer ${authToken()}")
             }
         }

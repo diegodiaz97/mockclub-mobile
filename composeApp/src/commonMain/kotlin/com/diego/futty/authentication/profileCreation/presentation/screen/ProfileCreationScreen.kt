@@ -127,7 +127,6 @@ private fun ProfileCreationContent(
             input = viewModel.name.value,
             label = "Nombre",
             placeholder = viewModel.name.value,
-            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateName(it) }
         ).Draw()
 
@@ -135,7 +134,6 @@ private fun ProfileCreationContent(
             input = viewModel.lastName.value,
             label = "Apellido",
             placeholder = viewModel.lastName.value,
-            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateLastName(it) }
         ).Draw()
 
@@ -143,7 +141,6 @@ private fun ProfileCreationContent(
             input = viewModel.description.value,
             label = "Descripción (opcional)",
             placeholder = viewModel.description.value,
-            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateDescription(it) }
         ).Draw()
 
@@ -151,7 +148,6 @@ private fun ProfileCreationContent(
             input = viewModel.country.value,
             label = "Nacionalidad",
             placeholder = viewModel.country.value,
-            onFocusChanged = { },
             onTextChangeAction = { viewModel.updateCountry(it) }
         ).Draw()
 

@@ -11,7 +11,6 @@ private fun DayPasswordTextInputPreview() {
     FuttyTheme {
         TextInput.PasswordInput(
             "Contraseña12",
-            onFocusChanged = {},
             onTextChangeAction = { }
         ).Draw()
     }
@@ -24,7 +23,6 @@ private fun DayEmailTextInputPreview() {
         TextInput.Input(
             input = "dieggodiaz97@gmail.com",
             label = "Email",
-            onFocusChanged = {},
             onTextChangeAction = { }
         ).Draw()
     }

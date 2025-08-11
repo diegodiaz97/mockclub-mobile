@@ -185,7 +185,6 @@ fun CommentInput(
             input = comment,
             placeholder = "Agregar Comentario",
             background = colorGrey100(),
-            onFocusChanged = { },
             onTextChangeAction = { comment = it }
         ).Draw()
         Avatar.IconAvatar(

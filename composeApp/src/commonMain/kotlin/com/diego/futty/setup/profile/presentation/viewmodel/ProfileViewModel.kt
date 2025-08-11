@@ -434,7 +434,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             profileRepository.areYouFollowing(followerId = user, followingId = followingId)
                 .onSuccess { following ->
-                    _followingUser.value = following.following
+                    _followingUser.value = following.isFollowing
                     _showFollowButton.value = true
                 }
                 .onError {

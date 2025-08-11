@@ -22,6 +22,13 @@ import kotlinx.coroutines.launch
 class DesignViewModel(
     private val discoverRepository: DiscoverRepositoryImpl,
 ) : DesignViewContract, ViewModel() {
+
+    private val _searchTypes = mutableStateOf(listOf("Usuarios", "Posts", "Tags"))
+    override val searchTypes: State<List<String>> = _searchTypes
+
+    private val _selectedSearchType = mutableStateOf(0)
+    override val selectedSearchType: State<Int> = _selectedSearchType
+
     private val _searchText = MutableStateFlow("")
     override val searchText: StateFlow<String> = _searchText
 
@@ -39,6 +46,10 @@ class DesignViewModel(
     fun setup(navController: NavHostController) {
         debounce()
         _navigate = { navController.navigate(it) }
+    }
+
+    override fun updateSearchType(index: Int) {
+        _selectedSearchType.value = index
     }
 
     override fun onProfileClicked() {

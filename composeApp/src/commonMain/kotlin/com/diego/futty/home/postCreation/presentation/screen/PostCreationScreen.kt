@@ -467,7 +467,6 @@ fun AddTags(
                 input = newTag,
                 placeholder = "Agregar tag (máximo 12 caracteres)",
                 background = colorGrey0(),
-                onFocusChanged = { },
                 onTextChangeAction = {
                     if (it.length <= 12) {
                         newTag = it.lowercase().trim()
