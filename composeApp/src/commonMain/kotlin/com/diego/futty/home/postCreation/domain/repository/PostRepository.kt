@@ -3,9 +3,8 @@ package com.diego.futty.home.postCreation.domain.repository
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
 import com.diego.futty.home.postCreation.data.network.LikedItems
-import com.diego.futty.home.postCreation.domain.model.Comment
-import com.diego.futty.home.postCreation.domain.model.CommentWithUser
-import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.CommentWithExtras
+import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 import com.diego.futty.home.postCreation.domain.model.Tag
 import dev.gitlive.firebase.firestore.Timestamp
 
@@ -27,44 +26,44 @@ interface PostRepository {
         startAfterTimestamp: Timestamp?,
     ): DataResult<List<PostWithUser>, DataError.Remote>*/
 
-    suspend fun getLikedPostIdsForUser(userId: String): Set<String>
-
     suspend fun getFeed(
-        limit: Int = 20,
-        startAfterTimestamp: Timestamp?
-    ): DataResult<List<PostWithUser>, DataError.Remote>
+        limit: Int = 10,
+        cursorCreatedAt: Long? = null
+    ): DataResult<List<PostWithExtras>, DataError.Remote>
 
     suspend fun getPostsByUser(
         userId: String,
-        limit: Int,
-        startAfterTimestamp: Timestamp?
-    ): DataResult<List<PostWithUser>, DataError.Remote>
+        limit: Int = 10,
+        cursorCreatedAt: Long? = null
+    ): DataResult<List<PostWithExtras>, DataError.Remote>
 
     suspend fun getPostsByTeam(
         team: String,
         limit: Int = 20,
         startAfterTimestamp: Timestamp? = null
-    ): DataResult<List<PostWithUser>, DataError.Remote>
+    ): DataResult<List<PostWithExtras>, DataError.Remote>
 
     suspend fun getPostsByBrand(
         brand: String,
         limit: Int = 20,
         startAfterTimestamp: Timestamp? = null
-    ): DataResult<List<PostWithUser>, DataError.Remote>
+    ): DataResult<List<PostWithExtras>, DataError.Remote>
 
     suspend fun likePost(postId: String): DataResult<Unit, DataError.Remote>
 
-    suspend fun removeLike(postId: String): DataResult<Unit, DataError.Remote>
+    suspend fun unlikePost(postId: String): DataResult<Unit, DataError.Remote>
 
-    suspend fun isPostLikedByUser(postId: String): DataResult<Boolean, DataError.Remote>
-
-    suspend fun addComment(postId: String, text: String): DataResult<CommentWithUser, DataError.Remote>
+    suspend fun addComment(
+        postId: String,
+        text: String,
+        parentCommentId: String? = null
+    ): DataResult<CommentWithExtras, DataError.Remote>
 
     suspend fun replyToComment(
         postId: String,
         commentId: String,
         text: String
-    ): DataResult<CommentWithUser, DataError.Remote>
+    ): DataResult<CommentWithExtras, DataError.Remote>
 
     suspend fun deleteComment(postId: String, commentId: String): DataResult<Unit, DataError.Remote>
 
@@ -85,15 +84,14 @@ interface PostRepository {
     suspend fun getComments(
         postId: String,
         limit: Int = 10,
-        startAfterTimestamp: Timestamp? = null
-    ): DataResult<List<CommentWithUser>, DataError.Remote>
+        cursorCreatedAt: Long? = null
+    ): DataResult<List<CommentWithExtras>, DataError.Remote>
 
     suspend fun getReplies(
-        postId: String,
         commentId: String,
         limit: Int = 5,
-        startAfterTimestamp: Timestamp? = null
-    ): DataResult<List<CommentWithUser>, DataError.Remote>
+        cursorCreatedAt: Long? = null
+    ): DataResult<List<CommentWithExtras>, DataError.Remote>
 
     suspend fun deletePost(postId: String): DataResult<Unit, DataError.Remote>
 

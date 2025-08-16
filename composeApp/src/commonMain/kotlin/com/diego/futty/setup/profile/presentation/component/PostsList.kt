@@ -17,15 +17,15 @@ import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.home.design.presentation.component.post.Draw
 import com.diego.futty.home.design.presentation.component.post.PostShimmer
-import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
 @Composable
 fun PostsList(
-    posts: List<PostWithUser>?,
+    posts: List<PostWithExtras>?,
     topListComponents: @Composable () -> Unit = { },
     bottomListComponents: @Composable () -> Unit = { },
-    onPostClicked: (PostWithUser) -> Unit,
-    onLikeClicked: ((PostWithUser) -> Unit)? = null,
+    onPostClicked: (PostWithExtras) -> Unit,
+    onLikeClicked: ((PostWithExtras) -> Unit)? = null,
     onImageClicked: ((images: List<String>, index: Int, ratio: Float) -> Unit)? = null,
     onScrolled: () -> Unit,
 ) {
@@ -43,8 +43,8 @@ fun PostsList(
                         onImageClick = { image ->
                             if (onImageClicked != null) {
                                 onImageClicked(
-                                    post.post.imageUrls,
-                                    post.post.imageUrls.indexOf(image),
+                                    post.images,
+                                    post.images.indexOf(image),
                                     post.post.ratio,
                                 )
                             } else {

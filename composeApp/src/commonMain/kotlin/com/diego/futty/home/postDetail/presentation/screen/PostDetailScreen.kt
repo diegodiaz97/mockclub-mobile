@@ -70,10 +70,9 @@ import com.diego.futty.home.design.presentation.component.input.TextInput
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
-import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.feed.presentation.screen.LoadingProgress
-import com.diego.futty.home.postCreation.domain.model.CommentWithUser
-import com.diego.futty.home.postCreation.domain.model.Post
+import com.diego.futty.home.postCreation.domain.model.CommentWithExtras
+import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 import com.diego.futty.home.postDetail.presentation.viewmodel.PostDetailViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -130,12 +129,11 @@ fun PostDetailScreen(
                     PagerImages(
                         modifier = Modifier.fillMaxSize(),
                         aspectRatio = postWithUser.post.ratio,
-                        images = postWithUser.post.imageUrls,
+                        images = postWithUser.images,
                         index = 0
                     )
                     PostInformation(
-                        post = postWithUser.post,
-                        user = postWithUser.user,
+                        post = postWithUser,
                         onLiked = {
                             viewModel.onLikeClicked()
                             onLiked()
@@ -159,7 +157,7 @@ fun PostDetailScreen(
                     )
                     PostComments(viewModel)
                 }
-                CommentInput(focusManager) { comment -> viewModel.onCommentClicked(comment) }
+                CommentInput(focusManager) { text -> viewModel.onCommentClicked(text) }
             }
         },
     )
@@ -233,7 +231,7 @@ private fun PostComments(viewModel: PostDetailViewModel) {
                 }
             }
         } else {
-            if (viewModel.post.value?.post?.commentsCount == 0) {
+            if (viewModel.post.value?.commentCount == 0) {
                 Text(
                     modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
                     text = "Aún no hay comentarios",
@@ -250,10 +248,10 @@ private fun PostComments(viewModel: PostDetailViewModel) {
 @Composable
 private fun CommentItem(
     viewModel: PostDetailViewModel,
-    commentWithUser: CommentWithUser,
+    commentWithUser: CommentWithExtras,
 ) {
     val user = commentWithUser.user
-    val hasLike = commentWithUser.comment.likedByUser
+    val hasLike = commentWithUser.likedByCurrentUser
 
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -261,9 +259,9 @@ private fun CommentItem(
         verticalAlignment = Alignment.Top
     ) {
         Avatar.ProfileAvatar(
-            imageUrl = user?.profileImage?.image,
-            initials = user?.profileImage?.initials,
-            background = user?.profileImage?.background?.toColor(),
+            imageUrl = user.profileImage?.image,
+            initials = user.profileImage?.initials,
+            background = user.profileImage?.background?.toColor(),
             onClick = { }
         ).Draw()
         Column(
@@ -278,17 +276,17 @@ private fun CommentItem(
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = "${user?.name} ${user?.lastName}",
+                    text = "${user.name} ${user.lastName}",
                     style = typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = colorGrey900()
                 )
-                if (user?.userType == USER_TYPE_PRO) {
+                if (user.userType == USER_TYPE_PRO) {
                     VerifiedIcon(Modifier.padding(top = 2.dp), size = 16.dp)
                 }
                 Text(
                     modifier = Modifier.weight(1f),
-                    text = " • ${commentWithUser.comment.timestamp.getShortTimeAgoLabel()}",
+                    text = " • ${commentWithUser.comment.createdAt.getShortTimeAgoLabel()}",
                     style = typography.bodySmall,
                     textAlign = TextAlign.Start,
                     color = colorGrey600()
@@ -327,20 +325,15 @@ private fun CommentItem(
 
                 val repliesState = viewModel.repliesMap.value[commentWithUser.comment.id]
                 val repliesVisible = repliesState?.visible ?: false
+                val replies = commentWithUser.replies
 
-                if (commentWithUser.comment.repliesCount > 0 && !repliesVisible) {
-                    val repliesText = if (commentWithUser.comment.repliesCount == 1) {
-                        "respuesta"
-                    } else {
-                        "respuestas"
-                    }
+                if (replies.size < commentWithUser.replyCount && !repliesVisible) {
+                    val repliesText = if (commentWithUser.replyCount - replies.size == 1) "respuesta" else "respuestas"
                     Text(
                         modifier = Modifier.clickable {
-                            viewModel.onShowRepliesClicked(
-                                commentWithUser
-                            )
+                            viewModel.onShowRepliesClicked(commentWithUser)
                         },
-                        text = "Ver ${commentWithUser.comment.repliesCount} $repliesText",
+                        text = "Ver ${commentWithUser.replyCount} $repliesText",
                         style = typography.bodySmall,
                         textAlign = TextAlign.End,
                         color = colorGrey600()
@@ -362,7 +355,7 @@ private fun CommentItem(
                         contentDescription = null
                     )
                     Text(
-                        text = commentWithUser.comment.likesCount.toString(),
+                        text = commentWithUser.likeCount.toString(),
                         style = typography.bodySmall,
                         color = if (hasLike) colorError() else colorGrey900(),
                     )
@@ -387,16 +380,16 @@ private fun CommentItem(
                     ) {
                         replies.forEach { reply ->
                             val replyUser = reply.user
-                            val liked = reply.comment.likedByUser
+                            val liked = reply.likedByCurrentUser
                             Row(
                                 modifier = Modifier.padding(vertical = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                                 verticalAlignment = Alignment.Top
                             ) {
                                 Avatar.ProfileAvatar(
-                                    imageUrl = replyUser?.profileImage?.image,
-                                    initials = replyUser?.profileImage?.initials,
-                                    background = replyUser?.profileImage?.background?.toColor(),
+                                    imageUrl = replyUser.profileImage?.image,
+                                    initials = replyUser.profileImage?.initials,
+                                    background = replyUser.profileImage?.background?.toColor(),
                                     avatarSize = AvatarSize.Small,
                                     onClick = { }
                                 ).Draw()
@@ -410,7 +403,7 @@ private fun CommentItem(
                                         horizontalArrangement = Arrangement.spacedBy(2.dp)
                                     ) {
                                         Text(
-                                            text = "${replyUser?.name} ${replyUser?.lastName}",
+                                            text = "${replyUser.name} ${replyUser.lastName}",
                                             style = typography.bodyMedium,
                                             fontWeight = FontWeight.SemiBold,
                                             color = colorGrey900()
@@ -420,7 +413,7 @@ private fun CommentItem(
                                         }
                                         Text(
                                             modifier = Modifier.weight(1f),
-                                            text = " • ${reply.comment.timestamp.getShortTimeAgoLabel()}",
+                                            text = " • ${reply.comment.createdAt.getShortTimeAgoLabel()}",
                                             style = typography.bodySmall,
                                             color = colorGrey600()
                                         )
@@ -465,7 +458,7 @@ private fun CommentItem(
                                                 contentDescription = null
                                             )
                                             Text(
-                                                text = reply.comment.likesCount.toString(),
+                                                text = reply.likeCount.toString(),
                                                 style = typography.bodySmall,
                                                 color = if (liked) colorError() else colorGrey900(),
                                             )
@@ -488,8 +481,7 @@ private fun CommentItem(
                                 style = typography.bodySmall,
                                 color = colorGrey600(),
                             )
-
-                            if (repliesState?.endReached == false) {
+                            if (replies.size < commentWithUser.replyCount) {
                                 Text(
                                     modifier = Modifier.clickable {
                                         viewModel.onShowRepliesClicked(
@@ -511,19 +503,19 @@ private fun CommentItem(
 
 @Composable
 private fun PostInformation(
-    post: Post,
-    user: User?,
+    post: PostWithExtras,
     onLiked: () -> Unit,
 ) {
+    val user = post.user
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Avatar.ProfileAvatar(
-            imageUrl = user?.profileImage?.image,
-            initials = user?.profileImage?.initials,
-            background = user?.profileImage?.background?.toColor(),
+            imageUrl = user.profileImage?.image,
+            initials = user.profileImage?.initials,
+            background = user.profileImage?.background?.toColor(),
             onClick = { }
         ).Draw()
         Column(
@@ -536,17 +528,17 @@ private fun PostInformation(
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = "${user?.name} ${user?.lastName}",
+                    text = "${user.name} ${user.lastName}",
                     style = typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = colorGrey900()
                 )
-                if (user?.userType == USER_TYPE_PRO) {
+                if (user.userType == USER_TYPE_PRO) {
                     VerifiedIcon(Modifier.padding(top = 4.dp), size = 16.dp)
                 }
             }
             Text(
-                text = post.timestamp.getTimeAgoLabel(),
+                text = post.post.createdAt.getTimeAgoLabel(),
                 style = typography.bodySmall,
                 color = colorGrey600()
             )
@@ -562,10 +554,10 @@ private fun PostInformation(
 
 @Composable
 private fun PostInteractions(
-    post: Post,
+    post: PostWithExtras,
     onLiked: () -> Unit,
 ) {
-    val hasLike = post.likedByUser
+    val hasLike = post.likedByCurrentUser
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -579,7 +571,7 @@ private fun PostInteractions(
             onClick = { onLiked() }
         ).Draw()
         Text(
-            text = post.likesCount.toString(),
+            text = post.likeCount.toString(),
             style = typography.bodySmall,
             color = if (hasLike) colorError() else colorGrey900(),
         )
@@ -593,7 +585,7 @@ private fun PostInteractions(
             onClick = { }
         ).Draw()
         Text(
-            text = post.commentsCount.toString(),
+            text = post.commentCount.toString(),
             style = typography.bodySmall,
             color = colorGrey900()
         )

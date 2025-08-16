@@ -141,6 +141,7 @@ kotlin {
 }
 
 android {
+    ndkVersion = "26.1.10909125"
     namespace = "com.diego.futty"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 

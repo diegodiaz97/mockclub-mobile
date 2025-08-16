@@ -149,11 +149,10 @@ fun HomeView(navigateToLogin: () -> Unit) {
                             }
                             SetupView(
                                 userId = designViewModel.clickedUser.value,
-                                likes = feedViewModel.likedPostIds.value,
-                                onBack = { likes ->
+                                onBack = { userMadeLike ->
                                     navController.popBackStack()
                                     designViewModel.resetUserId()
-                                    feedViewModel.updateLikes(likes)
+                                    feedViewModel.updateLikes(userMadeLike)
                                 },
                                 navigateToLogin = navigateToLogin,
                             )

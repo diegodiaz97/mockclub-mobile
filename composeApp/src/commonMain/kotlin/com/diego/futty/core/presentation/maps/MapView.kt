@@ -13,8 +13,11 @@ import com.diego.futty.core.presentation.theme.DayColorScheme
 import com.diego.futty.core.presentation.theme.colorGrey100
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
+import dev.sargunv.maplibrecompose.core.BaseStyle
 import dev.sargunv.maplibrecompose.core.CameraPosition
-import dev.sargunv.maplibrecompose.core.OrnamentSettings
+import dev.sargunv.maplibrecompose.core.GestureOptions
+import dev.sargunv.maplibrecompose.core.MapOptions
+import dev.sargunv.maplibrecompose.core.OrnamentOptions
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration.Companion.seconds
 
@@ -52,10 +55,13 @@ fun MapView(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .border(1.dp, colorGrey100(), RoundedCornerShape(12.dp)),
-        styleUri = style,
+        baseStyle = BaseStyle.Uri(style),
         zoomRange = 1f..20f,
         pitchRange = 8f..20f,
-        ornamentSettings = OrnamentSettings.AllDisabled,
+        options = MapOptions(
+            gestureOptions = GestureOptions.Standard,
+            ornamentOptions = OrnamentOptions.AllDisabled,
+        ),
         cameraState = camera
     ) { }
 }

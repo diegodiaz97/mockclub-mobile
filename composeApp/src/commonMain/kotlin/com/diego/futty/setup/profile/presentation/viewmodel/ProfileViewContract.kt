@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.design.presentation.component.chip.ChipModel
 import com.diego.futty.home.feed.domain.model.User
-import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
 interface ProfileViewContract {
     val showUpdateImage: State<Boolean>
@@ -17,13 +17,13 @@ interface ProfileViewContract {
     val launchCamera: State<Boolean>
     val chipItems: State<List<ChipModel>?>
     val selectedChips: State<List<ChipModel>>
-    val posts: State<List<PostWithUser>?>
+    val posts: State<List<PostWithExtras>?>
     val postsCant: State<Int?>
     val followersCant: State<Int?>
     val followsCant: State<Int?>
     val showFollowButton: State<Boolean>
     val followingUser: State<Boolean>
-    val openedPost: State<PostWithUser?>
+    val openedPost: State<PostWithExtras?>
     val isRefreshing: State<Boolean>
     val modal: State<Modal?>
     fun onBackClicked()
@@ -38,8 +38,8 @@ interface ProfileViewContract {
     fun obtainFollowers()
     fun obtainFollows()
     fun onFollowOrUnfollowClicked()
-    fun onPostClicked(post: PostWithUser)
-    fun onLikeClicked(post: PostWithUser, fromDetail: Boolean)
+    fun onPostClicked(post: PostWithExtras)
+    fun onLikeClicked(post: PostWithExtras, fromDetail: Boolean)
     fun fetchOwnFeed()
     fun onFeedRefreshed()
 }

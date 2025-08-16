@@ -1,25 +1,21 @@
 package com.diego.futty.home.postDetail.presentation.viewmodel
 
 import androidx.compose.runtime.State
-import com.diego.futty.home.postCreation.domain.model.Comment
-import com.diego.futty.home.postCreation.domain.model.CommentWithUser
-import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.CommentWithExtras
+import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
 interface PostDetailViewContract {
-    val post: State<PostWithUser?>
-    val comments: State<List<CommentWithUser>>
+    val post: State<PostWithExtras?>
+    val comments: State<List<CommentWithExtras>>
     val commentCreationProgress: State<Float>
-    val commentToReply: State<CommentWithUser?>
-    val likedCommentIds: State<Set<String>>
-    val likedReplyIds: State<Set<String>>
-    val repliesShown: State<List<String>>
+    val commentToReply: State<CommentWithExtras?>
     val repliesMap: State<Map<String, RepliesPaginationState>>
     fun getComments()
-    fun onCommentClicked(comment: String)
-    fun onLikeCommentClicked(comment: CommentWithUser, reply: CommentWithUser? = null)
-    fun onReplyCommentClicked(comment: CommentWithUser)
-    fun onShowRepliesClicked(comment: CommentWithUser)
-    fun onHideRepliesClicked(comment: CommentWithUser)
+    fun onCommentClicked(text: String)
+    fun onLikeCommentClicked(comment: CommentWithExtras, reply: CommentWithExtras? = null)
+    fun onReplyCommentClicked(comment: CommentWithExtras)
+    fun onShowRepliesClicked(comment: CommentWithExtras)
+    fun onHideRepliesClicked(comment: CommentWithExtras)
     fun onLikeClicked()
     fun resetPost()
 }

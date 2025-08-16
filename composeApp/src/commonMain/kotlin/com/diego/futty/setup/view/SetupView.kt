@@ -27,8 +27,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SetupView(
     userId: String = "",
-    likes: Set<String> = emptySet(),
-    onBack: (likes: Set<String>) -> Unit,
+    onBack: (Boolean) -> Unit,
     navigateToLogin: () -> Unit,
 ) {
     val setupViewModel = koinViewModel<SetupViewModel>()
@@ -60,7 +59,7 @@ fun SetupView(
                         popExitTransition = Transitions.LeftScreenPopExit
                     ) {
                         LaunchedEffect(true) {
-                            profileViewModel.setup(userId, likes, navController, onBack)
+                            profileViewModel.setup(userId, navController, onBack)
                             setupViewModel.updateRoute(SetupRoute.Profile)
                         }
                         ProfileScreen(viewModel = profileViewModel)

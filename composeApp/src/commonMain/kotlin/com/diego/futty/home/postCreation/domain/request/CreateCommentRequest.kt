@@ -1,13 +1,10 @@
-package com.diego.futty.home.postCreation.domain.model
+package com.diego.futty.home.postCreation.domain.request
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Comment(
-    val id: String,
+data class CreateCommentRequest(
     val postId: String,
-    val userId: String,
     val text: String,
-    val createdAt: Long,
     val parentCommentId: String? = null
 )

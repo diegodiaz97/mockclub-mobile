@@ -23,12 +23,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.home.design.presentation.component.image.AsyncImage
-import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
 @Composable
 fun PostsGrid(
-    posts: List<PostWithUser>?,
-    onPostClicked: (PostWithUser) -> Unit,
+    posts: List<PostWithExtras>?,
+    onPostClicked: (PostWithExtras) -> Unit,
     onScrolled: () -> Unit,
 ) {
     val gridState = rememberLazyGridState()
@@ -71,7 +71,7 @@ fun PostsGrid(
 }
 
 @Composable
-private fun PostWithUser.DrawInGrid(onPostClicked: (PostWithUser) -> Unit) {
+private fun PostWithExtras.DrawInGrid(onPostClicked: (PostWithExtras) -> Unit) {
     Box(
         modifier = Modifier
             .aspectRatio(4f / 5f) // cuadrado
@@ -83,7 +83,7 @@ private fun PostWithUser.DrawInGrid(onPostClicked: (PostWithUser) -> Unit) {
                 .fillMaxSize()
                 .background(colorGrey100()),
             contentDescription = "post single image",
-            image = post.imageUrls.firstOrNull()
+            image = images.firstOrNull()
         )
     }
 }

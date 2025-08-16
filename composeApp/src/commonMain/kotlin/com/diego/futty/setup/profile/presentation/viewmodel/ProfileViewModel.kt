@@ -17,7 +17,7 @@ import com.diego.futty.core.presentation.theme.SuccessLight
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.design.presentation.component.chip.ChipModel
 import com.diego.futty.home.feed.domain.model.User
-import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 import com.diego.futty.home.postCreation.domain.repository.PostRepository
 import com.diego.futty.setup.profile.domain.repository.ProfileRepository
 import com.diego.futty.setup.view.SetupRoute
@@ -32,7 +32,6 @@ import compose.icons.tablericons.Plane
 import compose.icons.tablericons.School
 import compose.icons.tablericons.Video
 import compose.icons.tablericons.Wallet
-import dev.gitlive.firebase.firestore.Timestamp
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
@@ -122,8 +121,11 @@ class ProfileViewModel(
     private val _selectedChips = mutableStateOf<List<ChipModel>>(emptyList())
     override val selectedChips: State<List<ChipModel>> = _selectedChips
 
-    private val _posts = mutableStateOf<List<PostWithUser>?>(null)
-    override val posts: State<List<PostWithUser>?> = _posts
+    private val _posts = mutableStateOf<List<PostWithExtras>?>(null)
+    override val posts: State<List<PostWithExtras>?> = _posts
+
+    private val _openedPost = mutableStateOf<PostWithExtras?>(null)
+    override val openedPost: State<PostWithExtras?> = _openedPost
 
     private val _postsCant = mutableStateOf<Int?>(null)
     override val postsCant: State<Int?> = _postsCant
@@ -140,31 +142,26 @@ class ProfileViewModel(
     private val _followingUser = mutableStateOf(false)
     override val followingUser: State<Boolean> = _followingUser
 
-    private val _openedPost = mutableStateOf<PostWithUser?>(null)
-    override val openedPost: State<PostWithUser?> = _openedPost
-
     private val _isRefreshing = mutableStateOf(false)
     override val isRefreshing: State<Boolean> = _isRefreshing
 
     private val _modal = mutableStateOf<Modal?>(null)
     override val modal: State<Modal?> = _modal
 
-    private val _likedPostIds = mutableStateOf<Set<String>>(emptySet())
-    private var _lastTimestamp: Timestamp? = null
+    private var _lastTimestamp: Long? = null
     private var _endReached = false
+    private var _madeLike = false
     private val _bitmapImage = mutableStateOf<ImageBitmap?>(null)
     private val _byteArrayImage = mutableStateOf<ByteArray?>(null)
     private var _navigate: (SetupRoute) -> Unit = {}
-    private var _back: (likes: Set<String>) -> Unit = {}
+    private var _back: (Boolean) -> Unit = {}
 
     fun setup(
         userId: String = "",
-        likes: Set<String>,
         navController: NavHostController,
-        onBack: (likes: Set<String>) -> Unit,
+        onBack: (Boolean) -> Unit,
     ) {
         _userId.value = userId
-        _likedPostIds.value = likes
         _chipItems.value = dummyChips
         _navigate = { navController.navigate(it) }
         _back = onBack
@@ -178,7 +175,7 @@ class ProfileViewModel(
     }
 
     override fun onBackClicked() {
-        _back(_likedPostIds.value)
+        _back(_madeLike)
     }
 
     override fun onChipSelected(chip: ChipModel) {
@@ -251,19 +248,29 @@ class ProfileViewModel(
             val user = _userId.value.ifEmpty { preferences.getUserId() ?: "" }
             postRepository.getPostsByUser(user, 15, _lastTimestamp)
                 .onSuccess { newPosts ->
-                    val updatedPosts = newPosts.map { postWithUser ->
-                        val liked = postWithUser.post.id in _likedPostIds.value
-                        postWithUser.copy(
-                            post = postWithUser.post.copy(likedByUser = liked)
-                        )
+                    // Fusionar con estado actual para no perder likes optimistas
+                    val mergedPosts = newPosts.map { fresh ->
+                        val localVersion = _posts.value?.firstOrNull { it.post.id == fresh.post.id }
+                        if (localVersion != null) {
+                            // Mantener likeCount y likedByCurrentUser locales
+                            fresh.copy(
+                                likedByCurrentUser = localVersion.likedByCurrentUser,
+                                likeCount = localVersion.likeCount
+                            )
+                        } else {
+                            fresh // Nuevo post, se usa tal cual viene del backend
+                        }
                     }
 
-                    if (updatedPosts.isEmpty()) {
-                        if (_posts.value == null) _posts.value = updatedPosts
+                    if (mergedPosts.size < 15) {
                         _endReached = true
+                    }
+
+                    if (mergedPosts.isEmpty()) {
+                        if (_posts.value == null) _posts.value = mergedPosts
                     } else {
-                        _lastTimestamp = updatedPosts.lastOrNull()?.post?.serverTimestamp
-                        _posts.value = _posts.value?.plus(updatedPosts) ?: updatedPosts
+                        _lastTimestamp = mergedPosts.lastOrNull()?.post?.createdAt
+                        _posts.value = _posts.value?.plus(mergedPosts) ?: mergedPosts
                     }
                 }
                 .onError {
@@ -288,85 +295,59 @@ class ProfileViewModel(
         }
     }
 
-    override fun onPostClicked(post: PostWithUser) {
+    override fun onPostClicked(post: PostWithExtras) {
         _openedPost.value = post
         _navigate(SetupRoute.PostDetail)
     }
 
-    override fun onLikeClicked(post: PostWithUser, fromDetail: Boolean) {
+    override fun onLikeClicked(post: PostWithExtras, fromDetail: Boolean) {
         val postId = post.post.id
-        val alreadyLiked = post.post.likedByUser
+        val alreadyLiked = post.likedByCurrentUser
+        val newLiked = !alreadyLiked
+        val delta = if (newLiked) 1 else -1
 
-        if (fromDetail) {
-            val current = _openedPost.value
-            _openedPost.value = current?.copy(
-                post = current.post.copy(
-                    likedByUser = !alreadyLiked,
-                    likesCount = if (alreadyLiked)
-                        current.post.likesCount - 1
-                    else
-                        current.post.likesCount + 1
-                )
-            )
-        }
+        // Guardar snapshots para rollback
+        val prevPosts = _posts.value
+        val prevOpened = _openedPost.value
 
-        // ✅ 1. Optimistic UI update
-        _likedPostIds.value = if (alreadyLiked) {
-            _likedPostIds.value - postId
-        } else {
-            _likedPostIds.value + postId
-        }
-
+        // Actualización optimista en lista
         _posts.value = _posts.value?.map { current ->
             if (current.post.id == postId) {
                 current.copy(
-                    post = current.post.copy(
-                        likedByUser = !alreadyLiked,
-                        likesCount = if (alreadyLiked)
-                            current.post.likesCount - 1
-                        else
-                            current.post.likesCount + 1
-                    )
+                    likedByCurrentUser = newLiked,
+                    likeCount = (current.likeCount + delta).coerceAtLeast(0)
                 )
             } else current
         }
 
+        // Actualización optimista en detalle si corresponde
+        if (fromDetail) {
+            _openedPost.value = _openedPost.value?.copy(
+                likedByCurrentUser = newLiked,
+                likeCount = ((_openedPost.value?.likeCount ?: (0 + delta))).coerceAtLeast(0)
+            )
+        }
+
+        // Llamada a backend
         viewModelScope.launch {
-            val result = if (alreadyLiked) {
-                postRepository.removeLike(postId)
-            } else {
+            val result = if (newLiked) {
                 postRepository.likePost(postId)
+            } else {
+                postRepository.unlikePost(postId)
             }
 
-            // ❌ 3. Si falla, revertir cambios
-            result.onError {
-                // 🔁 revertir el set
-                _likedPostIds.value = if (alreadyLiked) {
-                    _likedPostIds.value + postId
-                } else {
-                    _likedPostIds.value - postId
-                }
+            result
+                .onSuccess { _madeLike = true }
+                .onError {
+                    // Rollback si falla
+                    _posts.value = prevPosts
+                    _openedPost.value = prevOpened
 
-                // 🔁 revertir la UI
-                _posts.value = _posts.value?.map { current ->
-                    if (current.post.id == postId) {
-                        current.copy(
-                            post = current.post.copy(
-                                likedByUser = alreadyLiked,
-                                likesCount = if (alreadyLiked)
-                                    current.post.likesCount + 1
-                                else
-                                    current.post.likesCount - 1
-                            )
-                        )
-                    } else current
+                    _modal.value = Modal.GenericErrorModal(
+                        onPrimaryAction = { _modal.value = null },
+                        onDismiss = { _modal.value = null },
+                    )
                 }
-
-                _modal.value = Modal.GenericErrorModal(
-                    onPrimaryAction = { _modal.value = null },
-                    onDismiss = { _modal.value = null },
-                )
-            }
         }
     }
 

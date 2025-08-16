@@ -46,10 +46,10 @@ import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.postCreation.domain.model.Post
-import com.diego.futty.home.postCreation.domain.model.PostWithUser
+import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
 @Composable
-fun PostWithUser.Draw(
+fun PostWithExtras.Draw(
     onLiked: () -> Unit,
     onImageClick: (image: String) -> Unit,
     onClick: () -> Unit,
@@ -71,10 +71,10 @@ fun PostWithUser.Draw(
                 color = colorGrey900(),
             )
         }
-        if (post.imageUrls.isNotEmpty()) {
-            PostImage(post.imageUrls, onImageClick)
+        if (images.isNotEmpty()) {
+            PostImage(images, onImageClick)
         }
-        PostFooter(post, onLiked)
+        PostFooter(this@Draw, onLiked)
     }
 
 @Composable
@@ -113,7 +113,7 @@ private fun PostInformation(
                 }
             }
             Text(
-                text = post.timestamp.getTimeAgoLabel(),
+                text = post.createdAt.getTimeAgoLabel(),
                 style = typography.bodySmall,
                 fontWeight = FontWeight.Normal,
                 color = colorGrey600()
@@ -167,10 +167,10 @@ private fun PostImage(
 
 @Composable
 private fun PostFooter(
-    post: Post,
+    post: PostWithExtras,
     onLiked: () -> Unit,
 ) {
-    val hasLike = post.likedByUser
+    val hasLike = post.likedByCurrentUser
     Row(
         modifier = Modifier.padding(top = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -189,7 +189,7 @@ private fun PostFooter(
                 onClick = { onLiked() }
             ).Draw()
             Text(
-                text = post.likesCount.toString(),
+                text = post.likeCount.toString(),
                 style = typography.bodyMedium,
                 fontWeight = FontWeight.Normal,
                 color = if (hasLike) colorError() else colorGrey900(),
@@ -204,7 +204,7 @@ private fun PostFooter(
                 onClick = { }
             ).Draw()
             Text(
-                text = post.commentsCount.toString(),
+                text = post.commentCount.toString(),
                 style = typography.bodyMedium,
                 fontWeight = FontWeight.Normal,
                 color = colorGrey900()
@@ -221,7 +221,7 @@ private fun PostFooter(
         )
         {
             Text(
-                text = post.team,
+                text = post.post.team,
                 style = typography.labelMedium,
                 fontWeight = FontWeight.Bold,
                 color = colorGrey0()
@@ -233,7 +233,7 @@ private fun PostFooter(
                 color = colorGrey100()
             )
             Text(
-                text = post.brand,
+                text = post.post.brand,
                 style = typography.labelMedium,
                 fontWeight = FontWeight.Bold,
                 color = colorGrey0()
