@@ -7,6 +7,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.Moon
+import com.adamglin.phosphoricons.bold.Sun
 import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
@@ -17,9 +21,6 @@ import com.diego.futty.home.design.presentation.component.banner.BannerStatus
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.setup.settings.domain.repository.SettingsRepository
 import com.diego.futty.setup.view.SetupRoute
-import compose.icons.TablerIcons
-import compose.icons.tablericons.Moon
-import compose.icons.tablericons.Sun
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
@@ -30,7 +31,7 @@ class SettingsViewModel(
     private val _palette = mutableStateOf(DayColorScheme)
     override val palette: State<ColorScheme> = _palette
 
-    private val _topBarIcon = mutableStateOf(TablerIcons.Moon)
+    private val _topBarIcon = mutableStateOf(PhosphorIcons.Bold.Moon)
     override val topBarIcon: State<ImageVector> = _topBarIcon
 
     private val _banner = mutableStateOf<Banner?>(null)
@@ -62,10 +63,10 @@ class SettingsViewModel(
     override fun onChangeThemeClicked() {
         if (_palette.value == DayColorScheme) {
             _palette.value = NightColorScheme
-            _topBarIcon.value = TablerIcons.Moon
+            _topBarIcon.value = PhosphorIcons.Bold.Moon
         } else {
             _palette.value = DayColorScheme
-            _topBarIcon.value = TablerIcons.Sun
+            _topBarIcon.value = PhosphorIcons.Bold.Sun
         }
 
         val currentlyDark = preferences.isDarkModeEnabled()?.not() ?: true
@@ -91,10 +92,10 @@ class SettingsViewModel(
 
     private fun updatePalette() {
         _palette.value = if (preferences.isDarkModeEnabled() == true) {
-            _topBarIcon.value = TablerIcons.Moon
+            _topBarIcon.value = PhosphorIcons.Bold.Moon
             NightColorScheme
         } else {
-            _topBarIcon.value = TablerIcons.Sun
+            _topBarIcon.value = PhosphorIcons.Bold.Sun
             DayColorScheme
         }
     }

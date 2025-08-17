@@ -19,12 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.X
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
-import compose.icons.TablerIcons
-import compose.icons.tablericons.X
 
 @Composable
 fun PagerImages(
@@ -80,7 +81,7 @@ fun PagerImages(
                     horizontalArrangement = Arrangement.End,
                 ) {
                     Avatar.IconAvatar(
-                        icon = TablerIcons.X,
+                        icon = PhosphorIcons.Bold.X,
                         background = colorGrey100(),
                         onClick = { onImageClosed() }
                     ).Draw()

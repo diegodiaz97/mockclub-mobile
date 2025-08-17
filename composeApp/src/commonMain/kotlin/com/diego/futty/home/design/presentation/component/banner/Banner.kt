@@ -29,6 +29,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.CaretRight
 import com.diego.futty.core.presentation.theme.Grey0
 import com.diego.futty.core.presentation.theme.Grey900
 import com.diego.futty.core.presentation.theme.colorAlertLight
@@ -43,8 +46,6 @@ import com.diego.futty.core.presentation.theme.colorSuccessLight
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.image.AsyncImage
-import compose.icons.TablerIcons
-import compose.icons.tablericons.ChevronRight
 
 sealed interface Banner {
     @Composable
@@ -98,7 +99,7 @@ sealed interface Banner {
             if (bannerUIData.action != null) {
                 Icon(
                     modifier = Modifier.width(24.dp),
-                    imageVector = TablerIcons.ChevronRight,
+                    imageVector = PhosphorIcons.Bold.CaretRight,
                     tint = colorGrey900(),
                     contentDescription = null
                 )

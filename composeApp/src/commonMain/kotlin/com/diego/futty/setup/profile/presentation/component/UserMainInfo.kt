@@ -16,6 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.Calendar
 import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
@@ -25,8 +28,6 @@ import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
-import compose.icons.TablerIcons
-import compose.icons.tablericons.Calendar
 
 @Composable
 fun UserMainInfo(viewModel: ProfileViewModel) {
@@ -96,7 +97,7 @@ fun UserMainInfo(viewModel: ProfileViewModel) {
                 ) {
                     Icon(
                         modifier = Modifier.size(16.dp),
-                        imageVector = TablerIcons.Calendar,
+                        imageVector = PhosphorIcons.Bold.Calendar,
                         tint = colorGrey500(),
                         contentDescription = null
                     )

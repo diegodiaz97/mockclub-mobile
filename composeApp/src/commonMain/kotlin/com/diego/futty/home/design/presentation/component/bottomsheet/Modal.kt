@@ -18,6 +18,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.X
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey800
 import com.diego.futty.core.presentation.theme.colorGrey900
@@ -25,8 +28,6 @@ import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.button.SecondaryButton
 import com.diego.futty.home.design.presentation.component.image.AsyncImage
-import compose.icons.TablerIcons
-import compose.icons.tablericons.X
 
 sealed interface Modal {
     @Composable
@@ -54,7 +55,7 @@ sealed interface Modal {
                     horizontalAlignment = Alignment.End,
                 ) {
                     Avatar.IconAvatar(
-                        icon = TablerIcons.X,
+                        icon = PhosphorIcons.Bold.X,
                         background = colorGrey100(),
                         onClick = { onDismiss() }
                     ).Draw()

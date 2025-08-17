@@ -17,20 +17,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.diego.futty.core.presentation.theme.Grey0
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
-import com.diego.futty.core.presentation.theme.colorPrimary
 import com.diego.futty.core.presentation.theme.toColor
-import com.diego.futty.home.design.presentation.component.avatar.Avatar
-import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.progressbar.DynamicLinearProgressBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
@@ -47,8 +42,6 @@ import com.svenjacobs.reveal.RevealCanvasState
 import com.svenjacobs.reveal.RevealShape
 import com.svenjacobs.reveal.RevealState
 import com.svenjacobs.reveal.revealable
-import compose.icons.TablerIcons
-import compose.icons.tablericons.Plus
 import dev.materii.pullrefresh.DragRefreshLayout
 import dev.materii.pullrefresh.rememberPullRefreshState
 import kotlinx.coroutines.CoroutineScope
@@ -129,22 +122,6 @@ private fun FeedContent(
 ) {
     Box {
         Posts(viewModel, scope, revealState)
-        Avatar.IconAvatar(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 16.dp, end = 20.dp)
-                .revealable(
-                    key = Keys.Post,
-                    state = revealState,
-                    shape = RevealShape.Circle,
-                    onClick = { scope.launch { revealState.hide() } }
-                ),
-            avatarSize = AvatarSize.Big,
-            icon = TablerIcons.Plus,
-            background = colorPrimary(),
-            tint = Grey0,
-            onClick = { viewModel.showPostCreation() }
-        ).Draw()
     }
 }
 
@@ -182,6 +159,9 @@ private fun Posts(
             },
             onImageClicked = { images, index, ratio ->
                 viewModel.onImageClicked(images, index, ratio)
+            },
+            onUserClicked = { user ->
+                viewModel.onUserClicked(user)
             },
             onScrolled = {
                 viewModel.fetchFeed()

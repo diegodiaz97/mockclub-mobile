@@ -77,4 +77,37 @@ object Transitions {
             tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
         )
     }
+
+    // Bottom screen
+    val BottomScreenEnter: AnimatedContentTransitionScope<NavBackStackEntry>.() ->
+    EnterTransition = {
+        slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Up,
+            tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+        )
+    }
+
+    val BottomScreenExit: AnimatedContentTransitionScope<NavBackStackEntry>.() ->
+    ExitTransition = {
+        slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.Down,
+            tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+        )
+    }
+
+    val BottomScreenPopEnter: AnimatedContentTransitionScope<NavBackStackEntry>.() ->
+    EnterTransition = {
+        slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Up,
+            tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+        )
+    }
+
+    val BottomScreenPopExit: AnimatedContentTransitionScope<NavBackStackEntry>.() ->
+    ExitTransition = {
+        slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.Down,
+            tween(durationMillis = TIME_DURATION, easing = LinearOutSlowInEasing)
+        )
+    }
 }

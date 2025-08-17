@@ -44,6 +44,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.Plus
+import com.adamglin.phosphoricons.bold.X
 import com.diego.futty.core.presentation.theme.colorAlertLight
 import com.diego.futty.core.presentation.theme.colorErrorLight
 import com.diego.futty.core.presentation.theme.colorGrey0
@@ -76,10 +80,8 @@ import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Photo
-import compose.icons.tablericons.Plus
 import compose.icons.tablericons.RectangleVertical
 import compose.icons.tablericons.Square
-import compose.icons.tablericons.X
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -91,8 +93,8 @@ fun PostCreationScreen(
     onPostCreated: () -> Unit,
 ) {
     BackHandler {
-        onClose()
         viewModel.dismissPostCreation()
+        onClose()
     }
 
     if (user == null) return
@@ -225,7 +227,7 @@ private fun PostFooter(viewModel: PostCreationViewModel) {
                             ) { viewModel.removeTag(index) }
                             Avatar.IconAvatar(
                                 modifier = Modifier.offset(x = (-14).dp, y = (-8).dp),
-                                icon = TablerIcons.X,
+                                icon = PhosphorIcons.Bold.X,
                                 tint = colorGrey600(),
                                 background = colorGrey0(),
                                 avatarSize = AvatarSize.Atomic,
@@ -252,7 +254,7 @@ private fun PostFooter(viewModel: PostCreationViewModel) {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Chip(
-                icon = TablerIcons.Plus,
+                icon = PhosphorIcons.Bold.Plus,
                 text = "Tags",
                 color = colorGrey100(),
                 isSelected = false,
@@ -360,7 +362,7 @@ fun SelectedImages(viewModel: PostCreationViewModel) = LazyRow(
                 )
                 Avatar.IconAvatar(
                     modifier = Modifier.padding(4.dp).align(Alignment.TopEnd),
-                    icon = TablerIcons.X,
+                    icon = PhosphorIcons.Bold.X,
                     tint = colorGrey600(),
                     background = colorGrey0(),
                     avatarSize = AvatarSize.Atomic,
@@ -443,7 +445,7 @@ fun AddTags(
                             ) { tags = tags.filterIndexed { i, _ -> i != index } }
                             Avatar.IconAvatar(
                                 modifier = Modifier.offset(x = (-14).dp, y = (-8).dp),
-                                icon = TablerIcons.X,
+                                icon = PhosphorIcons.Bold.X,
                                 tint = colorGrey600(),
                                 background = colorGrey0(),
                                 avatarSize = AvatarSize.Atomic,
@@ -474,7 +476,7 @@ fun AddTags(
                 }
             ).Draw()
             Avatar.IconAvatar(
-                icon = TablerIcons.Plus,
+                icon = PhosphorIcons.Bold.Plus,
                 background = colorGrey0(),
                 tint = colorGrey400(),
                 onClick = {

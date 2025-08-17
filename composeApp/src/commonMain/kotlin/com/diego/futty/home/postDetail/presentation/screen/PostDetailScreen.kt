@@ -65,6 +65,7 @@ import com.diego.futty.core.presentation.utils.getShortTimeAgoLabel
 import com.diego.futty.core.presentation.utils.getTimeAgoLabel
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
+import com.diego.futty.home.design.presentation.component.emptystate.SimpleEmptyState
 import com.diego.futty.home.design.presentation.component.image.PagerImages
 import com.diego.futty.home.design.presentation.component.input.TextInput
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
@@ -82,11 +83,19 @@ fun PostDetailScreen(
     onClose: () -> Unit,
     onLiked: () -> Unit,
 ) {
-    val postWithUser = viewModel.post.value ?: return
+    val postWithUser = viewModel.post.value
+
+    if (postWithUser == null) {
+        SimpleEmptyState(
+            modifier = Modifier.fillMaxSize(),
+            text = "Post NULL",
+        )
+        return
+    }
 
     BackHandler {
-        viewModel.resetPost()
         onClose()
+        viewModel.resetPost()
     }
 
     val focusManager = LocalFocusManager.current
@@ -216,7 +225,7 @@ private fun PostComments(viewModel: PostDetailViewModel) {
             color = colorGrey900()
         )
 
-        val comments = viewModel.comments.value
+        val comments = viewModel.comments.value ?: emptyList()
 
         if (comments.isNotEmpty()) {
             comments.forEachIndexed { index, comment ->
@@ -231,14 +240,12 @@ private fun PostComments(viewModel: PostDetailViewModel) {
                 }
             }
         } else {
-            if (viewModel.post.value?.commentCount == 0) {
-                Text(
-                    modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+            val loadedComments = viewModel.comments.value
+            val showEmptyState = loadedComments != null && loadedComments.isEmpty()
+            if (showEmptyState) {
+                SimpleEmptyState(
+                    modifier = Modifier.padding(bottom = 16.dp),
                     text = "Aún no hay comentarios",
-                    style = typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center,
-                    color = colorGrey900()
                 )
             }
         }

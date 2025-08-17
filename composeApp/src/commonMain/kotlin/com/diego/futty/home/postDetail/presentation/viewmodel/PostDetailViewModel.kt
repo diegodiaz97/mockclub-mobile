@@ -18,8 +18,8 @@ class PostDetailViewModel(
     private val _post = mutableStateOf<PostWithExtras?>(null)
     override val post: State<PostWithExtras?> = _post
 
-    private val _comments = mutableStateOf<List<CommentWithExtras>>(emptyList())
-    override val comments: State<List<CommentWithExtras>> = _comments
+    private val _comments = mutableStateOf<List<CommentWithExtras>?>(null)
+    override val comments: State<List<CommentWithExtras>?> = _comments
 
     private val _commentCreationProgress = mutableStateOf(0f)
     override val commentCreationProgress: State<Float> = _commentCreationProgress
@@ -41,7 +41,7 @@ class PostDetailViewModel(
 
     override fun resetPost() {
         _post.value = null
-        _comments.value = emptyList()
+        _comments.value = null
         _repliesMap.value = emptyMap()
         _commentCreationProgress.value = 0f
         _commentToReply.value = null
@@ -56,13 +56,15 @@ class PostDetailViewModel(
         viewModelScope.launch {
             postRepository.getComments(postId, limit = 10, cursorCreatedAt = _lastCommentTimestamp)
                 .onSuccess { newComments ->
+                    val comments = _comments.value ?: emptyList()
+
                     if (newComments.isEmpty()) {
                         _commentsEndReached = true
                         return@onSuccess
                     }
 
                     _lastCommentTimestamp = newComments.last().comment.createdAt
-                    _comments.value = _comments.value + newComments
+                    _comments.value = comments + newComments
                 }
                 .onError {
                     // manejar error
@@ -90,7 +92,8 @@ class PostDetailViewModel(
             _commentCreationProgress.value = 0.3f
             postRepository.addComment(postId, text)
                 .onSuccess { newComment ->
-                    _comments.value = listOf(newComment) + _comments.value
+                    val comments = _comments.value ?: emptyList()
+                    _comments.value = listOf(newComment) + comments
                     _post.value = _post.value?.copy(commentCount = _post.value!!.commentCount + 1)
                     _commentCreationProgress.value = 1f
                     _commentToReply.value = null
@@ -223,7 +226,7 @@ class PostDetailViewModel(
         val replyId = reply?.comment?.id
 
         // UI optimista
-        _comments.value = _comments.value.map { cw ->
+        _comments.value = _comments.value?.map { cw ->
             if (cw.comment.id != commentId) return@map cw
 
             if (replyId == null) {

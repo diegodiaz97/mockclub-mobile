@@ -15,6 +15,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.Bell
+import com.adamglin.phosphoricons.bold.Download
+import com.adamglin.phosphoricons.bold.Lightning
+import com.adamglin.phosphoricons.bold.QuestionMark
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
@@ -25,12 +31,7 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.setup.settings.presentation.viewmodel.SettingsViewModel
 import compose.icons.Octicons
-import compose.icons.TablerIcons
 import compose.icons.octicons.Verified16
-import compose.icons.tablericons.Bell
-import compose.icons.tablericons.Bolt
-import compose.icons.tablericons.Download
-import compose.icons.tablericons.QuestionMark
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
@@ -84,7 +85,7 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
             bannerUIData = BannerUIData(
                 title = "Notificaciones",
                 description = "Configuración de notificaciones.",
-                icon = TablerIcons.Bell,
+                icon = PhosphorIcons.Bold.Bell,
                 size = AvatarSize.Small,
                 action = { }
             ),
@@ -108,7 +109,7 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
             bannerUIData = BannerUIData(
                 title = "Publicidad",
                 description = "¡Publicita lo que quieras con nosotros!",
-                icon = TablerIcons.Bolt,
+                icon = PhosphorIcons.Bold.Lightning,
                 size = AvatarSize.Small,
                 action = { }
             ),
@@ -120,7 +121,7 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
             bannerUIData = BannerUIData(
                 title = "Ayuda",
                 description = "Resuelve tus dudas.",
-                icon = TablerIcons.QuestionMark,
+                icon = PhosphorIcons.Bold.QuestionMark,
                 size = AvatarSize.Small,
                 action = { }
             ),
@@ -132,7 +133,7 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
             bannerUIData = BannerUIData(
                 title = "Guardado",
                 description = "Mira las publicaciones que has guardado.",
-                icon = TablerIcons.Download,
+                icon = PhosphorIcons.Bold.Download,
                 size = AvatarSize.Small,
                 action = { }
             ),

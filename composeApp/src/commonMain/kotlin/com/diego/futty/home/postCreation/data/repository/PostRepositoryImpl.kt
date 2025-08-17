@@ -2,6 +2,7 @@ package com.diego.futty.home.postCreation.data.repository
 
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
+import com.diego.futty.home.feed.domain.model.Count
 import com.diego.futty.home.postCreation.data.network.LikedItems
 import com.diego.futty.home.postCreation.data.network.RemotePostDataSource
 import com.diego.futty.home.postCreation.domain.model.CommentWithExtras
@@ -24,7 +25,7 @@ class PostRepositoryImpl(
         return remotePostDataSource.createPost(text, images, ratio, team, brand, tags)
     }
 
-    override suspend fun countPosts(userId: String): DataResult<Int, DataError.Remote> {
+    override suspend fun countPosts(userId: String): DataResult<Count, DataError.Remote> {
         return remotePostDataSource.countPosts(userId)
     }
 

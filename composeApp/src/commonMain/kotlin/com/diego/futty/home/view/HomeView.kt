@@ -148,10 +148,15 @@ fun HomeView(navigateToLogin: () -> Unit) {
                                 appViewModel.updateRoute(HomeRoute.Setup)
                             }
                             SetupView(
-                                userId = designViewModel.clickedUser.value,
+                                userId = if (appViewModel.currentRoute.value == HomeRoute.Feed) {
+                                    feedViewModel.clickedUser.value
+                                } else {
+                                    designViewModel.clickedUser.value
+                                },
                                 onBack = { userMadeLike ->
                                     navController.popBackStack()
                                     designViewModel.resetUserId()
+                                    feedViewModel.resetUserId()
                                     feedViewModel.updateLikes(userMadeLike)
                                 },
                                 navigateToLogin = navigateToLogin,
@@ -159,10 +164,10 @@ fun HomeView(navigateToLogin: () -> Unit) {
                         }
 
                         composable<HomeRoute.CreatePost>(
-                            enterTransition = Transitions.RightScreenEnter,
-                            exitTransition = Transitions.LeftScreenExit,
-                            popEnterTransition = Transitions.RightScreenPopEnter,
-                            popExitTransition = Transitions.LeftScreenPopExit
+                            enterTransition = Transitions.BottomScreenEnter,
+                            exitTransition = Transitions.BottomScreenExit,
+                            popEnterTransition = Transitions.BottomScreenPopEnter,
+                            popExitTransition = Transitions.BottomScreenPopExit
                         ) {
                             LaunchedEffect(true) {
                                 appViewModel.updateRoute(HomeRoute.CreatePost)
@@ -189,7 +194,11 @@ fun HomeView(navigateToLogin: () -> Unit) {
                             popExitTransition = Transitions.LeftScreenPopExit
                         ) {
                             LaunchedEffect(true) {
-                                val post = feedViewModel.openedPost.value
+                                val post = if (appViewModel.currentRoute.value == HomeRoute.Feed) {
+                                    feedViewModel.openedPost.value
+                                } else {
+                                    designViewModel.openedPost.value
+                                }
                                 if (post != null) {
                                     appViewModel.updateRoute(HomeRoute.PostDetail)
                                     postDetailViewModel.setup(post)
@@ -253,8 +262,13 @@ private fun BottomNavBar(appViewModel: HomeViewModel, navController: NavControll
 
 private fun navigateTo(navController: NavController, current: HomeRoute, destination: HomeRoute) {
     if (current != destination) {
-        navController.navigate(destination) {
-            popUpTo(current) { inclusive = true }
+        when (destination) {
+            HomeRoute.CreatePost -> navController.navigate(destination)
+            else -> {
+                navController.navigate(destination) {
+                    popUpTo(current) { inclusive = true }
+                }
+            }
         }
     }
 }

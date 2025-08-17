@@ -51,6 +51,9 @@ class FeedViewModel(
     private val _postCreationProgress = mutableStateOf(0f)
     override val postCreationProgress: State<Float> = _postCreationProgress
 
+    private val _clickedUser = mutableStateOf("")
+    override val clickedUser: State<String> = _clickedUser
+
     private val _modal = mutableStateOf<Modal?>(null)
     override val modal: State<Modal?> = _modal
 
@@ -221,6 +224,18 @@ class FeedViewModel(
 
     override fun onChallengesClicked() {
         _navigate(HomeRoute.Challenge)
+    }
+
+    override fun onUserClicked(user: User) {
+        val currentUser = preferences.getUserId() ?: return
+        if (user.id != currentUser) {
+            _clickedUser.value = user.id
+        }
+        _navigate(HomeRoute.Setup)
+    }
+
+    override fun resetUserId() {
+        _clickedUser.value = ""
     }
 
     private fun fetchUserInfo() {

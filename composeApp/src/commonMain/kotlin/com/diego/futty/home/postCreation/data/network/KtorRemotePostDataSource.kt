@@ -7,6 +7,7 @@ import com.diego.futty.core.data.remote.safeCall
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
 import com.diego.futty.core.presentation.utils.PlatformInfo
+import com.diego.futty.home.feed.domain.model.Count
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.postCreation.domain.model.CommentWithExtras
 import com.diego.futty.home.postCreation.domain.model.PostWithExtras
@@ -36,7 +37,8 @@ class KtorRemotePostDataSource(
 
     private fun baseUrl(): String {
         return if (PlatformInfo.isIOS) {
-            "http://192.168.0.192:8080"
+            //"http://192.168.0.192:8080"
+            "http://192.168.0.10:8080" //Casa de mama
         } else {
             "http://10.0.2.2:8080"
         }
@@ -91,7 +93,7 @@ class KtorRemotePostDataSource(
         }
     }
 
-    override suspend fun countPosts(userId: String): DataResult<Int, DataError.Remote> { /*TODO*/
+    /*override suspend fun countPosts(userId: String): DataResult<Int, DataError.Remote> { /*TODO*/
         return try {
             val result = postsCollection
                 .where { "userId" equalTo userId }
@@ -103,7 +105,14 @@ class KtorRemotePostDataSource(
         } catch (e: Exception) {
             DataResult.Error(DataError.Remote.UNKNOWN)
         }
-    }
+    }*/
+
+    override suspend fun countPosts(userId: String): DataResult<Count, DataError.Remote> =
+        safeCall<Count> {
+            httpClient.get("${baseUrl()}/posts/count/$userId") {
+                header(HttpHeaders.Authorization, "Bearer ${authToken()}")
+            }
+        }
 
     override suspend fun getFeed(
         limit: Int,
@@ -157,9 +166,9 @@ class KtorRemotePostDataSource(
     }
 
     override suspend fun getPostsByTeam( /*TODO*/
-        team: String,
-        limit: Int,
-        startAfterTimestamp: Timestamp?
+                                         team: String,
+                                         limit: Int,
+                                         startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithExtras>, DataError.Remote> {
         return try {
             /*val userId = preferences.getUserId() ?: ""
@@ -203,9 +212,9 @@ class KtorRemotePostDataSource(
     }
 
     override suspend fun getPostsByBrand( /*TODO*/
-        brand: String,
-        limit: Int,
-        startAfterTimestamp: Timestamp?
+                                          brand: String,
+                                          limit: Int,
+                                          startAfterTimestamp: Timestamp?
     ): DataResult<List<PostWithExtras>, DataError.Remote> {
         return try {
             /*val userId = preferences.getUserId() ?: ""
@@ -333,9 +342,9 @@ class KtorRemotePostDataSource(
     }*/
 
     override suspend fun replyToComment( /*TODO*/
-        postId: String,
-        commentId: String,
-        text: String
+                                         postId: String,
+                                         commentId: String,
+                                         text: String
     ): DataResult<CommentWithExtras, DataError.Remote> {
         return try {
             /*val userId = preferences.getUserId() ?: ""
@@ -387,8 +396,8 @@ class KtorRemotePostDataSource(
     }
 
     override suspend fun deleteComment( /*TODO*/
-        postId: String,
-        commentId: String
+                                        postId: String,
+                                        commentId: String
     ): DataResult<Unit, DataError.Remote> {
         return try {
             val commentRef =
@@ -406,9 +415,9 @@ class KtorRemotePostDataSource(
     }
 
     override suspend fun likeCommentOrReply( /*TODO*/
-        postId: String,
-        commentId: String,
-        replyId: String?
+                                             postId: String,
+                                             commentId: String,
+                                             replyId: String?
     ): DataResult<Unit, DataError.Remote> {
         return try {
             val userId =
@@ -448,9 +457,9 @@ class KtorRemotePostDataSource(
     }
 
     override suspend fun removeLikeCommentOrReply( /*TODO*/
-        postId: String,
-        commentId: String,
-        replyId: String?
+                                                   postId: String,
+                                                   commentId: String,
+                                                   replyId: String?
     ): DataResult<Unit, DataError.Remote> {
         return try {
             val userId =

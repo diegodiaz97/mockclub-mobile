@@ -287,7 +287,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             postRepository.countPosts(userId = user)
                 .onSuccess {
-                    _postsCant.value = it
+                    _postsCant.value = it.count
                 }
                 .onError {
                     // SHOW ERROR

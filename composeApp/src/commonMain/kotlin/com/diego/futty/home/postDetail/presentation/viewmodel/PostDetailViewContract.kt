@@ -6,7 +6,7 @@ import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
 interface PostDetailViewContract {
     val post: State<PostWithExtras?>
-    val comments: State<List<CommentWithExtras>>
+    val comments: State<List<CommentWithExtras>?>
     val commentCreationProgress: State<Float>
     val commentToReply: State<CommentWithExtras?>
     val repliesMap: State<Map<String, RepliesPaginationState>>

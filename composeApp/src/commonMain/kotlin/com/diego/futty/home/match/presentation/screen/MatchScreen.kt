@@ -10,14 +10,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.List
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.home.design.presentation.component.banner.BannerUIData
 import com.diego.futty.home.design.presentation.component.pager.FullScreenPager
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.home.match.presentation.viewmodel.MatchViewModel
-import compose.icons.TablerIcons
-import compose.icons.tablericons.Menu2
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -32,7 +33,7 @@ fun MatchScreen(viewModel: MatchViewModel = koinViewModel()) {
                     .padding(horizontal = 16.dp),
                 title = "Notificaciones",
                 topBarActionType = TopBarActionType.Icon(
-                    icon = TablerIcons.Menu2,
+                    icon = PhosphorIcons.Bold.List,
                     onClick = { }
                 )
             )

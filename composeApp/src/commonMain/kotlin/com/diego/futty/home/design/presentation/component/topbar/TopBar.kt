@@ -22,11 +22,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.ArrowLeft
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
-import compose.icons.TablerIcons
-import compose.icons.tablericons.ArrowLeft
 
 @Composable
 fun TopBar(
@@ -39,7 +40,7 @@ fun TopBar(
         modifier = modifier
             .fillMaxWidth()
             .background(colorGrey0())
-            .padding(vertical = 12.dp),
+            .padding(bottom = 6.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -57,7 +58,7 @@ fun TopBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (onBack != null) {
-                TopBarIcon(TablerIcons.ArrowLeft, onBack)
+                TopBarIcon(PhosphorIcons.Bold.ArrowLeft, onBack)
             } else {
                 Spacer(Modifier.width(36.dp))
             }

@@ -25,17 +25,18 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.adamglin.PhosphorIcons
 import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.List
 import com.adamglin.phosphoricons.bold.MagnifyingGlass
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
+import com.diego.futty.home.design.presentation.component.emptystate.SimpleEmptyState
 import com.diego.futty.home.design.presentation.component.input.TextInput
 import com.diego.futty.home.design.presentation.component.selector.SegmentControl
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.home.design.presentation.component.user.Draw
 import com.diego.futty.home.design.presentation.viewmodel.DesignViewModel
-import compose.icons.TablerIcons
-import compose.icons.tablericons.Menu2
+import com.diego.futty.setup.profile.presentation.component.PostsGrid
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -61,7 +62,7 @@ fun DesignScreen(
                     .padding(horizontal = 16.dp),
                 title = "Descubre",
                 topBarActionType = TopBarActionType.Icon(
-                    icon = TablerIcons.Menu2,
+                    icon = PhosphorIcons.Bold.List,
                     onClick = { viewModel.onProfileClicked() }
                 )
             )
@@ -87,7 +88,11 @@ private fun DesignContent(viewModel: DesignViewModel, paddingValues: PaddingValu
             selectedIndex = viewModel.selectedSearchType.value,
             onItemSelected = { viewModel.updateSearchType(it) }
         )
-        UsersList(viewModel)
+        if (viewModel.selectedSearchType.value == 0) {
+            UsersList(viewModel)
+        } else {
+            PostsList(viewModel)
+        }
     }
 }
 
@@ -112,23 +117,61 @@ fun SearchInput(viewModel: DesignViewModel) {
 private fun UsersList(viewModel: DesignViewModel) {
     val users = viewModel.searchUsers.collectAsState().value
     val input = viewModel.searchText.collectAsState().value
-    AnimatedVisibility(
-        visible = users.isNotEmpty() && input.isNotEmpty(),
-        enter = expandVertically(),
-        exit = shrinkVertically()
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    if (users != null) {
+        AnimatedVisibility(
+            visible = users.isNotEmpty() && input.isNotEmpty(),
+            enter = expandVertically(),
+            exit = shrinkVertically()
         ) {
-            users.forEachIndexed { index, user ->
-                item {
-                    user.Draw { viewModel.onUserClicked(user) }
-                    if (index < users.lastIndex) {
-                        HorizontalDivider(thickness = 1.dp, color = colorGrey100())
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                users.forEachIndexed { index, user ->
+                    item {
+                        user.Draw { viewModel.onUserClicked(user) }
+                        if (index < users.lastIndex) {
+                            HorizontalDivider(thickness = 1.dp, color = colorGrey100())
+                        }
                     }
                 }
             }
+        }
+
+        if (users.isEmpty() && input.isNotEmpty()) {
+            SimpleEmptyState(
+                modifier = Modifier.fillMaxSize(),
+                text = "No se encontraron usuarios",
+            )
+        }
+    }
+}
+
+@Composable
+private fun PostsList(viewModel: DesignViewModel) {
+    val posts = viewModel.searchPosts.collectAsState().value
+    val input = viewModel.searchText.collectAsState().value
+    if (posts != null) {
+        AnimatedVisibility(
+            visible = posts.isNotEmpty() && input.isNotEmpty(),
+            enter = expandVertically(),
+            exit = shrinkVertically()
+        ) {
+            PostsGrid(
+                posts = viewModel.searchPosts.value,
+                onPostClicked = { post ->
+                    viewModel.onPostClicked(post)
+                },
+                onScrolled = {
+                    //viewModel.fetchOwnFeed()
+                }
+            )
+        }
+        if (posts.isEmpty() && input.isNotEmpty()) {
+            SimpleEmptyState(
+                modifier = Modifier.fillMaxSize(),
+                text = "No se encontraron posts",
+            )
         }
     }
 }

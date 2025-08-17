@@ -23,7 +23,8 @@ class KtorRemoteProfileDataSource(
 
     private fun baseUrl(): String {
         return if (PlatformInfo.isIOS) {
-            "http://192.168.0.192:8080"
+            //"http://192.168.0.192:8080"
+            "http://192.168.0.10:8080" //Casa de mama
         } else {
             "http://10.0.2.2:8080"
         }

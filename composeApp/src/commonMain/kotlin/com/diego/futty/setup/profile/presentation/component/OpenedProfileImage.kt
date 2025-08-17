@@ -20,6 +20,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.X
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
@@ -30,8 +33,6 @@ import com.diego.futty.home.design.presentation.component.image.AsyncImage
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
-import compose.icons.TablerIcons
-import compose.icons.tablericons.X
 
 @Composable
 fun OpenedProfileImage(
@@ -131,7 +132,7 @@ fun OpenedProfileImage(
                 modifier = Modifier
                     .padding(top = if (PlatformInfo.isAndroid) 12.dp else 60.dp, end = 16.dp)
                     .align(Alignment.TopEnd),
-                icon = TablerIcons.X,
+                icon = PhosphorIcons.Bold.X,
                 background = colorGrey100(),
                 onClick = { showUpdateImage() }
             ).Draw()

@@ -7,11 +7,12 @@ import com.adamglin.phosphoricons.Fill
 import com.adamglin.phosphoricons.bold.Bell
 import com.adamglin.phosphoricons.bold.House
 import com.adamglin.phosphoricons.bold.MagnifyingGlass
-import com.adamglin.phosphoricons.bold.TShirt
+import com.adamglin.phosphoricons.bold.PlusCircle
+import com.adamglin.phosphoricons.bold.Sword
 import com.adamglin.phosphoricons.fill.Bell
 import com.adamglin.phosphoricons.fill.House
 import com.adamglin.phosphoricons.fill.MagnifyingGlass
-import com.adamglin.phosphoricons.fill.TShirt
+import com.adamglin.phosphoricons.fill.Sword
 
 sealed class BottomNavScreen(
     val text: String,
@@ -29,8 +30,15 @@ sealed class BottomNavScreen(
     data object Challenges : BottomNavScreen(
         "Retos",
         HomeRoute.Challenge,
-        PhosphorIcons.Bold.TShirt,
-        PhosphorIcons.Fill.TShirt
+        PhosphorIcons.Bold.Sword,
+        PhosphorIcons.Fill.Sword
+    )
+
+    data object NewPost : BottomNavScreen(
+        "Postear",
+        HomeRoute.CreatePost,
+        PhosphorIcons.Bold.PlusCircle,
+        PhosphorIcons.Bold.PlusCircle
     )
 
     data object Search : BottomNavScreen(
@@ -48,6 +56,6 @@ sealed class BottomNavScreen(
     )
 
     companion object {
-        val allScreens = listOf(Home, Challenges, Search, Notifications)
+        val allScreens = listOf(Home, Challenges, NewPost, Search, Notifications)
     }
 }

@@ -2,6 +2,7 @@ package com.diego.futty.home.design.presentation.component.post
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.adamglin.PhosphorIcons
@@ -49,15 +51,20 @@ import com.diego.futty.home.postCreation.domain.model.Post
 import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
 @Composable
-fun PostWithExtras.Draw(
+fun PostItem(
+    postWithExtras: PostWithExtras,
     onLiked: () -> Unit,
     onImageClick: (image: String) -> Unit,
+    onUserClicked: () -> Unit,
     onClick: () -> Unit,
-) =
+) {
+    val post = postWithExtras.post
+    val user = postWithExtras.user
     Column(modifier = Modifier.padding(vertical = 12.dp).clickable { onClick() }) {
         PostInformation(
             post = post,
             user = user,
+            onUserClicked = onUserClicked,
         )
         if (post.text.isNotEmpty()) {
             Text(
@@ -71,16 +78,22 @@ fun PostWithExtras.Draw(
                 color = colorGrey900(),
             )
         }
-        if (images.isNotEmpty()) {
-            PostImage(images, onImageClick)
+        if (postWithExtras.images.isNotEmpty()) {
+            PostImage(
+                post = postWithExtras,
+                onImageClick = onImageClick,
+                onImageDoubleClick = onLiked,
+            )
         }
-        PostFooter(this@Draw, onLiked)
+        PostFooter(postWithExtras, onLiked)
     }
+}
 
 @Composable
 private fun PostInformation(
     post: Post,
-    user: User?,
+    user: User,
+    onUserClicked: () -> Unit,
 ) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -88,10 +101,10 @@ private fun PostInformation(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Avatar.ProfileAvatar(
-            imageUrl = user?.profileImage?.image,
-            initials = user?.profileImage?.initials,
-            background = user?.profileImage?.background?.toColor(),
-            onClick = { }
+            imageUrl = user.profileImage?.image,
+            initials = user.profileImage?.initials,
+            background = user.profileImage?.background?.toColor(),
+            onClick = { onUserClicked() }
         ).Draw()
         Column(
             modifier = Modifier.weight(1f),
@@ -103,12 +116,12 @@ private fun PostInformation(
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = "${user?.name} ${user?.lastName}",
+                    text = "${user.name} ${user.lastName}",
                     style = typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = colorGrey900()
                 )
-                if (user?.userType == USER_TYPE_PRO) {
+                if (user.userType == USER_TYPE_PRO) {
                     VerifiedIcon(Modifier.padding(top = 4.dp), size = 16.dp)
                 }
             }
@@ -125,9 +138,11 @@ private fun PostInformation(
 
 @Composable
 private fun PostImage(
-    images: List<String>,
+    post: PostWithExtras,
     onImageClick: (image: String) -> Unit,
+    onImageDoubleClick: () -> Unit,
 ) {
+    val images = post.images
     if (images.size > 1) {
         LazyRow(
             modifier = Modifier.height(260.dp).fillMaxWidth(),
@@ -140,7 +155,13 @@ private fun PostImage(
                     AsyncImage(
                         modifier = Modifier
                             .size(260.dp)
-                            .clickable { onImageClick(image) }
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onDoubleTap = { onImageDoubleClick() },
+                                    onLongPress = { onImageDoubleClick() },
+                                    onTap = { onImageClick(image) }
+                                )
+                            }
                             .clip(RoundedCornerShape(12.dp))
                             .background(colorGrey100()),
                         contentDescription = "post list image",
@@ -156,7 +177,13 @@ private fun PostImage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
-                .clickable { onImageClick(image) }
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onDoubleTap = { onImageDoubleClick() },
+                        onLongPress = { onImageDoubleClick() },
+                        onTap = { onImageClick(image) }
+                    )
+                }
                 .clip(RoundedCornerShape(12.dp))
                 .background(colorGrey100()),
             contentDescription = "post single image",

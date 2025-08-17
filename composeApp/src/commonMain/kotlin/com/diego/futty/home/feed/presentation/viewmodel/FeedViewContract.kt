@@ -15,6 +15,7 @@ interface FeedViewContract {
     val openedImageRatio: State<Float>
     val isRefreshing: State<Boolean>
     val postCreationProgress: State<Float>
+    val clickedUser: State<String>
     val modal: State<Modal?>
     fun startReveal(revealState: RevealState)
     fun onProfileClicked()
@@ -29,4 +30,6 @@ interface FeedViewContract {
     fun fetchFeed()
     fun onFeedRefreshed()
     fun onChallengesClicked()
+    fun onUserClicked(user: User)
+    fun resetUserId()
 }

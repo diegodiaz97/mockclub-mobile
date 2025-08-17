@@ -15,8 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey900
-import com.diego.futty.home.design.presentation.component.post.Draw
+import com.diego.futty.home.design.presentation.component.post.PostItem
 import com.diego.futty.home.design.presentation.component.post.PostShimmer
+import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
 @Composable
@@ -27,6 +28,7 @@ fun PostsList(
     onPostClicked: (PostWithExtras) -> Unit,
     onLikeClicked: ((PostWithExtras) -> Unit)? = null,
     onImageClicked: ((images: List<String>, index: Int, ratio: Float) -> Unit)? = null,
+    onUserClicked: (User) -> Unit,
     onScrolled: () -> Unit,
 ) {
     LazyColumn(
@@ -38,7 +40,8 @@ fun PostsList(
         if (posts != null) {
             posts.forEachIndexed { index, post ->
                 item {
-                    post.Draw(
+                    PostItem(
+                        postWithExtras = post,
                         onLiked = { onLikeClicked?.let { it(post) } },
                         onImageClick = { image ->
                             if (onImageClicked != null) {
@@ -51,6 +54,7 @@ fun PostsList(
                                 onPostClicked(post)
                             }
                         },
+                        onUserClicked = { onUserClicked(post.user) },
                         onClick = { onPostClicked(post) },
                     )
                     if (index < posts.lastIndex) {

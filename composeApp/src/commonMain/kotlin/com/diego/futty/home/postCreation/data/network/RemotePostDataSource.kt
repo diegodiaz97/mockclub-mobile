@@ -2,6 +2,7 @@ package com.diego.futty.home.postCreation.data.network
 
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
+import com.diego.futty.home.feed.domain.model.Count
 import com.diego.futty.home.postCreation.domain.model.CommentWithExtras
 import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 import com.diego.futty.home.postCreation.domain.model.Tag
@@ -17,7 +18,7 @@ interface RemotePostDataSource {
         tags: List<String>,
     ): DataResult<Unit, DataError.Remote>
 
-    suspend fun countPosts(userId: String): DataResult<Int, DataError.Remote>
+    suspend fun countPosts(userId: String): DataResult<Count, DataError.Remote>
 
     /* TODO - Cuando GitLive tenga soporte de WhereIn, lo agrego */
     /*suspend fun getFeed(

@@ -1,6 +1,8 @@
 package com.diego.futty.setup.profile.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +18,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.GearSix
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorInfo
@@ -30,8 +35,6 @@ import com.diego.futty.setup.profile.presentation.component.UpgradeBanner
 import com.diego.futty.setup.profile.presentation.component.UserMainInfo
 import com.diego.futty.setup.profile.presentation.component.UserSecondaryInfo
 import com.diego.futty.setup.profile.presentation.viewmodel.ProfileViewModel
-import compose.icons.TablerIcons
-import compose.icons.tablericons.Settings
 import dev.materii.pullrefresh.DragRefreshLayout
 import dev.materii.pullrefresh.rememberPullRefreshState
 
@@ -47,7 +50,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                     .padding(horizontal = 16.dp),
                 title = "Perfil",
                 topBarActionType = TopBarActionType.Icon(
-                    icon = TablerIcons.Settings,
+                    icon = PhosphorIcons.Bold.GearSix,
                     onClick = { viewModel.onSettingsClicked() }
                 ),
                 onBack = { viewModel.onBackClicked() }
@@ -84,7 +87,11 @@ private fun ProfileContent(viewModel: ProfileViewModel, paddingValues: PaddingVa
 
 @Composable
 private fun FollowButton(viewModel: ProfileViewModel) {
-    AnimatedVisibility(viewModel.showFollowButton.value) {
+    AnimatedVisibility(
+        visible = viewModel.showFollowButton.value,
+        enter = expandVertically(),
+        exit = shrinkVertically()
+    ) {
         PrimaryButton(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             color = if (viewModel.followingUser.value) {

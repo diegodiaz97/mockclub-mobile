@@ -13,14 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.List
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.home.challenge.presentation.component.CurrentChallengeCard
 import com.diego.futty.home.challenge.presentation.component.PastChallengeCard
 import com.diego.futty.home.challenge.presentation.viewmodel.ChallengeViewModel
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
-import compose.icons.TablerIcons
-import compose.icons.tablericons.Menu2
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -37,7 +38,7 @@ fun ChallengeScreen(
                     .padding(horizontal = 16.dp),
                 title = "Desafíos",
                 topBarActionType = TopBarActionType.Icon(
-                    icon = TablerIcons.Menu2,
+                    icon = PhosphorIcons.Bold.List,
                     onClick = { }
                 )
             )

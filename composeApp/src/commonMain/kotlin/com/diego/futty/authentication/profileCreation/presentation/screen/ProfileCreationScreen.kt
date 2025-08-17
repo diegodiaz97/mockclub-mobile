@@ -35,6 +35,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.adamglin.PhosphorIcons
+import com.adamglin.phosphoricons.Bold
+import com.adamglin.phosphoricons.bold.X
 import com.diego.futty.authentication.profileCreation.presentation.viewmodel.ProfileCreationViewModel
 import com.diego.futty.core.presentation.photos.PermissionCallback
 import com.diego.futty.core.presentation.photos.PermissionStatus
@@ -64,8 +67,6 @@ import com.diego.futty.home.design.presentation.component.topbar.TopBarActionTyp
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
-import compose.icons.TablerIcons
-import compose.icons.tablericons.X
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -82,7 +83,7 @@ fun ProfileCreationScreen(viewModel: ProfileCreationViewModel) {
                     .padding(horizontal = 16.dp),
                 title = "Tus datos",
                 topBarActionType = TopBarActionType.Icon(
-                    icon = TablerIcons.X,
+                    icon = PhosphorIcons.Bold.X,
                     onClick = { viewModel.onCloseClicked() }
                 )
             )
@@ -385,7 +386,7 @@ private fun OpenedImage(viewModel: ProfileCreationViewModel) {
                 modifier = Modifier
                     .padding(top = if (PlatformInfo.isAndroid) 12.dp else 60.dp, end = 16.dp)
                     .align(Alignment.TopEnd),
-                icon = TablerIcons.X,
+                icon = PhosphorIcons.Bold.X,
                 background = colorGrey100(),
                 onClick = { viewModel.showUpdateImage() }
             ).Draw()
