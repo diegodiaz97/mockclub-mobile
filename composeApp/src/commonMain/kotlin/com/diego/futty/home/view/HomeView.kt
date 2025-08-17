@@ -199,9 +199,20 @@ fun HomeView(navigateToLogin: () -> Unit) {
                                 } else {
                                     designViewModel.openedPost.value
                                 }
+                                val onBack = if (appViewModel.currentRoute.value == HomeRoute.Feed) {
+                                    { feedViewModel.onFeedRefreshed() }
+                                } else {
+                                    { designViewModel.updateSearch(designViewModel.searchText.value) }
+                                }
                                 if (post != null) {
                                     appViewModel.updateRoute(HomeRoute.PostDetail)
-                                    postDetailViewModel.setup(post)
+                                    postDetailViewModel.setup(
+                                        post = post,
+                                        onBack = {
+                                            navController.popBackStack()
+                                            onBack()
+                                        }
+                                    )
                                 }
                             }
 

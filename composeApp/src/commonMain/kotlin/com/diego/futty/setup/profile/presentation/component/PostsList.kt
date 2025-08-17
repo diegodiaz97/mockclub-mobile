@@ -29,6 +29,7 @@ fun PostsList(
     onLikeClicked: ((PostWithExtras) -> Unit)? = null,
     onImageClicked: ((images: List<String>, index: Int, ratio: Float) -> Unit)? = null,
     onUserClicked: (User) -> Unit,
+    onOptionsClicked: (PostWithExtras) -> Unit,
     onScrolled: () -> Unit,
 ) {
     LazyColumn(
@@ -55,6 +56,7 @@ fun PostsList(
                             }
                         },
                         onUserClicked = { onUserClicked(post.user) },
+                        onOptionsClicked = { onOptionsClicked(post) },
                         onClick = { onPostClicked(post) },
                     )
                     if (index < posts.lastIndex) {

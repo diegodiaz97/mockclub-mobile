@@ -10,6 +10,8 @@ import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
 import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
+import com.diego.futty.home.design.presentation.component.bottomsheet.OptionItem
+import com.diego.futty.home.design.presentation.component.bottomsheet.OptionType
 import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.feed.presentation.component.Keys
 import com.diego.futty.home.feed.presentation.component.tryShowReveal
@@ -236,6 +238,58 @@ class FeedViewModel(
 
     override fun resetUserId() {
         _clickedUser.value = ""
+    }
+
+    override fun onOptionsClicked(post: PostWithExtras) {
+        val currentUser = preferences.getUserId() ?: return
+
+        val option = OptionItem(
+            text = "Opción prueba",
+            action = { _modal.value = null },
+        )
+
+        val negativeOption = if (currentUser == post.user.id) {
+            OptionItem(
+                text = "Eliminar post",
+                action = { deletePost(post.post.id) },
+                type = OptionType.Error,
+            )
+        } else {
+            OptionItem(
+                text = "Denunciar post",
+                action = { reportPost(post.post.id, "") },
+                type = OptionType.Error,
+            )
+        }
+
+        _modal.value = Modal.OptionsModal(
+            options = listOf(option, negativeOption),
+            onDismiss = { _modal.value = null },
+        )
+    }
+
+    private fun deletePost(postId: String) {
+        viewModelScope.launch {
+            postRepository.deletePost(postId)
+                .onSuccess {
+                    onFeedRefreshed()
+                }
+                .onError {
+                    // SHOW ERROR
+                }
+        }
+    }
+
+    private fun reportPost(postId: String, reason: String) {
+        viewModelScope.launch {
+            postRepository.reportPost(postId, reason)
+                .onSuccess {
+                    onFeedRefreshed()
+                }
+                .onError {
+                    // SHOW ERROR
+                }
+        }
     }
 
     private fun fetchUserInfo() {

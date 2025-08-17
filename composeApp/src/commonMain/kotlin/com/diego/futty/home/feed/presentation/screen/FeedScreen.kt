@@ -163,6 +163,9 @@ private fun Posts(
             onUserClicked = { user ->
                 viewModel.onUserClicked(user)
             },
+            onOptionsClicked = { post ->
+                viewModel.onOptionsClicked(post)
+            },
             onScrolled = {
                 viewModel.fetchFeed()
             }

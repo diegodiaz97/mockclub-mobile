@@ -1,6 +1,7 @@
 package com.diego.futty.home.design.presentation.component.input
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -88,7 +89,9 @@ sealed interface TextInput {
                 ) {
                     if (input.isEmpty()) {
                         Text(
-                            modifier = Modifier.padding(start = 44.dp),
+                            modifier = Modifier.padding(
+                                start = if (leadingIcon != null) 44.dp else 16.dp
+                            ),
                             text = placeholder,
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Normal,
@@ -201,14 +204,15 @@ sealed interface TextInput {
                     )
 
                     if (input.isNotEmpty()) {
-                        IconButton(onClick = { onTextChangeAction("") }) {
-                            Icon(
-                                modifier = Modifier.size(20.dp),
-                                imageVector = PhosphorIcons.Bold.X,
-                                tint = colorGrey400(),
-                                contentDescription = "Borrar texto"
-                            )
-                        }
+                        Icon(
+                            modifier = Modifier
+                                .clickable { onTextChangeAction("") }
+                                .padding(top = 2.dp)
+                                .size(22.dp),
+                            imageVector = PhosphorIcons.Bold.X,
+                            tint = colorGrey400(),
+                            contentDescription = "Borrar texto"
+                        )
                     }
                 }
             }

@@ -4,8 +4,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.domain.onError
 import com.diego.futty.core.domain.onSuccess
+import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
+import com.diego.futty.home.design.presentation.component.bottomsheet.OptionItem
+import com.diego.futty.home.design.presentation.component.bottomsheet.OptionType
 import com.diego.futty.home.postCreation.domain.model.CommentWithExtras
 import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 import com.diego.futty.home.postCreation.domain.repository.PostRepository
@@ -13,6 +17,7 @@ import kotlinx.coroutines.launch
 
 class PostDetailViewModel(
     private val postRepository: PostRepository,
+    private val preferences: UserPreferences,
 ) : PostDetailViewContract, ViewModel() {
 
     private val _post = mutableStateOf<PostWithExtras?>(null)
@@ -30,11 +35,19 @@ class PostDetailViewModel(
     private val _repliesMap = mutableStateOf<Map<String, RepliesPaginationState>>(emptyMap())
     override val repliesMap: State<Map<String, RepliesPaginationState>> = _repliesMap
 
+    private val _modal = mutableStateOf<Modal?>(null)
+    override val modal: State<Modal?> = _modal
+
     // Paginación de comentarios principales
     private var _commentsEndReached = false
     private var _lastCommentTimestamp: Long? = null
+    private var _back: () -> Unit = {}
 
-    fun setup(post: PostWithExtras) {
+    fun setup(
+        post: PostWithExtras,
+        onBack: () -> Unit,
+    ) {
+        _back = onBack
         _post.value = post
         getComments()
     }
@@ -103,6 +116,7 @@ class PostDetailViewModel(
                 }
         }
     }
+
     // Agregar una reply
     private fun addReply(postId: String, parentCommentId: String, text: String) {
         viewModelScope.launch {
@@ -267,6 +281,60 @@ class PostDetailViewModel(
             else
                 current.likeCount + 1
         )
+    }
+
+
+    override fun onOptionsClicked() {
+        val currentUser = preferences.getUserId() ?: return
+        val post = _post.value ?: return
+
+        val option = OptionItem(
+            text = "Opción prueba",
+            action = { _modal.value = null },
+        )
+
+        val negativeOption = if (currentUser == post.user.id) {
+            OptionItem(
+                text = "Eliminar post",
+                action = { deletePost(post.post.id) },
+                type = OptionType.Error,
+            )
+        } else {
+            OptionItem(
+                text = "Denunciar post",
+                action = { reportPost(post.post.id, "") },
+                type = OptionType.Error,
+            )
+        }
+
+        _modal.value = Modal.OptionsModal(
+            options = listOf(option, negativeOption),
+            onDismiss = { _modal.value = null },
+        )
+    }
+
+    private fun deletePost(postId: String) {
+        viewModelScope.launch {
+            postRepository.deletePost(postId)
+                .onSuccess {
+                    _back()
+                }
+                .onError {
+                    // SHOW ERROR
+                }
+        }
+    }
+
+    private fun reportPost(postId: String, reason: String) {
+        viewModelScope.launch {
+            postRepository.reportPost(postId, reason)
+                .onSuccess {
+                    // ADD TOAST
+                }
+                .onError {
+                    // SHOW ERROR
+                }
+        }
     }
 }
 

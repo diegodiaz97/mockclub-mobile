@@ -88,7 +88,13 @@ fun SetupView(
                             val post = profileViewModel.openedPost.value
                             if (post != null) {
                                 setupViewModel.updateRoute(SetupRoute.PostDetail)
-                                postDetailViewModel.setup(post)
+                                postDetailViewModel.setup(
+                                    post = post,
+                                    onBack = {
+                                        navController.popBackStack()
+                                        profileViewModel.onFeedRefreshed()
+                                    }
+                                )
                             }
                         }
 

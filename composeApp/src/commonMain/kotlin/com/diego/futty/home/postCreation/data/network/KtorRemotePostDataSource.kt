@@ -37,8 +37,8 @@ class KtorRemotePostDataSource(
 
     private fun baseUrl(): String {
         return if (PlatformInfo.isIOS) {
-            //"http://192.168.0.192:8080"
-            "http://192.168.0.10:8080" //Casa de mama
+            "http://192.168.0.192:8080"
+            //"http://192.168.0.10:8080" //Casa de mama
         } else {
             "http://10.0.2.2:8080"
         }
@@ -539,52 +539,6 @@ class KtorRemotePostDataSource(
         }
     }
 
-    /*override suspend fun getComments(
-        postId: String,
-        limit: Int,
-        startAfterTimestamp: Timestamp?
-    ): DataResult<List<CommentWithUser>, DataError.Remote> {
-        return try {
-            val likedItems = getLikedItemsForCurrentUser(postId = postId)
-
-            var query = postsCollection.document(postId)
-                .collection("comments")
-                .orderBy("timestamp", Direction.DESCENDING)
-                .limit(limit.toLong())
-
-            if (startAfterTimestamp != null) {
-                query = query.startAfter(startAfterTimestamp)
-            }
-
-            val comments = query.get().documents.map { doc ->
-                val timestamp = doc.get("timestamp") as? Timestamp
-                val timestampMillis = timestamp?.toMilliseconds()?.toLong()
-                val commentId = doc.get("id") as? String ?: doc.id
-
-                Comment(
-                    id = commentId,
-                    userId = doc.get("userId") as? String ?: "",
-                    text = doc.get("text") as? String ?: "",
-                    timestamp = timestampMillis ?: 0L,
-                    serverTimestamp = doc.get("timestamp"),
-                    likesCount = doc.get("likesCount") ?: 0,
-                    likedByUser = likedItems.likedCommentIds.contains(commentId),
-                    replies = emptyList(),
-                    repliesCount = doc.get("repliesCount") ?: 0,
-                )
-            }
-
-            val uniqueUserIds = comments.map { it.userId }.distinct()
-            val userMap = uniqueUserIds.associateWith { getUserById(it) }
-            val commentsWithUser =
-                comments.map { comment -> CommentWithUser(comment, userMap[comment.userId]) }
-
-            DataResult.Success(commentsWithUser)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
-    }*/
-
     override suspend fun getReplies(
         commentId: String,
         limit: Int,
@@ -596,82 +550,6 @@ class KtorRemotePostDataSource(
             cursorCreatedAt?.let { parameter("cursorCreatedAt", it) }
         }
     }
-
-    /*override suspend fun getReplies(
-        postId: String,
-        commentId: String,
-        limit: Int,
-        startAfterTimestamp: Timestamp?
-    ): DataResult<List<CommentWithExtras>, DataError.Remote> {
-        return try {
-            /*val likedItems = getLikedItemsForCurrentUser(postId)
-
-            var query = postsCollection.document(postId)
-                .collection("comments").document(commentId)
-                .collection("replies")
-                .orderBy("timestamp", Direction.ASCENDING)
-                .limit(limit.toLong())
-
-            if (startAfterTimestamp != null) {
-                query = query.startAfter(startAfterTimestamp)
-            }
-
-            val replies = query.get().documents.map { doc ->
-                val timestamp = doc.get("timestamp") as? Timestamp
-                val timestampMillis = timestamp?.toMilliseconds()?.toLong()
-                val replyId = doc.get("id") as? String ?: doc.id
-
-                Comment(
-                    id = replyId,
-                    userId = doc.get("userId") as? String ?: "",
-                    text = doc.get("text") as? String ?: "",
-                    timestamp = timestampMillis ?: 0L,
-                    serverTimestamp = doc.get("timestamp"),
-                    likesCount = doc.get("likesCount") ?: 0,
-                    likedByUser = likedItems.likedReplyIds.contains(replyId),
-                    replies = emptyList(),
-                    repliesCount = 0,
-                )
-            }
-
-            val uniqueUserIds = replies.map { it.userId }.distinct()
-            val userMap = uniqueUserIds.associateWith { getUserById(it) }
-            val repliesWithUser =
-                replies.map { reply -> CommentWithUser(reply, userMap[reply.userId]) }
-
-            DataResult.Success(repliesWithUser)*/
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
-    }*/
-
-    /*override suspend fun deletePost(postId: String): DataResult<Unit, DataError.Remote> {
-        return try {
-            /*val userId = preferences.getUserId() ?: ""
-
-            usersCollection.document(userId)
-                .update("postsCount" to FieldValue.increment(-1))
-
-            val postRef = postsCollection.document(postId)
-            val postSnapshot = postRef.get()
-            if (postSnapshot.exists) {
-                val post = postSnapshot.data<Post>()
-
-                post..forEach { url ->
-                    val fileName = url.substringAfterLast("/")
-                    storageRef.child(fileName).delete()
-                }
-
-                val result = postRef.delete()
-                DataResult.Success(result)
-            }
-            DataResult.Success(Unit)*/
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
-    }*/
 
     override suspend fun deletePost(postId: String): DataResult<Unit, DataError.Remote> = safeCall {
         httpClient.delete("${baseUrl()}/posts/$postId") {

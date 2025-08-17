@@ -117,7 +117,7 @@ fun PostDetailScreen(
                 title = "${postWithUser.post.team} ⨯ ${postWithUser.post.brand}",
                 topBarActionType = TopBarActionType.Icon(
                     icon = PhosphorIcons.Bold.DotsThree,
-                    onClick = { }
+                    onClick = { viewModel.onOptionsClicked() }
                 ),
                 onBack = {
                     viewModel.resetPost()
@@ -170,6 +170,7 @@ fun PostDetailScreen(
             }
         },
     )
+    viewModel.modal.value?.Draw()
 }
 
 @Composable

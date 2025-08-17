@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ import com.adamglin.PhosphorIcons
 import com.adamglin.phosphoricons.Bold
 import com.adamglin.phosphoricons.Fill
 import com.adamglin.phosphoricons.bold.ChatCircle
+import com.adamglin.phosphoricons.bold.DotsThree
 import com.adamglin.phosphoricons.bold.Heart
 import com.adamglin.phosphoricons.fill.Heart
 import com.diego.futty.core.presentation.theme.Shimmer
@@ -56,6 +58,7 @@ fun PostItem(
     onLiked: () -> Unit,
     onImageClick: (image: String) -> Unit,
     onUserClicked: () -> Unit,
+    onOptionsClicked: () -> Unit,
     onClick: () -> Unit,
 ) {
     val post = postWithExtras.post
@@ -65,6 +68,7 @@ fun PostItem(
             post = post,
             user = user,
             onUserClicked = onUserClicked,
+            onOptionsClicked = onOptionsClicked,
         )
         if (post.text.isNotEmpty()) {
             Text(
@@ -94,6 +98,7 @@ private fun PostInformation(
     post: Post,
     user: User,
     onUserClicked: () -> Unit,
+    onOptionsClicked: () -> Unit,
 ) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -124,6 +129,15 @@ private fun PostInformation(
                 if (user.userType == USER_TYPE_PRO) {
                     VerifiedIcon(Modifier.padding(top = 4.dp), size = 16.dp)
                 }
+                Spacer(Modifier.weight(1f))
+                Icon(
+                    modifier = Modifier
+                        .clickable { onOptionsClicked() }
+                        .size(20.dp),
+                    imageVector = PhosphorIcons.Bold.DotsThree,
+                    tint = colorGrey900(),
+                    contentDescription = null
+                )
             }
             Text(
                 text = post.createdAt.getTimeAgoLabel(),

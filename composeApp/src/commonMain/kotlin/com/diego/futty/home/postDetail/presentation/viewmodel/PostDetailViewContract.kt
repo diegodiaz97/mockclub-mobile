@@ -1,6 +1,7 @@
 package com.diego.futty.home.postDetail.presentation.viewmodel
 
 import androidx.compose.runtime.State
+import com.diego.futty.home.design.presentation.component.bottomsheet.Modal
 import com.diego.futty.home.postCreation.domain.model.CommentWithExtras
 import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
@@ -10,6 +11,7 @@ interface PostDetailViewContract {
     val commentCreationProgress: State<Float>
     val commentToReply: State<CommentWithExtras?>
     val repliesMap: State<Map<String, RepliesPaginationState>>
+    val modal: State<Modal?>
     fun getComments()
     fun onCommentClicked(text: String)
     fun onLikeCommentClicked(comment: CommentWithExtras, reply: CommentWithExtras? = null)
@@ -18,4 +20,5 @@ interface PostDetailViewContract {
     fun onHideRepliesClicked(comment: CommentWithExtras)
     fun onLikeClicked()
     fun resetPost()
+    fun onOptionsClicked()
 }

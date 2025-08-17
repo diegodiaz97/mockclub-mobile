@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.adamglin.PhosphorIcons
 import com.adamglin.phosphoricons.Bold
 import com.adamglin.phosphoricons.bold.X
+import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey800
 import com.diego.futty.core.presentation.theme.colorGrey900
@@ -130,6 +131,42 @@ sealed interface Modal {
                 onDismiss = { onDismiss() },
             ).Draw()
         }
+    }
 
+    class OptionsModal(
+        val options: List<OptionItem>,
+        val onDismiss: () -> Unit,
+    ) : Modal {
+        @Composable
+        override fun Draw() {
+            BottomSheet(
+                draggable = true,
+                onDismiss = { onDismiss() }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 24.dp, bottom = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.End,
+                ) {
+                    options.forEach { option ->
+                        SecondaryButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = option.text,
+                            color = if (option.type == OptionType.Basic) {
+                                colorGrey900()
+                            } else {
+                                colorError()
+                            },
+                            onClick = {
+                                option.action()
+                                onDismiss()
+                            }
+                        )
+                    }
+                }
+            }
+        }
     }
 }

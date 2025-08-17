@@ -32,4 +32,5 @@ interface FeedViewContract {
     fun onChallengesClicked()
     fun onUserClicked(user: User)
     fun resetUserId()
+    fun onOptionsClicked(post: PostWithExtras)
 }
