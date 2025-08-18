@@ -1,10 +1,6 @@
 package com.diego.futty.core.data.firebase
 
 import com.tweener.passage.Passage
-import com.tweener.passage.model.AppleGatekeeperConfiguration
-import com.tweener.passage.model.EmailPasswordGatekeeperConfiguration
-import com.tweener.passage.model.GoogleGatekeeperAndroidConfiguration
-import com.tweener.passage.model.GoogleGatekeeperConfiguration
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore

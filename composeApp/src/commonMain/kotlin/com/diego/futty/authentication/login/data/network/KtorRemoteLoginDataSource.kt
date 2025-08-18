@@ -1,15 +1,10 @@
 package com.diego.futty.authentication.login.data.network
 
 import com.diego.futty.core.data.firebase.FirebaseManager
-import com.diego.futty.core.data.firebase.providePassage
 import com.diego.futty.core.data.local.UserPreferences
 import com.diego.futty.core.domain.DataError
 import com.diego.futty.core.domain.DataResult
-import com.tweener.passage.model.AppleGatekeeperConfiguration
-import com.tweener.passage.model.EmailPasswordGatekeeperConfiguration
 import com.tweener.passage.model.Entrant
-import com.tweener.passage.model.GoogleGatekeeperAndroidConfiguration
-import com.tweener.passage.model.GoogleGatekeeperConfiguration
 import dev.gitlive.firebase.auth.AuthResult
 
 class KtorRemoteLoginDataSource(
