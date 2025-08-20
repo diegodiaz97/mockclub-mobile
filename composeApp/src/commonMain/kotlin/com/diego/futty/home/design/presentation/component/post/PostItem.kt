@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,12 +35,14 @@ import com.adamglin.phosphoricons.Fill
 import com.adamglin.phosphoricons.bold.ChatCircle
 import com.adamglin.phosphoricons.bold.DotsThree
 import com.adamglin.phosphoricons.bold.Heart
+import com.adamglin.phosphoricons.bold.PaperPlaneTilt
 import com.adamglin.phosphoricons.fill.Heart
+import com.diego.futty.core.presentation.theme.Grey0
+import com.diego.futty.core.presentation.theme.Grey800
 import com.diego.futty.core.presentation.theme.Shimmer
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
-import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey600
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.toColor
@@ -130,14 +134,13 @@ private fun PostInformation(
                     VerifiedIcon(Modifier.padding(top = 4.dp), size = 16.dp)
                 }
                 Spacer(Modifier.weight(1f))
-                Icon(
-                    modifier = Modifier
-                        .clickable { onOptionsClicked() }
-                        .size(20.dp),
-                    imageVector = PhosphorIcons.Bold.DotsThree,
+                Avatar.IconAvatar(
+                    icon = PhosphorIcons.Bold.DotsThree,
                     tint = colorGrey900(),
-                    contentDescription = null
-                )
+                    background = colorGrey0(),
+                    avatarSize = AvatarSize.Small,
+                    onClick = { onOptionsClicked() }
+                ).Draw()
             }
             Text(
                 text = post.createdAt.getTimeAgoLabel(),
@@ -159,16 +162,16 @@ private fun PostImage(
     val images = post.images
     if (images.size > 1) {
         LazyRow(
-            modifier = Modifier.height(260.dp).fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             item { Spacer(Modifier.width(8.dp)) }
             images.forEachIndexed { index, image ->
                 item {
-                    AsyncImage(
+                    Box(
                         modifier = Modifier
-                            .size(260.dp)
+                            .width(260.dp)
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onDoubleTap = { onImageDoubleClick() },
@@ -178,9 +181,27 @@ private fun PostImage(
                             }
                             .clip(RoundedCornerShape(12.dp))
                             .background(colorGrey100()),
-                        contentDescription = "post list image",
-                        image = image
-                    )
+                        contentAlignment = Alignment.TopEnd
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .aspectRatio(post.post.ratio),
+                            contentDescription = "post list image",
+                            image = image
+                        )
+                        Text(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .clip(CircleShape)
+                                .background(Grey800.copy(alpha = 0.4f))
+                                .padding(horizontal = 8.dp, vertical = 4.dp),
+                            text = "${index+1}/${images.size}",
+                            style = typography.labelSmall,
+                            fontWeight = FontWeight.Normal,
+                            color = Grey0,
+                        )
+                    }
                 }
             }
             item { Spacer(Modifier.width(8.dp)) }
@@ -226,58 +247,49 @@ private fun PostFooter(
                 icon = if (hasLike) PhosphorIcons.Fill.Heart else PhosphorIcons.Bold.Heart,
                 tint = if (hasLike) colorError() else colorGrey900(),
                 background = colorGrey0(),
-                avatarSize = AvatarSize.Atomic,
+                avatarSize = AvatarSize.Small,
                 onClick = { onLiked() }
             ).Draw()
             Text(
                 text = post.likeCount.toString(),
-                style = typography.bodyMedium,
+                style = typography.bodyLarge,
                 fontWeight = FontWeight.Normal,
                 color = if (hasLike) colorError() else colorGrey900(),
             )
+
             Spacer(Modifier.width(8.dp))
 
             Avatar.IconAvatar(
                 icon = PhosphorIcons.Bold.ChatCircle,
                 tint = colorGrey900(),
                 background = colorGrey0(),
-                avatarSize = AvatarSize.Atomic,
+                avatarSize = AvatarSize.Small,
                 onClick = { }
             ).Draw()
             Text(
                 text = post.commentCount.toString(),
-                style = typography.bodyMedium,
+                style = typography.bodyLarge,
                 fontWeight = FontWeight.Normal,
                 color = colorGrey900()
             )
-        }
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(colorGrey500())
-                .padding(horizontal = 8.dp, vertical = 2.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End,
-        )
-        {
-            Text(
-                text = post.post.team,
-                style = typography.labelMedium,
-                fontWeight = FontWeight.Bold,
-                color = colorGrey0()
-            )
-            Text(
-                text = " ⨯ ",
-                style = typography.labelSmall,
-                fontWeight = FontWeight.Normal,
-                color = colorGrey100()
-            )
-            Text(
-                text = post.post.brand,
-                style = typography.labelMedium,
-                fontWeight = FontWeight.Bold,
-                color = colorGrey0()
+
+            Spacer(Modifier.width(8.dp))
+
+            Avatar.IconAvatar(
+                icon = PhosphorIcons.Bold.PaperPlaneTilt,
+                tint = colorGrey900(),
+                background = colorGrey0(),
+                avatarSize = AvatarSize.Small,
+                onClick = { /*onShare()*/ }
+            ).Draw()
+
+            Spacer(Modifier.weight(1f))
+
+            PostLogos(
+                modifier = Modifier,
+                teamLogo = post.post.teamLogo,
+                brandLogo = post.post.brandLogo,
+                designerLogo = post.post.designerLogo,
             )
         }
     }

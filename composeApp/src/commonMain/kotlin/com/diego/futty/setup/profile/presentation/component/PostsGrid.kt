@@ -18,11 +18,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.home.design.presentation.component.image.AsyncImage
+import com.diego.futty.home.design.presentation.component.post.PostLogosWithGradient
 import com.diego.futty.home.postCreation.domain.model.PostWithExtras
 
 @Composable
@@ -84,6 +86,13 @@ private fun PostWithExtras.DrawInGrid(onPostClicked: (PostWithExtras) -> Unit) {
                 .background(colorGrey100()),
             contentDescription = "post single image",
             image = images.firstOrNull()
+        )
+        PostLogosWithGradient(
+            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+            teamLogo = post.teamLogo,
+            brandLogo = post.brandLogo,
+            designerLogo = post.designerLogo,
+            isSmallImage = true
         )
     }
 }

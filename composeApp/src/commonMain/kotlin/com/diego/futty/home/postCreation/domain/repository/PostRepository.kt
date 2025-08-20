@@ -16,6 +16,9 @@ interface PostRepository {
         ratio: Float,
         team: String,
         brand: String,
+        teamLogo: ByteArray,
+        brandLogo: ByteArray,
+        designerLogo: ByteArray?,
         tags: List<String>,
     ): DataResult<Unit, DataError.Remote>
 

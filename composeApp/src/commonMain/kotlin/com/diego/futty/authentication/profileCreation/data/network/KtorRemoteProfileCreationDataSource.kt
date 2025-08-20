@@ -77,7 +77,7 @@ class KtorRemoteProfileCreationDataSource(
     override suspend fun updateProfileImage(image: ByteArray): DataResult<String, DataError.Remote> =
         safeCall {
             val userId = preferences.getUserId() ?: throw IllegalStateException("No user id")
-            val imagePath = "profile_images/$userId.jpg"
+            val imagePath = "profile_images/$userId"
             val url = ImageUploader().uploadImage(image, imagePath)
 
             httpClient.put("${baseUrl()}/users/$userId/photo") {

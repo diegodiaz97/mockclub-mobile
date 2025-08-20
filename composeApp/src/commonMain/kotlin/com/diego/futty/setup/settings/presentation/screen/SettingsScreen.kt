@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.dp
 import com.adamglin.PhosphorIcons
 import com.adamglin.phosphoricons.Bold
 import com.adamglin.phosphoricons.bold.Bell
-import com.adamglin.phosphoricons.bold.Download
 import com.adamglin.phosphoricons.bold.Lightning
 import com.adamglin.phosphoricons.bold.QuestionMark
+import com.adamglin.phosphoricons.bold.UploadSimple
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
@@ -133,7 +133,7 @@ private fun SettingsContent(viewModel: SettingsViewModel, paddingValues: Padding
             bannerUIData = BannerUIData(
                 title = "Guardado",
                 description = "Mira las publicaciones que has guardado.",
-                icon = PhosphorIcons.Bold.Download,
+                icon = PhosphorIcons.Bold.UploadSimple,
                 size = AvatarSize.Small,
                 action = { }
             ),

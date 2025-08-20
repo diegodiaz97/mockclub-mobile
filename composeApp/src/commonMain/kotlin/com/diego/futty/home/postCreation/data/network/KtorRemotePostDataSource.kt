@@ -61,6 +61,9 @@ class KtorRemotePostDataSource(
         ratio: Float,
         team: String,
         brand: String,
+        teamLogo: ByteArray,
+        brandLogo: ByteArray,
+        designerLogo: ByteArray?,
         tags: List<String>
     ): DataResult<Unit, DataError.Remote> = safeCall {
         require(images.size <= 10) { "Máximo 10 imágenes por post" }
@@ -70,11 +73,33 @@ class KtorRemotePostDataSource(
             images.mapIndexed { index, image ->
                 val imagePath = "post_images/${userId}_${
                     Clock.System.now().toEpochMilliseconds()
-                }_$index.jpg"
+                }_$index"
                 ImageUploader().uploadImage(image, imagePath)
             }
         } else {
             emptyList()
+        }
+
+        val teamPath = "post_images/${userId}_${
+            Clock.System.now().toEpochMilliseconds()
+        }_team_logo"
+
+        val teamLogo = ImageUploader().uploadImage(teamLogo, teamPath)
+
+        val brandPath = "post_images/${userId}_${
+            Clock.System.now().toEpochMilliseconds()
+        }_brand_logo"
+
+        val brandLogo = ImageUploader().uploadImage(brandLogo, brandPath)
+
+        val designerLogo = if (designerLogo != null) {
+            val designerPath = "post_images/${userId}_${
+                Clock.System.now().toEpochMilliseconds()
+            }_designer_logo"
+
+            ImageUploader().uploadImage(designerLogo, designerPath)
+        } else {
+            null
         }
 
         httpClient.post("${baseUrl()}/posts/create") {
@@ -83,29 +108,18 @@ class KtorRemotePostDataSource(
             setBody(
                 CreatePostRequest(
                     text = text,
-                    brand = brand,
                     team = team,
+                    brand = brand,
                     ratio = ratio,
                     images = imageUrls,
+                    teamLogo = teamLogo,
+                    brandLogo = brandLogo,
+                    designerLogo = designerLogo,
                     tags = tags
                 )
             )
         }
     }
-
-    /*override suspend fun countPosts(userId: String): DataResult<Int, DataError.Remote> { /*TODO*/
-        return try {
-            val result = postsCollection
-                .where { "userId" equalTo userId }
-                .get()
-                .documents
-                .size
-
-            DataResult.Success(result)
-        } catch (e: Exception) {
-            DataResult.Error(DataError.Remote.UNKNOWN)
-        }
-    }*/
 
     override suspend fun countPosts(userId: String): DataResult<Count, DataError.Remote> =
         safeCall<Count> {

@@ -8,9 +8,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,6 +54,7 @@ import com.adamglin.phosphoricons.bold.ArrowUp
 import com.adamglin.phosphoricons.bold.ChatCircle
 import com.adamglin.phosphoricons.bold.DotsThree
 import com.adamglin.phosphoricons.bold.Heart
+import com.adamglin.phosphoricons.bold.PaperPlaneTilt
 import com.adamglin.phosphoricons.fill.Heart
 import com.diego.futty.core.presentation.theme.colorError
 import com.diego.futty.core.presentation.theme.colorGrey0
@@ -68,6 +71,7 @@ import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
 import com.diego.futty.home.design.presentation.component.emptystate.SimpleEmptyState
 import com.diego.futty.home.design.presentation.component.image.PagerImages
 import com.diego.futty.home.design.presentation.component.input.TextInput
+import com.diego.futty.home.design.presentation.component.post.PostLogosWithGradient
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
@@ -83,15 +87,7 @@ fun PostDetailScreen(
     onClose: () -> Unit,
     onLiked: () -> Unit,
 ) {
-    val postWithUser = viewModel.post.value
-
-    if (postWithUser == null) {
-        SimpleEmptyState(
-            modifier = Modifier.fillMaxSize(),
-            text = "Post NULL",
-        )
-        return
-    }
+    val postWithUser = viewModel.post.value ?: return
 
     BackHandler {
         onClose()
@@ -120,8 +116,8 @@ fun PostDetailScreen(
                     onClick = { viewModel.onOptionsClicked() }
                 ),
                 onBack = {
-                    viewModel.resetPost()
                     onClose()
+                    viewModel.resetPost()
                 }
             )
         },
@@ -133,14 +129,23 @@ fun PostDetailScreen(
                         .padding(top = paddingValues.calculateTopPadding())
                         .animateContentSize()
                         .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    PagerImages(
-                        modifier = Modifier.fillMaxSize(),
-                        aspectRatio = postWithUser.post.ratio,
-                        images = postWithUser.images,
-                        index = 0
-                    )
+                    Box(Modifier.fillMaxSize()) {
+                        PagerImages(
+                            modifier = Modifier.fillMaxSize(),
+                            aspectRatio = postWithUser.post.ratio,
+                            images = postWithUser.images,
+                            index = 0,
+                            footer = {
+                                PostLogosWithGradient(
+                                    modifier = Modifier.align(Alignment.BottomCenter),
+                                    teamLogo = postWithUser.post.teamLogo,
+                                    brandLogo = postWithUser.post.brandLogo,
+                                    designerLogo = postWithUser.post.designerLogo,
+                                )
+                            }
+                        )
+                    }
                     PostInformation(
                         post = postWithUser,
                         onLiked = {
@@ -152,7 +157,6 @@ fun PostDetailScreen(
                         Text(
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
-                                .padding(bottom = 8.dp)
                                 .fillMaxWidth(),
                             text = postWithUser.post.text,
                             style = typography.bodyLarge,
@@ -160,7 +164,7 @@ fun PostDetailScreen(
                         )
                     }
                     LoadingProgress(
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                         text = "Agregando comentario",
                         progress = viewModel.commentCreationProgress.value
                     )
@@ -213,7 +217,7 @@ fun CommentInput(
 @Composable
 private fun PostComments(viewModel: PostDetailViewModel) {
     Column(
-        modifier = Modifier.animateContentSize(),
+        modifier = Modifier.padding(vertical = 12.dp).animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         HorizontalDivider(thickness = 1.dp, color = colorGrey100())
@@ -336,7 +340,8 @@ private fun CommentItem(
                 val replies = commentWithUser.replies
 
                 if (replies.size < commentWithUser.replyCount && !repliesVisible) {
-                    val repliesText = if (commentWithUser.replyCount - replies.size == 1) "respuesta" else "respuestas"
+                    val repliesText =
+                        if (commentWithUser.replyCount - replies.size == 1) "respuesta" else "respuestas"
                     Text(
                         modifier = Modifier.clickable {
                             viewModel.onShowRepliesClicked(commentWithUser)
@@ -516,7 +521,7 @@ private fun PostInformation(
 ) {
     val user = post.user
     Row(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = Modifier.background(colorGrey0()).padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -575,27 +580,38 @@ private fun PostInteractions(
             icon = if (hasLike) PhosphorIcons.Fill.Heart else PhosphorIcons.Bold.Heart,
             tint = if (hasLike) colorError() else colorGrey900(),
             background = colorGrey0(),
-            avatarSize = AvatarSize.Atomic,
+            avatarSize = AvatarSize.Small,
             onClick = { onLiked() }
         ).Draw()
         Text(
             text = post.likeCount.toString(),
-            style = typography.bodySmall,
+            style = typography.bodyLarge,
             color = if (hasLike) colorError() else colorGrey900(),
         )
+
         Spacer(Modifier.width(8.dp))
 
         Avatar.IconAvatar(
             icon = PhosphorIcons.Bold.ChatCircle,
             tint = colorGrey900(),
             background = colorGrey0(),
-            avatarSize = AvatarSize.Atomic,
+            avatarSize = AvatarSize.Small,
             onClick = { }
         ).Draw()
         Text(
             text = post.commentCount.toString(),
-            style = typography.bodySmall,
+            style = typography.bodyLarge,
             color = colorGrey900()
         )
+
+        Spacer(Modifier.width(8.dp))
+
+        Avatar.IconAvatar(
+            icon = PhosphorIcons.Bold.PaperPlaneTilt,
+            tint = colorGrey900(),
+            background = colorGrey0(),
+            avatarSize = AvatarSize.Small,
+            onClick = { /*onShare()*/ }
+        ).Draw()
     }
 }

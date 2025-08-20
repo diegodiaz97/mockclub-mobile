@@ -40,7 +40,7 @@ fun TopBar(
         modifier = modifier
             .fillMaxWidth()
             .background(colorGrey0())
-            .padding(bottom = 6.dp),
+            .padding(bottom = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

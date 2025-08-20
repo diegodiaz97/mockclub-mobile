@@ -75,7 +75,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
             modifier = Modifier,
             revealCanvasState = revealCanvasState,
         ) {
-            SetStatusBarColor(colorGrey0())
+            SetStatusBarColor(Color.Transparent)
             LaunchedEffect(true) {
                 appViewModel.setup()
                 feedViewModel.setup(navController)

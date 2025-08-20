@@ -21,9 +21,9 @@ fun UpgradeBanner(viewModel: ProfileViewModel) {
         if (viewModel.user.value?.userType == USER_TYPE_BASIC && viewModel.userId.value.isEmpty()) {
             Banner.FullImageBanner(
                 BannerUIData(
-                    title = "Todavía no tienes PRO",
-                    description = "Descubre las mejores funcionalidades por solo $1 USD.",
-                    label = "Conoce MockClubPRO",
+                    title = "MockClub PRO",
+                    description = "Mejora tu experiencia por solo $3 USD.",
+                    label = "Conviertete en PRO",
                     illustration = "https://cdn.pixabay.com/photo/2022/09/21/17/02/blue-background-7470781_1280.jpg",
                     action = { viewModel.onVerifyClicked() },
                 ),

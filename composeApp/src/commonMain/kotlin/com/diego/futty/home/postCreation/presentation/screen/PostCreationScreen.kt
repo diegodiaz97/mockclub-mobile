@@ -7,7 +7,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,20 +18,19 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -52,7 +50,6 @@ import com.diego.futty.core.presentation.theme.colorAlertLight
 import com.diego.futty.core.presentation.theme.colorErrorLight
 import com.diego.futty.core.presentation.theme.colorGrey0
 import com.diego.futty.core.presentation.theme.colorGrey100
-import com.diego.futty.core.presentation.theme.colorGrey400
 import com.diego.futty.core.presentation.theme.colorGrey600
 import com.diego.futty.core.presentation.theme.colorGrey900
 import com.diego.futty.core.presentation.theme.colorPrimary
@@ -63,25 +60,27 @@ import com.diego.futty.core.presentation.utils.PlatformInfo
 import com.diego.futty.core.presentation.utils.UserTypes.USER_TYPE_PRO
 import com.diego.futty.home.design.presentation.component.avatar.Avatar
 import com.diego.futty.home.design.presentation.component.avatar.AvatarSize
-import com.diego.futty.home.design.presentation.component.bottomsheet.BottomSheet
-import com.diego.futty.home.design.presentation.component.button.PrimaryButton
 import com.diego.futty.home.design.presentation.component.chip.Chip
 import com.diego.futty.home.design.presentation.component.image.AspectRatio
 import com.diego.futty.home.design.presentation.component.input.TextInput
+import com.diego.futty.home.design.presentation.component.post.PostLogosSelection
 import com.diego.futty.home.design.presentation.component.pro.VerifiedIcon
 import com.diego.futty.home.design.presentation.component.progressbar.CircularProgressSize
 import com.diego.futty.home.design.presentation.component.progressbar.DynamicCircularProgressBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBar
 import com.diego.futty.home.design.presentation.component.topbar.TopBarActionType
 import com.diego.futty.home.feed.domain.model.User
+import com.diego.futty.home.postCreation.presentation.component.LogosSelector
+import com.diego.futty.home.postCreation.presentation.component.TagsSelector
 import com.diego.futty.home.postCreation.presentation.viewmodel.PostCreationViewModel
-import com.preat.peekaboo.image.picker.ResizeOptions
-import com.preat.peekaboo.image.picker.SelectionMode
-import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Photo
+import compose.icons.tablericons.Plus
 import compose.icons.tablericons.RectangleVertical
 import compose.icons.tablericons.Square
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -182,8 +181,20 @@ fun PostCreationScreen(
         }
     )
 
+    if (viewModel.showIdentity.value) {
+        LogosSelector(
+            teamName = viewModel.team.value,
+            brandName = viewModel.brand.value,
+            teamLogo = viewModel.teamLogo.value,
+            brandLogo = viewModel.brandLogo.value,
+            designerLogo = viewModel.designerLogo.value,
+            onDismiss = { viewModel.showIdentity() },
+            onConfirm = { newIdentity -> viewModel.updateIdentity(newIdentity) }
+        )
+    }
+
     if (viewModel.showTags.value) {
-        AddTags(
+        TagsSelector(
             existingTags = viewModel.existingTags.value,
             selectedTags = viewModel.newTags.value,
             onDismiss = { viewModel.showTags() },
@@ -213,6 +224,23 @@ private fun PostFooter(viewModel: PostCreationViewModel) {
         val tags = viewModel.newTags.value
 
         AnimatedVisibility(
+            visible = viewModel.images.value.isNotEmpty()
+        ) {
+            SelectedImages(viewModel)
+        }
+
+        AnimatedVisibility(
+            visible = viewModel.teamLogo.value != null || viewModel.brandLogo.value != null
+        ) {
+            PostLogosSelection(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                teamLogo = viewModel.teamLogo.value,
+                brandLogo = viewModel.brandLogo.value,
+                designerLogo = viewModel.designerLogo.value,
+            )
+        }
+
+        AnimatedVisibility(
             visible = tags.isNotEmpty()
         ) {
             LazyRow(modifier = Modifier.fillMaxWidth()) {
@@ -222,26 +250,15 @@ private fun PostFooter(viewModel: PostCreationViewModel) {
                         Row {
                             Chip(
                                 text = tag,
+                                icon = PhosphorIcons.Bold.X,
                                 color = colorSecondary(),
                                 isSelected = true,
                             ) { viewModel.removeTag(index) }
-                            Avatar.IconAvatar(
-                                modifier = Modifier.offset(x = (-14).dp, y = (-8).dp),
-                                icon = PhosphorIcons.Bold.X,
-                                tint = colorGrey600(),
-                                background = colorGrey0(),
-                                avatarSize = AvatarSize.Atomic,
-                                onClick = { viewModel.removeTag(index) }
-                            ).Draw()
                         }
                     }
                 }
+                item { Spacer(Modifier.width(16.dp)) }
             }
-        }
-        AnimatedVisibility(
-            visible = viewModel.images.value.isNotEmpty()
-        ) {
-            SelectedImages(viewModel)
         }
 
         HorizontalDivider(thickness = 1.dp, color = colorGrey100())
@@ -254,11 +271,19 @@ private fun PostFooter(viewModel: PostCreationViewModel) {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Chip(
-                icon = PhosphorIcons.Bold.Plus,
+                icon = TablerIcons.Plus,
                 text = "Tags",
                 color = colorGrey100(),
                 isSelected = false,
                 onClick = { viewModel.showTags() }
+            )
+
+            Chip(
+                icon = TablerIcons.Plus,
+                text = "Identidad",
+                color = colorGrey100(),
+                isSelected = false,
+                onClick = { viewModel.showIdentity() }
             )
 
             Spacer(modifier = Modifier.weight(1f).background(colorPrimary()))
@@ -318,17 +343,13 @@ private fun PostFooter(viewModel: PostCreationViewModel) {
 
 @Composable
 fun GalleryView(viewModel: PostCreationViewModel) {
-    val scope = rememberCoroutineScope()
-    val resizeOptions = ResizeOptions(compressionQuality = 0.6)
-
-    val multipleImagePicker = rememberImagePickerLauncher(
-        selectionMode = SelectionMode.Multiple(maxSelection = 10),
-        scope = scope,
-        resizeOptions = resizeOptions,
-        onResult = { images ->
-            viewModel.onImagesSelected(images)
-        }
-    )
+    val launcher = rememberFilePickerLauncher(
+        type = FileKitType.Image,
+        mode = FileKitMode.Multiple(maxItems = 10),
+    ) { images ->
+        if (images == null) return@rememberFilePickerLauncher
+        viewModel.onImagesSelected(images)
+    }
 
     Avatar.IconAvatar(
         modifier = Modifier,
@@ -336,14 +357,13 @@ fun GalleryView(viewModel: PostCreationViewModel) {
         tint = colorGrey900(),
         background = colorGrey0(),
         avatarSize = AvatarSize.Small,
-        onClick = { multipleImagePicker.launch() }
+        onClick = { launcher.launch() }
     ).Draw()
 }
 
 @Composable
 fun SelectedImages(viewModel: PostCreationViewModel) = LazyRow(
     modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.spacedBy(6.dp),
 ) {
     item { Spacer(Modifier.width(16.dp)) }
     viewModel.images.value.forEachIndexed { index, image ->
@@ -360,142 +380,23 @@ fun SelectedImages(viewModel: PostCreationViewModel) = LazyRow(
                     contentScale = ContentScale.Crop,
                     contentDescription = "image selected to post: ${index + 1}",
                 )
-                Avatar.IconAvatar(
-                    modifier = Modifier.padding(4.dp).align(Alignment.TopEnd),
-                    icon = PhosphorIcons.Bold.X,
+
+                Icon(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .size(22.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(colorGrey0())
+                        .padding(4.dp)
+                        .clickable { viewModel.onRemoveImageSelected(index) }
+                        .align(Alignment.TopEnd),
+                    imageVector = PhosphorIcons.Bold.X,
+                    contentDescription = "close image post",
                     tint = colorGrey600(),
-                    background = colorGrey0(),
-                    avatarSize = AvatarSize.Atomic,
-                    onClick = {
-                        viewModel.onRemoveImageSelected(index)
-                    }
-                ).Draw()
+                )
             }
+            Spacer(Modifier.width(8.dp))
         }
     }
     item { Spacer(Modifier.width(16.dp)) }
-}
-
-@Composable
-fun AddTags(
-    existingTags: List<String>,
-    selectedTags: List<String>,
-    onDismiss: () -> Unit,
-    onConfirm: (List<String>) -> Unit,
-) = BottomSheet(
-    draggable = true,
-    onDismiss = { onDismiss() },
-) {
-    var tags by remember { mutableStateOf(selectedTags) }
-    var newTag by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
-    ) {
-        Text(
-            modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 24.dp),
-            text = "Agregar tags",
-            style = typography.headlineSmall,
-            fontWeight = FontWeight.SemiBold,
-            color = colorGrey900()
-        )
-
-        if (existingTags.isNotEmpty()) {
-            FlowRow(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                maxLines = 3
-            ) {
-                existingTags.withIndex().forEach { item ->
-                    Chip(
-                        text = item.value,
-                        color = colorGrey900(),
-                        unselectedColor = colorGrey0(),
-                        selectedTextColor = colorGrey0(),
-                        isSelected = tags.contains(item.value),
-                    ) {
-                        if (tags.contains(item.value)) {
-                            tags = tags.filterIndexed { _, value -> value != item.value }
-                        } else {
-                            if (tags.size < 5) {
-                                tags = tags.plus(item.value)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        AnimatedVisibility(
-            visible = tags.isNotEmpty()
-        ) {
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                item { Spacer(Modifier.width(12.dp)) }
-                tags.forEachIndexed { index, tag ->
-                    item {
-                        Row {
-                            Chip(
-                                text = tag,
-                                color = colorSecondary(),
-                                isSelected = true,
-                            ) { tags = tags.filterIndexed { i, _ -> i != index } }
-                            Avatar.IconAvatar(
-                                modifier = Modifier.offset(x = (-14).dp, y = (-8).dp),
-                                icon = PhosphorIcons.Bold.X,
-                                tint = colorGrey600(),
-                                background = colorGrey0(),
-                                avatarSize = AvatarSize.Atomic,
-                                onClick = {
-                                    tags = tags.filterIndexed { i, _ -> i != index }
-                                }
-                            ).Draw()
-                        }
-                    }
-                }
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            TextInput.Input(
-                modifier = Modifier.weight(1f),
-                input = newTag,
-                placeholder = "Agregar tag (máximo 12 caracteres)",
-                background = colorGrey0(),
-                onTextChangeAction = {
-                    if (it.length <= 12) {
-                        newTag = it.lowercase().trim()
-                    }
-                }
-            ).Draw()
-            Avatar.IconAvatar(
-                icon = PhosphorIcons.Bold.Plus,
-                background = colorGrey0(),
-                tint = colorGrey400(),
-                onClick = {
-                    if (newTag.isNotEmpty() && tags.contains(newTag).not() && tags.size < 5) {
-                        tags = tags.plus(newTag)
-                        newTag = ""
-                    }
-                }
-            ).Draw()
-        }
-
-        PrimaryButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 24.dp),
-            title = "Listo",
-            isEnabled = tags.isNotEmpty(),
-            onClick = { onConfirm(tags) }
-        )
-    }
 }

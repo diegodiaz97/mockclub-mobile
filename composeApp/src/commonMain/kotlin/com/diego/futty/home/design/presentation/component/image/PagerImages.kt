@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -14,14 +13,20 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.adamglin.PhosphorIcons
 import com.adamglin.phosphoricons.Bold
 import com.adamglin.phosphoricons.bold.X
+import com.diego.futty.core.presentation.theme.Grey0
+import com.diego.futty.core.presentation.theme.Grey300
+import com.diego.futty.core.presentation.theme.Grey800
 import com.diego.futty.core.presentation.theme.colorGrey100
 import com.diego.futty.core.presentation.theme.colorGrey500
 import com.diego.futty.core.presentation.theme.colorGrey900
@@ -35,6 +40,7 @@ fun PagerImages(
     aspectRatio: Float = 1f,
     isFullscreen: Boolean = false,
     onImageClosed: (() -> Unit)? = null,
+    footer: (@Composable () -> Unit)? = null,
 ) {
     val state: PagerState = rememberPagerState(initialPage = index) { images.size }
     Column(
@@ -59,17 +65,38 @@ fun PagerImages(
                             onTap = { },
                             onLongPress = { }
                         )
+
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(8.dp)
+                                .clip(CircleShape)
+                                .background(Grey800.copy(alpha = 0.4f))
+                                .padding(horizontal = 8.dp, vertical = 4.dp),
+                            text = "${page + 1}/${images.size}",
+                            style = typography.labelSmall,
+                            fontWeight = FontWeight.Normal,
+                            color = Grey0,
+                        )
                     }
                 },
             )
-            if (images.size > 1 && isFullscreen) {
+            if (images.size > 1) {
+                repeat(images.size) { iteration ->
+
+                }
+            }
+
+            footer?.invoke()
+
+            if (images.size > 1) {
                 DotIndicators(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .navigationBarsPadding()
-                        .padding(bottom = 24.dp),
+                        .padding(bottom = if (isFullscreen) 32.dp else 16.dp),
                     pageCount = images.size,
                     pagerState = state,
+                    invertColors = isFullscreen.not()
                 )
             }
             if (onImageClosed != null) {
@@ -77,7 +104,7 @@ fun PagerImages(
                     modifier = Modifier
                         .fillMaxWidth()
                         .statusBarsPadding()
-                        .padding(vertical = 12.dp, horizontal = 16.dp),
+                        .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.End,
                 ) {
                     Avatar.IconAvatar(
@@ -88,14 +115,6 @@ fun PagerImages(
                 }
             }
         }
-
-        if (images.size > 1 && isFullscreen.not()) {
-            DotIndicators(
-                modifier = Modifier,
-                pageCount = images.size,
-                pagerState = state,
-            )
-        }
     }
 }
 
@@ -104,16 +123,20 @@ private fun DotIndicators(
     modifier: Modifier,
     pageCount: Int,
     pagerState: PagerState,
+    invertColors: Boolean,
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        val selected = if (invertColors) Grey0 else colorGrey900()
+        val unselected = if (invertColors) Grey300 else colorGrey500()
+
         repeat(pageCount) { iteration ->
             val color = if (pagerState.currentPage == iteration) {
-                colorGrey900()
+                selected
             } else {
-                colorGrey500().copy(alpha = 0.5f)
+                unselected.copy(alpha = 0.5f)
             }
             Box(
                 modifier = Modifier

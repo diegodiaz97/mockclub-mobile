@@ -142,13 +142,13 @@ private fun Posts(viewModel: ProfileViewModel) {
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        item {
+        /*item {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 DesiresList(viewModel)
                 Levels()
             }
-        }
+        }*/
     }
 }

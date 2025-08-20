@@ -87,7 +87,7 @@ kotlin {
                 implementation(libs.xicon.pack.z.tabler)
                 implementation(libs.xicon.pack.z.octicon)
                 implementation(libs.xicon.pack.z.font.awesome)
-                implementation("com.adamglin:phosphor-icon:1.0.0")
+                implementation(libs.phosphor.icon)
                 implementation(libs.reveal.core)
                 implementation(libs.reveal.shapes)
                 implementation(libs.flexible.bottomsheet.material3)
@@ -95,6 +95,10 @@ kotlin {
                 implementation(libs.ui.backhandler)
                 implementation(libs.peekaboo.ui)
                 implementation(libs.peekaboo.image.picker)
+                // Enables FileKit dialogs without Compose dependencies
+                implementation(libs.filekit.dialogs)
+                // Enables FileKit dialogs with Composable utilities
+                implementation(libs.filekit.dialogs.compose)
                 implementation(libs.zoomable)
                 // Others
                 implementation(libs.maplibre.compose)
