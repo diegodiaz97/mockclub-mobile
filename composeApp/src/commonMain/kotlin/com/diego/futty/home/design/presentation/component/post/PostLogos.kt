@@ -88,9 +88,9 @@ fun PostLogosWithGradient(
             Modifier
         }
         Row(
-            modifier = logosModifier.padding(12.dp),
+            modifier = logosModifier.padding(if (isSmallImage) 12.dp else 16.dp),
             horizontalArrangement = if (isSmallImage) {
-                Arrangement.SpaceEvenly
+                if (designerLogo == null) Arrangement.SpaceEvenly else Arrangement.SpaceBetween
             } else {
                 Arrangement.spacedBy(12.dp)
             },
@@ -161,9 +161,7 @@ private fun LogoImage(
 ) {
     val size = if (isSmallImage) 28.dp else 32.dp
     AsyncImage(
-        modifier = modifier
-            .size(size)
-            .clip(RoundedCornerShape(8.dp)),
+        modifier = modifier.size(size),
         shimmerModifier = modifier
             .alpha(0f)
             .size(size),
@@ -241,8 +239,9 @@ private fun LogoSelectionImage(
             Icon(
                 modifier = modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .size(32.dp)
-                    .background(colorGrey100()),
+                    .size(36.dp)
+                    .background(colorGrey100())
+                    .padding(4.dp),
                 imageVector = PhosphorIcons.Bold.PlusCircle,
                 tint = colorGrey600(),
                 contentDescription = "select logo to post"

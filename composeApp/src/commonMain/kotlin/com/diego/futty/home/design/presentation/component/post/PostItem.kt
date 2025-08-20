@@ -286,7 +286,7 @@ private fun PostFooter(
             Spacer(Modifier.weight(1f))
 
             PostLogos(
-                modifier = Modifier,
+                modifier = Modifier.padding(horizontal = 4.dp),
                 teamLogo = post.post.teamLogo,
                 brandLogo = post.post.brandLogo,
                 designerLogo = post.post.designerLogo,

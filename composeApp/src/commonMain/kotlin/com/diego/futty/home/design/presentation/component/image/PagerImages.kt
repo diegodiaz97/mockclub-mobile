@@ -65,27 +65,23 @@ fun PagerImages(
                             onTap = { },
                             onLongPress = { }
                         )
-
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(8.dp)
-                                .clip(CircleShape)
-                                .background(Grey800.copy(alpha = 0.4f))
-                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                            text = "${page + 1}/${images.size}",
-                            style = typography.labelSmall,
-                            fontWeight = FontWeight.Normal,
-                            color = Grey0,
-                        )
+                        if (images.size > 1) {
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                                    .clip(CircleShape)
+                                    .background(Grey800.copy(alpha = 0.4f))
+                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                                text = "${page + 1}/${images.size}",
+                                style = typography.labelSmall,
+                                fontWeight = FontWeight.Normal,
+                                color = Grey0,
+                            )
+                        }
                     }
                 },
             )
-            if (images.size > 1) {
-                repeat(images.size) { iteration ->
-
-                }
-            }
 
             footer?.invoke()
 
@@ -127,7 +123,7 @@ private fun DotIndicators(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         val selected = if (invertColors) Grey0 else colorGrey900()
         val unselected = if (invertColors) Grey300 else colorGrey500()
@@ -140,7 +136,7 @@ private fun DotIndicators(
             }
             Box(
                 modifier = Modifier
-                    .size(8.dp)
+                    .size(6.dp)
                     .clip(CircleShape)
                     .background(color),
             )

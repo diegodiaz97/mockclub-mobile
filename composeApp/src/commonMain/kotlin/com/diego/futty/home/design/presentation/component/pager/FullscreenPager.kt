@@ -82,14 +82,14 @@ private fun DotIndicators(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         repeat(pageCount) { iteration ->
             val color =
                 if (pagerState.currentPage == iteration) Grey0 else colorGrey500().copy(alpha = 0.5f)
             Box(
                 modifier = Modifier
-                    .size(8.dp)
+                    .size(6.dp)
                     .clip(CircleShape)
                     .background(color),
             )
