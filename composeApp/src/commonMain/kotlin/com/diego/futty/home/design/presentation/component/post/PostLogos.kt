@@ -159,7 +159,7 @@ private fun LogoImage(
     isSmallImage: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
-    val size = if (isSmallImage) 28.dp else 32.dp
+    val size = if (isSmallImage) 28.dp else 30.dp
     AsyncImage(
         modifier = modifier.size(size),
         shimmerModifier = modifier

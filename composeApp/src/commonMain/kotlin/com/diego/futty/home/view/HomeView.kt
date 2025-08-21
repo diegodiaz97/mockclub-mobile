@@ -160,6 +160,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
                                     feedViewModel.updateLikes(userMadeLike)
                                 },
                                 navigateToLogin = navigateToLogin,
+                                onUserClicked = { user -> feedViewModel.onUserClicked(user)},
                             )
                         }
 
@@ -218,6 +219,7 @@ fun HomeView(navigateToLogin: () -> Unit) {
 
                             PostDetailScreen(
                                 viewModel = postDetailViewModel,
+                                onUserClicked = { user -> feedViewModel.onUserClicked(user)},
                                 onClose = { navController.popBackStack() },
                                 onLiked = {
                                     feedViewModel.openedPost.value?.let { post ->

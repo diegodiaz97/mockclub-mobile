@@ -16,6 +16,7 @@ import com.diego.futty.authentication.view.AuthenticationView
 import com.diego.futty.core.presentation.theme.FuttyTheme
 import com.diego.futty.core.presentation.utils.SetStatusBarColor
 import com.diego.futty.core.presentation.utils.Transitions
+import com.diego.futty.home.feed.domain.model.User
 import com.diego.futty.home.postDetail.presentation.screen.PostDetailScreen
 import com.diego.futty.home.postDetail.presentation.viewmodel.PostDetailViewModel
 import com.diego.futty.setup.profile.presentation.screen.ProfileScreen
@@ -29,6 +30,7 @@ fun SetupView(
     userId: String = "",
     onBack: (Boolean) -> Unit,
     navigateToLogin: () -> Unit,
+    onUserClicked: (User) -> Unit,
 ) {
     val setupViewModel = koinViewModel<SetupViewModel>()
     val profileViewModel = koinViewModel<ProfileViewModel>()
@@ -100,6 +102,7 @@ fun SetupView(
 
                         PostDetailScreen(
                             viewModel = postDetailViewModel,
+                            onUserClicked = { user -> onUserClicked(user)},
                             onClose = { navController.popBackStack() },
                             onLiked = {
                                 profileViewModel.openedPost.value?.let { post ->

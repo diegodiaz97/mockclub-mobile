@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -113,11 +111,11 @@ private fun PostInformation(
             imageUrl = user.profileImage?.image,
             initials = user.profileImage?.initials,
             background = user.profileImage?.background?.toColor(),
+            avatarSize = AvatarSize.Small,
             onClick = { onUserClicked() }
         ).Draw()
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.SpaceAround
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -126,21 +124,13 @@ private fun PostInformation(
             ) {
                 Text(
                     text = "${user.name} ${user.lastName}",
-                    style = typography.bodyLarge,
+                    style = typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = colorGrey900()
                 )
                 if (user.userType == USER_TYPE_PRO) {
                     VerifiedIcon(Modifier.padding(top = 4.dp), size = 16.dp)
                 }
-                Spacer(Modifier.weight(1f))
-                Avatar.IconAvatar(
-                    icon = PhosphorIcons.Bold.DotsThree,
-                    tint = colorGrey900(),
-                    background = colorGrey0(),
-                    avatarSize = AvatarSize.Small,
-                    onClick = { onOptionsClicked() }
-                ).Draw()
             }
             Text(
                 text = post.createdAt.getTimeAgoLabel(),
@@ -148,8 +138,15 @@ private fun PostInformation(
                 fontWeight = FontWeight.Normal,
                 color = colorGrey600()
             )
-            Spacer(Modifier.height(4.dp))
         }
+        Avatar.IconAvatar(
+            modifier = Modifier.padding(bottom = 4.dp),
+            icon = PhosphorIcons.Bold.DotsThree,
+            tint = colorGrey900(),
+            background = colorGrey0(),
+            avatarSize = AvatarSize.Small,
+            onClick = { onOptionsClicked() }
+        ).Draw()
     }
 }
 
@@ -240,7 +237,7 @@ private fun PostFooter(
         Row(
             modifier = Modifier.padding(horizontal = 14.dp).weight(1f),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+            horizontalArrangement = Arrangement.spacedBy(1.dp)
         )
         {
             Avatar.IconAvatar(
@@ -250,14 +247,15 @@ private fun PostFooter(
                 avatarSize = AvatarSize.Small,
                 onClick = { onLiked() }
             ).Draw()
+
             Text(
                 text = post.likeCount.toString(),
                 style = typography.bodyLarge,
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.SemiBold,
                 color = if (hasLike) colorError() else colorGrey900(),
             )
 
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(6.dp))
 
             Avatar.IconAvatar(
                 icon = PhosphorIcons.Bold.ChatCircle,
@@ -266,14 +264,15 @@ private fun PostFooter(
                 avatarSize = AvatarSize.Small,
                 onClick = { }
             ).Draw()
+
             Text(
                 text = post.commentCount.toString(),
                 style = typography.bodyLarge,
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.SemiBold,
                 color = colorGrey900()
             )
 
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(6.dp))
 
             Avatar.IconAvatar(
                 icon = PhosphorIcons.Bold.PaperPlaneTilt,

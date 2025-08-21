@@ -72,6 +72,7 @@ class PostDetailViewModel(
                     val comments = _comments.value ?: emptyList()
 
                     if (newComments.isEmpty()) {
+                        _comments.value = comments + newComments
                         _commentsEndReached = true
                         return@onSuccess
                     }
@@ -108,7 +109,7 @@ class PostDetailViewModel(
                     val comments = _comments.value ?: emptyList()
                     _comments.value = listOf(newComment) + comments
                     _post.value = _post.value?.copy(commentCount = _post.value!!.commentCount + 1)
-                    _commentCreationProgress.value = 1f
+                    _commentCreationProgress.value = 0f
                     _commentToReply.value = null
                 }
                 .onError {
